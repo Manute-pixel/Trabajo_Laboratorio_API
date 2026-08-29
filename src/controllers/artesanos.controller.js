@@ -1,5 +1,19 @@
 import { artesanos } from '../data/artesanos.js';
-export const agregarArtesano = (req, res) => {
+
+export const obtenerArtesanos = (req, res) => {
+    res.json(artesanos);
+};
+
+export const obtenerArtesanoPorId = (req, res) => {
+    const { id } = req.params;
+    const artesano = artesanos.find(artesano => artesano.id === id);
+    if (!artesano) {
+        return res.status(404).json({ mensaje: 'Artesano no encontrado' });
+    }
+    res.json(artesano);
+};
+
+export const crearArtesano = (req, res) => {
     const {nombre, dni, rubro, localidad } = req.body;
     
     const nuevoArtesano = {
@@ -23,4 +37,4 @@ export const agregarArtesano = (req, res) => {
         artesano: nuevoArtesano
     });
     
-}
+};

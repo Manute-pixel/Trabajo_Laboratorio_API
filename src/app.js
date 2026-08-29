@@ -2,13 +2,14 @@ import express from 'express';
 import {logger} from './middlewares/logger.js';
 import { manejadorErrores } from './middlewares/manejadorErrores.js';
 import { noEncontrado } from './middlewares/noEncontrado.js';
-import { artesanosRouter } from './routes/artesanosrouter.js';
+import artesanosRoutes from './routes/artesanos.routes.js';
+
 const app = express();
 const PORT = 3000;
 
 app.use(logger);
 app.use(express.json());
-app.use('/artesanos', artesanosRouter);
+app.use('/artesanos', artesanosRoutes);
 
 //Ruta de bienvenida
 app.get('/', (req, res) => {
