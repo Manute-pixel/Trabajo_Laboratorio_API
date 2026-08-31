@@ -1,19 +1,20 @@
 import { artesanos } from '../data/artesanos.js';
+import { crearError } from '../utils/error.js';
 
 export const obtenerArtesanos = (req, res) => {
     res.json(artesanos);
 };
 
-export const obtenerArtesanoPorId = (req, res) => {
+export const obtenerArtesanoPorId = (req, res, next) => {
     const { id } = req.params;
     const artesano = artesanos.find(artesano => artesano.id === id);
     if (!artesano) {
-        return res.status(404).json({ mensaje: 'Artesano no encontrado' });
+        return next(crearError("artesano no encontrado", 404));
     }
     res.json(artesano);
 };
 
-export const crearArtesano = (req, res) => {
+export const crearArtesano = (req, res, next) => {
     const {nombre, dni, rubro, localidad } = req.body;
     
     const nuevoArtesano = {
@@ -24,12 +25,12 @@ export const crearArtesano = (req, res) => {
         localidad,
     };
     if (artesanos.some(artesano => artesano.nombre === nombre && artesano.dni === dni)) {
-        return res.status(400).json({ mensaje: 'Esta persona ya está registrada' });
+        return next(crearError("El artesano ya existe", 400));
     }
     
 
     if (!nombre || !dni || !rubro || !localidad) {
-        return res.status(400).json({ mensaje: 'Todos los campos son obligatorios' });
+        return next(crearError("Todos los campos de un artesano son obligatorios", 400));
     }
     artesanos.push(nuevoArtesano);
     res.status(201).json({
