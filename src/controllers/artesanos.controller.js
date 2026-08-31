@@ -1,5 +1,5 @@
 import { artesanos } from '../data/artesanos.js';
-import { crearError } from '../utils/error.js';
+import { crearError } from '../utils/errores.js';
 
 export const obtenerArtesanos = (req, res) => {
     res.status(200).json(artesanos);
