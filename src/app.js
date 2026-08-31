@@ -2,17 +2,19 @@ import express from 'express';
 import {logger} from './middlewares/logger.js';
 import { manejadorErrores } from './middlewares/manejadorErrores.js';
 import { noEncontrado } from './middlewares/noEncontrado.js';
-
+import { artesanosRouter } from './routes/artesanosrouter.js';
 const app = express();
 const PORT = 3000;
 
 app.use(logger);
 app.use(express.json());
+app.use('/artesanos', artesanosRouter);
 
 //Ruta de bienvenida
 app.get('/', (req, res) => {
     res.send('Bienvenido a Poncho Digital API');
 });
+
 
 //Ruta de información
 app.get('/info', (req, res) => {
