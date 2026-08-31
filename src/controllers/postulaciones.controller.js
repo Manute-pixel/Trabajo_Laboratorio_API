@@ -1,5 +1,5 @@
 import {postulaciones} from '../data/postulaciones.js';
-import { crearError } from '../utils/error.js';
+import { crearError } from '../utils/errores.js';
 
 export const crearPostulacion = (req, res, next) => {
     const { nombre, dni, rubro, localidad } = req.body;
