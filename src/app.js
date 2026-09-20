@@ -4,14 +4,19 @@ import { manejadorErrores } from './middlewares/manejadorErrores.js';
 import { noEncontrado } from './middlewares/noEncontrado.js';
 import artesanosRoutes from './routes/artesanos.routes.js';
 import postulacionesRoutes from './routes/postulaciones.routes.js';
+import standsRoutes from './routes/stands.routes.js';
+import productosRoutes from './routes/productos.routes.js';
 
 const app = express();
 const PORT = 3000;
 
 app.use(logger);
 app.use(express.json());
+app.use('/stands', standsRoutes);
+app.use('/productos', productosRoutes);
 app.use('/postulaciones', postulacionesRoutes);
 app.use('/artesanos', artesanosRoutes);
+
 
 //Ruta de bienvenida
 app.get('/', (req, res) => {
