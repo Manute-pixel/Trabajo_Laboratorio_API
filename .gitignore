@@ -147,7 +147,8 @@ vite.config.ts.timestamp-*
 
 /src/generated/prisma
 
-
+#config files
 .agents/
 .claude/
 .windsurf/
+skills-lock.json
