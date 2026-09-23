@@ -1,77 +1,71 @@
-import { artesanos } from '../data/artesanos.js';
 import { crearError } from '../utils/errores.js';
+import * as artesanosService from '../services/artesanos.service.js';   
 
-export const obtenerArtesanos = (req, res) => {
-    res.status(200).json(artesanos);
+export const obtenerArtesanos = async(req, res, next) => {
+    try {
+        const criterios = req.consultaValidada;
+        const artesanos = await artesanosService.consultarArtesanos(criterios);
+        res.status(200).json(artesanos);
+    } catch (error) {
+        next(error);
+    }
 };
 
-export const obtenerArtesanoPorId = (req, res, next) => {
-    const id = req.id;
-    const artesano = artesanos.find(artesano => artesano.id === id);
-    if (!artesano) {
-        return next(crearError("artesano no encontrado", 404));
+export const obtenerArtesanoPorId = async (req, res, next) => {
+    try {
+        const id = req.id;
+        const artesano = await artesanosService.consultarArtesanoPorId(id);
+
+        if (!artesano) {
+            return next(crearError(`Artesano con id ${id} no encontrado`, 404));
+        }
+
+        res.status(200).json(artesano);
+    } catch (error) {
+        next(error);
     }
-    res.status(200).json(artesano);
 };
 
-export const crearArtesano = (req, res, next) => {
-    const {nombre, dni, rubro, localidad } = req.body;
-    
-    const nuevoArtesano = {
-        id: artesanos.length > 0 ? Math.max(...artesanos.map(a => a.id)) + 1 : 1,
-        nombre,
-        dni,
-        rubro,
-        localidad,
-    };
-    if (artesanos.some(artesano => artesano.nombre === nombre && artesano.dni === dni)) {
-        return next(crearError("El artesano ya existe", 400));
-    }
-    
 
-    if (!nombre || !dni || !rubro || !localidad) {
-        return next(crearError("Todos los campos de un artesano son obligatorios", 400));
+export const crearArtesano = async (req, res, next) => {
+    try {
+        const datos = req.datosValidados;
+
+        const nuevoArtesano = await artesanosService.crearArtesano(datos);
+        res.status(201).json({ mensaje: "Artesano creado exitosamente", artesano: nuevoArtesano });
+    } catch (error) {
+        next(error);
     }
-    artesanos.push(nuevoArtesano);
-    res.status(201).json({
-        mensaje: 'Artesano agregado exitosamente',
-        artesano: nuevoArtesano
-    });
-    
 };
 
-export const actualizarArtesano = (req, res, next) => {
-    const id = req.id;
-    const { nombre, dni, rubro, localidad } = req.body;
-    const artesanoIndex = artesanos.findIndex(artesano => artesano.id === id);
+export const actualizarArtesano = async (req, res, next) => {
+    try {
+        const id = req.id;
+        const datos = req.body;
 
-    if (artesanoIndex === -1) {
-        return next(crearError("artesano no encontrado", 404));
+        const artesanoActualizado = await artesanosService.actualizarArtesano(id, datos);
+
+        if (!artesanoActualizado) {
+            return next(crearError(`Artesano con id ${id} no encontrado`, 404));
+        }
+
+        res.status(200).json({mensaje: "actualizacion exitosa", artesano: artesanoActualizado});
+    } catch (error) {
+        next(error);
     }
-
-    if (!nombre || !dni || !rubro || !localidad) {
-        return next(crearError("Todos los campos de un artesano son obligatorios", 400));
-    }
-
-    artesanos[artesanoIndex] = { ...artesanos[artesanoIndex], nombre, dni, rubro, localidad };
-
-    res.status(200).json({
-        mensaje: 'Artesano actualizado exitosamente',
-        artesano: artesanos[artesanoIndex]
-    });
 };
 
-export const borrarArtesano = (req, res, next) => {
-    const id = req.id;
-    const artesanoIndex = artesanos.findIndex(artesano => artesano.id === id);
+export const borrarArtesano = async (req, res, next) => {
+    try {
+        const id = req.id;
+        const artesanoEliminado = await artesanosService.eliminarArtesano(id);
 
-    if (artesanoIndex === -1) {
-        return next(crearError("artesano no encontrado", 404));
+        if (!artesanoEliminado) {
+            return next(crearError(`Artesano con id ${id} no encontrado`, 404));
+        }
+
+        res.status(204).send(`Artesano con id ${id} eliminado correctamente`);
+    } catch (error) {
+        next(error);
     }
-
-    artesanos.splice(artesanoIndex, 1);
-
-    res.status(200).json({
-        mensaje: 'Artesano eliminado exitosamente'
-    });
 };

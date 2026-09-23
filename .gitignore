@@ -129,7 +129,8 @@ dist
 .pnpm-store
 
 # yaml files from pnpm v7+ that are not needed for production
-.yaml
+*.yaml
+
 
 # yarn v3
 .pnp.*
@@ -145,6 +146,7 @@ vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
 
+# Prisma generated client
 /src/generated/prisma
 
 #config files
