@@ -19,16 +19,41 @@ model Categoria_Producto {
   productos Producto[]
 }
 
+model Localidad {
+  id Int @id @default(autoincrement())
+  nombre_localidad String @unique @db.VarChar(100)
+
+  artesanos Artesano[]
+}
+
+model Provincia {
+  id Int @id @default(autoincrement())
+  nombre_provincia String @unique @db.VarChar(100)
+
+  artesanos Artesano[]
+}
+
+model Rubro {
+  id Int @id @default(autoincrement())
+  nombre_rubro String @unique @db.VarChar(100)
+
+  artesanos Artesano[]
+}
+
 model Artesano {
   id Int @id @default(autoincrement())
   nombre_artesano String @db.VarChar(100)
   apellido_artesano String @db.VarChar(100)
   DNI String @unique @db.VarChar(10)
-  fecha_Nacimiento DateTime
-  rubro String @db.VarChar(100)
-  localidad String @db.VarChar(100)
-  provincia String @db.VarChar(100)
+  fecha_Nacimiento DateTime @db.Date
+  rubroId Int
+  localidadId Int
+  provinciaId Int
   email_artesano String @unique @db.VarChar(100)
+
+  rubro Rubro @relation (fields: [rubroId], references: [id], onDelete: Restrict)
+  localidad Localidad @relation (fields: [localidadId], references: [id], onDelete: Restrict)
+  provincia Provincia @relation (fields: [provinciaId], references: [id], onDelete: Restrict)
 
   productos Producto[]
   stands Stand[]
@@ -65,15 +90,13 @@ model Stand {
   coordenadas  String @db.VarChar(150)
   estado_stand String @default("DISPONIBLE") @db.VarChar(15)
 
-  edicionId Int
   sectorId Int
   artesanoId Int?
 
-  edicion Edicion_Poncho @relation (fields: [edicionId], references: [id], onDelete: Restrict)
   sector Sector @relation (fields: [sectorId], references: [id], onDelete: Restrict)
   artesano Artesano? @relation (fields: [artesanoId], references: [id], onDelete: Restrict)
 
-  @@unique([numero_stand, sectorId, edicionId])
+  @@unique([numero_stand, sectorId])
 }
 
 model Pabellon {
@@ -100,11 +123,10 @@ model Edicion_Poncho {
   id Int @id @default(autoincrement())
   nombre_edicion String @db.VarChar(100) @unique
   anio_edicion Int @unique
-  fecha_inicio DateTime
-  fecha_fin DateTime
+  fecha_inicio DateTime @db.Date
+  fecha_fin DateTime @db.Date
   estado_edicion String @default("PLANIFICADA") @db.VarChar(100)
 
-  stands Stand[]
   pabellones Pabellon[]
   postulaciones Postulacion[]
 }
