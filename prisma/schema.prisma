@@ -44,14 +44,15 @@ model Artesano {
   id Int @id @default(autoincrement())
   nombre_artesano String @db.VarChar(100)
   apellido_artesano String @db.VarChar(100)
-  DNI String @unique @db.VarChar(10)
+  dni String @unique @db.VarChar(10)
   fecha_Nacimiento DateTime @db.Date
   rubroId Int
   localidadId Int
   provinciaId Int
   email_artesano String @unique @db.VarChar(100)
-  CreatedAt DateTime @default(now())
-  UpdatedAt DateTime @updatedAt
+  telefono_artesano String @db.VarChar(20)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   rubro Rubro @relation (fields: [rubroId], references: [id], onDelete: Restrict)
   localidad Localidad @relation (fields: [localidadId], references: [id], onDelete: Restrict)
@@ -60,18 +61,8 @@ model Artesano {
   productos Producto[]
   stands Stand[]
   postulaciones Postulacion[]
-  telefonoArtesanos Telefono_Artesano[]
 }
 
-model Telefono_Artesano {
-  id_artesano Int
-  telefono String @db.VarChar(15)
-
-  artesano Artesano @relation (fields: [id_artesano], references: [id], onDelete: Cascade)
-
-  @@unique([id_artesano, telefono])
-
-} 
 
 model Producto {
   id Int @id @default(autoincrement())
@@ -79,13 +70,13 @@ model Producto {
   descripcion String @db.Text
   precio_producto Decimal @db.Decimal(10, 2)
   createdAt DateTime @default(now())
-  UpdatedAt DateTime @updatedAt
+  updatedAt DateTime @updatedAt
 
   categoriaId Int
-  ArtesanoId Int
+  artesanoId Int
   
   categoria Categoria_Producto @relation (fields: [categoriaId], references: [id], onDelete: Restrict)
-  Artesano Artesano @relation (fields: [ArtesanoId], references: [id], onDelete: Restrict)
+  artesano Artesano @relation (fields: [artesanoId], references: [id], onDelete: Restrict)
 }
 
 model Stand {
@@ -94,7 +85,7 @@ model Stand {
   coordenadas  String @db.VarChar(150)
   estado_stand String @default("DISPONIBLE") @db.VarChar(15)
   createdAt DateTime @default(now())
-  UpdatedAt DateTime @updatedAt
+  updatedAt DateTime @updatedAt
 
   sectorId Int
   artesanoId Int?
@@ -142,7 +133,7 @@ model  Postulacion {
   fecha_postulacion DateTime @default(now())
   estado_postulacion String @default("Pendiente") @db.VarChar(100)
   createdAt DateTime @default(now())
-  UpdatedAt DateTime @updatedAt
+  updatedAt DateTime @updatedAt
 
   artesanoId Int
   edicionId Int
