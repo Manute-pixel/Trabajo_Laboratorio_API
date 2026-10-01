@@ -15,6 +15,16 @@ export const consultarArtesanos = async (criterios) => {
     pagina,
     limite,
   } = criterios;
+  const campoOrden = {
+    nombre: "nombre_artesano",
+    apellido: "apellido_artesano",
+    dni: "DNI",
+    email: "email_artesano",
+    fechaNac: "fecha_Nacimiento",
+    rubro: "rubro",
+    localidad: "localidad",
+    provincia: "provincia"
+  }
   const where = {};
 
   if (nombre !== undefined) {
@@ -47,7 +57,7 @@ export const consultarArtesanos = async (criterios) => {
   const [artesanos, total] = await prisma.$transaction([
     prisma.artesano.findMany({
       where,
-      orderBy: [{ [ordenPor]: direccion }, { id: "asc" }],
+      orderBy: [{ [campoOrden[ordenPor]]: direccion }, { id: "asc" }],
       skip: desplazamiento,
       take: limite,
     }),

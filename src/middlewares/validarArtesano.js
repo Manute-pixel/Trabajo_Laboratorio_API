@@ -1,10 +1,14 @@
-export const validarArtesano = (req, res, next) => {
-    const { nombre, apellido, dni, email, fechaNac, rubro, localidad, provincia } = req.body;
+import { crearError, detallarErroresZod } from "../utils/errores.js";
+import { artesanoSchema } from "../validators/artesanos.schemas.js";
 
-    if (!nombre || !apellido || !dni || !email || !fechaNac || !rubro || !localidad || !provincia) {
-        return res.status(400).json({ mensaje: "Todos los campos de un artesano son obligatorios" });
+export const validarArtesano = (req, res, next) => {
+    const resultado = artesanoSchema.safeParse(req.body);
+
+    if (!resultado.success) {
+        const detalles = detallarErroresZod(resultado.error);
+        return next(crearError('Los datos del artesano son invalidos', 400, detalles));
     }
 
-    req.datosValidados = { nombre, apellido, dni, email, fechaNac, rubro, localidad, provincia };
+    req.datosValidados = resultado.data;
     return next();
 }

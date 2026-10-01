@@ -1,17 +1,14 @@
+import { crearError, detallarErroresZod } from "../utils/errores.js";
+import { consultarArtesanoSchema } from "../validators/artesanos.schemas.js";
+
 export const validarConsultaArtesanos = (req, res, next) => {
-    const { pagina, limite, ordenPor, direccion } = req.query;
+    const resultado = consultarArtesanoSchema.safeParse(req.query);
 
-    const validacion = {
-        ...req.query,
-        pagina: Number(pagina) || 1,
-        limite: Number(limite) || 2,
-        ordenPor: ordenPor || 'id',
-        direccion: direccion || 'asc'
-    };
-    
+    if (!resultado.success) {
+        const detalles = detallarErroresZod(resultado.error);
+        return next(crearError('Los parametros de consulta son invalidos', 400, detalles));
+    }
 
-    console.log("Query después de validar:", validacion);
-
-    req.consultaValidada = validacion;
+    req.consultaValidada = resultado.data;
     return next();
 }
