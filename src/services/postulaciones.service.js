@@ -49,7 +49,7 @@ export const obtenerPostulaciones = async (criterios) => {
       orderBy: [{ [campoOrden[ordenPor]]: direccion }, { id: "asc" }],
       skip: desplazamiento,
       take: limite,
-      include: {  artesanoId: true, edicionId: true }
+      include: {  artesano: true, edicion: true }
     }),
     prisma.postulacion.count({ where }),
   ]);
@@ -68,7 +68,7 @@ export const obtenerPostulaciones = async (criterios) => {
 export const obtenerPostulacionPorId = async (id) => {
     return prisma.postulacion.findUnique({
         where: { id },
-        include: { artesanoId: true, edicionId: true }
+        include: { artesano: true, edicion: true }
     });
 }
 
@@ -94,7 +94,7 @@ export const crearPostulacion = async (datos) => {
       artesanoId: artesanoId,
       edicionId: edicionId,
     },
-    include: { artesanoId: true, edicionId: true }
+    include: { artesano: true, edicion: true }
   });
 };
 
@@ -119,6 +119,6 @@ export const actualizarPostulacion = async (id, datos) => {
       edicionId: edicionId,
       estado_postulacion: estado,
     },
-    include : { artesanoId: true, edicionId: true }
+    include : { artesano: true, edicion: true }
   });
 };
