@@ -1,14 +1,14 @@
+import { consultarPostulacionSchema } from "../../validators/postulaciones.schemas.js";
+import { crearError, detallarErroresZod } from "../../utils/errores.js";
+
 export const validarConsultaPostulacion = (req, res, next) => {
-    const { artesanoId, edicionId, estado, ordenPor, direccion, pagina, limite } = req.query;
+    const resultado = consultarPostulacionSchema.safeParse(req.query);
 
-    const validacion = {
-        ...req.query,
-        pagina: Number(pagina) || 1,
-        limite: Number(limite) || 2,
-        ordenPor: ordenPor || 'artesanoId',
-        direccion: direccion || 'asc'
-    };
+    if (!resultado.success) {
+        const detalles = detallarErroresZod(resultado.error);
+        return next(crearError('Datos de libro inválidos', 400, detalles));
+    }
 
-    req.consultaValidada = validacion;
+    req.consultaValidada = resultado.data;
     return next();
 };

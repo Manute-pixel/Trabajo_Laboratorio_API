@@ -1,18 +1,14 @@
-import { crearError } from "../../utils/errores.js";
+import { crearError, detallarErroresZod } from "../../utils/errores.js";
+import { actualizarPostulacionSchema } from "../../validators/postulaciones.schemas.js";
 
 export const validarActualizacionPostulacion = (req, res, next) => {
-    const { artesanoId, edicionId, estado } = req.body;
+    const resultado = actualizarPostulacionSchema.safeParse(req.body);
 
-    if (!artesanoId || !edicionId || !estado) {
-        return next(crearError("los campos artesanoId, edicionId y estado son obligatorios al actualizar la postulacion", 400));
+    if (!resultado.success) {
+        const detalles = detallarErroresZod(resultado.error);
+        return next(crearError('Datos de postulación inválidos', 400, detalles));
     }
 
-    if (estado !== "Pendiente" && estado !== "Aceptada" && estado !== "Rechazada" && estado !== "Corregir") {
-        return next(crearError("el campo estado debe ser 'Pendiente', 'Aceptada', 'Rechazada' o 'Corregir'", 400));
-    }
-
-    if (estado === "Pendiente") return next(crearError("debe cambiar el estado al actualizar la postulacion", 400));
-
-    req.actualizacionValidada = { artesanoId, edicionId, estado };
+    req.actualizacionValidada = resultado.data;
     next();
 }
