@@ -1,4 +1,29 @@
 import prisma from "../config/prisma.js";
+import { crearError } from "../utils/errores.js";
+
+const verificarArtesano = async (artesanoId) => {
+  if (artesanoId == undefined || artesanoId == null) {
+    return;
+  }
+
+  const existe = await prisma.artesano.findUnique({where: {id: artesanoId}});
+
+  if (!existe) {
+    throw crearError(`no existe un artesano con id ${artesanoId}`, 400);
+  }
+};
+
+const verificarEdicion = async (edicionId) => {
+  if (edicionId == undefined || edicionId == null) {
+    return;
+  }
+
+  const existe = await prisma.edicion.findUnique({where: {id: edicionId}});
+
+  if (!existe) {
+    throw crearError(`no existe una edicion con id ${edicionId}`, 400);
+  }
+};
 
 export const obtenerPostulaciones = async (criterios) => {
   const { artesanoId, edicionId, estado, pagina, limite, ordenPor, direccion } =
@@ -24,6 +49,7 @@ export const obtenerPostulaciones = async (criterios) => {
       orderBy: [{ [campoOrden[ordenPor]]: direccion }, { id: "asc" }],
       skip: desplazamiento,
       take: limite,
+      include: {  artesanoId: true, edicionId: true }
     }),
     prisma.postulacion.count({ where }),
   ]);
@@ -42,6 +68,7 @@ export const obtenerPostulaciones = async (criterios) => {
 export const obtenerPostulacionPorId = async (id) => {
     return prisma.postulacion.findUnique({
         where: { id },
+        include: { artesanoId: true, edicionId: true }
     });
 }
 
@@ -52,18 +79,22 @@ export const crearPostulacion = async (datos) => {
     where: {
       artesanoId: artesanoId,
       edicionId: edicionId,
-    },
+    }
   });
 
   if (existe) {
     return null;
   }
 
+  await verificarArtesano(artesanoId);
+  await verificarEdicion(edicionId);
+
   return await prisma.postulacion.create({
     data: {
       artesanoId: artesanoId,
       edicionId: edicionId,
     },
+    include: { artesanoId: true, edicionId: true }
   });
 };
 
@@ -77,6 +108,9 @@ export const actualizarPostulacion = async (id, datos) => {
   }
 
   const { artesanoId, edicionId, estado } = datos;
+  
+  await verificarArtesano(artesanoId);
+  await verificarEdicion(edicionId);
 
   return await prisma.postulacion.update({
     where: { id },
@@ -85,5 +119,6 @@ export const actualizarPostulacion = async (id, datos) => {
       edicionId: edicionId,
       estado_postulacion: estado,
     },
+    include : { artesanoId: true, edicionId: true }
   });
 };
