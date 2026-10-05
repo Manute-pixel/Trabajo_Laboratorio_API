@@ -3,7 +3,7 @@ ALTER TABLE "Consulta" ALTER COLUMN "fecha_consulta" SET DEFAULT CURRENT_TIMESTA
 
 ALTER TABLE "Postulacion"
 	ADD CONSTRAINT "Postulacion_estado_post_check"
-		CHECK ("estado_postulacion" IN ('Pendiente', 'Rechazado', 'Aceptado'));
+		CHECK ("estado_postulacion" IN ('PENDIENTE', 'RECHAZADO', 'ACEPTADO', 'CORREGIR'));
 
 ALTER TABLE "Stand"
 	ADD CONSTRAINT "Stand_numero_stand_check"
@@ -21,4 +21,4 @@ ALTER TABLE "Edicion_Poncho"
 
 ALTER TABLE "Usuario"
 	ADD CONSTRAINT "Usuario_rol_check"
-		CHECK ("rol_usuario" IN ('administrador', 'artesano', 'visitante'));
+		CHECK ("rol_usuario" IN ('administrador', 'artesano', 'operador'));

@@ -15,70 +15,100 @@ datasource db {
 model Categoria_Producto {
   id Int @id @default(autoincrement())
   nombre_categoria String  @unique @db.VarChar(100)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   productos Producto[]
+}
+
+model Localidad {
+  id Int @id @default(autoincrement())
+  nombre_localidad String @unique @db.VarChar(100)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  artesanos Artesano[]
+}
+
+model Provincia {
+  id Int @id @default(autoincrement())
+  nombre_provincia String @unique @db.VarChar(100)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  artesanos Artesano[]
+}
+
+model Rubro {
+  id Int @id @default(autoincrement())
+  nombre_rubro String @unique @db.VarChar(100)
+  descripcion String? @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  artesanos Artesano[]
 }
 
 model Artesano {
   id Int @id @default(autoincrement())
   nombre_artesano String @db.VarChar(100)
   apellido_artesano String @db.VarChar(100)
-  DNI String @unique @db.VarChar(10)
-  fecha_Nacimiento DateTime
-  rubro String @db.VarChar(100)
-  localidad String @db.VarChar(100)
-  provincia String @db.VarChar(100)
+  dni String @unique @db.VarChar(10)
+  fecha_Nacimiento DateTime @db.Date
+  rubroId Int
+  localidadId Int
+  provinciaId Int
   email_artesano String @unique @db.VarChar(100)
+  telefono_artesano String @db.VarChar(20)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  rubro Rubro @relation (fields: [rubroId], references: [id], onDelete: Restrict)
+  localidad Localidad @relation (fields: [localidadId], references: [id], onDelete: Restrict)
+  provincia Provincia @relation (fields: [provinciaId], references: [id], onDelete: Restrict)
 
   productos Producto[]
   stands Stand[]
   postulaciones Postulacion[]
-  telefonoArtesanos Telefono_Artesano[]
 }
 
-model Telefono_Artesano {
-  id_artesano Int
-  telefono String @db.VarChar(15)
-
-  artesano Artesano @relation (fields: [id_artesano], references: [id], onDelete: Cascade)
-
-  @@unique([id_artesano, telefono])
-
-} 
 
 model Producto {
   id Int @id @default(autoincrement())
   nombre_producto String @db.VarChar(100) 
   descripcion String @db.Text
   precio_producto Decimal @db.Decimal(10, 2)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   categoriaId Int
-  ArtesanoId Int
+  artesanoId Int
   
   categoria Categoria_Producto @relation (fields: [categoriaId], references: [id], onDelete: Restrict)
-  Artesano Artesano @relation (fields: [ArtesanoId], references: [id], onDelete: Restrict)
+  artesano Artesano @relation (fields: [artesanoId], references: [id], onDelete: Restrict)
 }
 
 model Stand {
   id Int @id @default(autoincrement())
   numero_stand Int
-  coordenadas  String @db.VarChar(150)
   estado_stand String @default("DISPONIBLE") @db.VarChar(15)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  edicionId Int
   sectorId Int
   artesanoId Int?
 
-  edicion Edicion_Poncho @relation (fields: [edicionId], references: [id], onDelete: Restrict)
   sector Sector @relation (fields: [sectorId], references: [id], onDelete: Restrict)
   artesano Artesano? @relation (fields: [artesanoId], references: [id], onDelete: Restrict)
 
-  @@unique([numero_stand, sectorId, edicionId])
+  @@unique([numero_stand, sectorId])
 }
 
 model Pabellon {
   id Int @id @default(autoincrement())
   nombre_pabellon String @db.VarChar(100) @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   edicionId Int
   edicion Edicion_Poncho @relation (fields: [edicionId], references: [id], onDelete: Restrict)
@@ -89,6 +119,8 @@ model Pabellon {
 model Sector {
   id Int @id @default(autoincrement())
   nombre_sector String @db.VarChar(100) @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   pabellonId Int
   pabellon Pabellon @relation (fields: [pabellonId], references: [id], onDelete: Restrict)
@@ -100,19 +132,20 @@ model Edicion_Poncho {
   id Int @id @default(autoincrement())
   nombre_edicion String @db.VarChar(100) @unique
   anio_edicion Int @unique
-  fecha_inicio DateTime
-  fecha_fin DateTime
+  fecha_inicio DateTime @db.Date
+  fecha_fin DateTime @db.Date
   estado_edicion String @default("PLANIFICADA") @db.VarChar(100)
 
-  stands Stand[]
   pabellones Pabellon[]
   postulaciones Postulacion[]
 }
 
 model  Postulacion {
   id Int @id @default(autoincrement())
-  fecha_postulacion DateTime @default(dbgenerated("CURRENT_DATE"))
+  fecha_postulacion DateTime @default(now())
   estado_postulacion String @default("Pendiente") @db.VarChar(100)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   artesanoId Int
   edicionId Int
@@ -133,6 +166,6 @@ model Usuario {
 model Consulta {
   id Int @id @default(autoincrement())
   tipo_consulta String @db.VarChar(100)
-  fecha_consulta DateTime @default(dbgenerated("CURRENT_TIMESTAMP"))
+  fecha_consulta DateTime @default(now())
   busqueda_realizada String @db.Text
 }
