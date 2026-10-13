@@ -1,6 +1,28 @@
 import prisma from '../config/prisma.js';
 import {crearError} from '../utils/errores.js';
 
+const validarReferenciasProducto = async ({ categoriaId, artesanoId }) => {
+    if (categoriaId !== undefined && categoriaId !== null) {
+        const categoria = await prisma.categoria_Producto.findUnique({
+            where: { id: categoriaId }
+        });
+
+        if (!categoria) {
+            throw crearError(`Categoría con ID ${categoriaId} no encontrada`, 404);
+        }
+    }
+
+    if (artesanoId !== undefined && artesanoId !== null) {
+        const artesano = await prisma.artesano.findUnique({
+            where: { id: artesanoId }
+        });
+
+        if (!artesano) {
+            throw crearError(`Artesano con ID ${artesanoId} no encontrado`, 404);
+        }
+    }
+};
+
 export const consultarProductos = async (criterios) => {
     const {
         nombre,
@@ -69,7 +91,7 @@ export const consultarProductoPorId = async(productoId) => {
     });
 
     if (!producto) {
-        return next(crearError(`producto con ID ${productoId} no encontrado`, 404));
+        throw crearError(`Producto con ID ${productoId} no encontrado`, 404);
     }
 
     return producto;
@@ -77,6 +99,8 @@ export const consultarProductoPorId = async(productoId) => {
 
 export const agregarProducto = async (nuevoProducto) => {
     const {nombre, descripcion, precio, categoriaId, artesanoId} = nuevoProducto;
+
+    await validarReferenciasProducto({ categoriaId, artesanoId });
 
     const productoCreado = await prisma.producto.create({
         data: {
@@ -100,6 +124,8 @@ export const actualizarProducto = async (id, datos) => {
     }
 
    const { nombre, descripcion, precio, categoriaId, artesanoId } = datos;
+
+    await validarReferenciasProducto({ categoriaId, artesanoId });
 
    const productoActualizado = await prisma.producto.update({
        where: { id: id },

@@ -4,8 +4,10 @@ import { productoSchema } from "../validators/productos.schemas.js";
 export const validarProducto = (req, res, next) => {
     const resultado = productoSchema.safeParse(req.body);
     if (!resultado.success) {
-        const errores = detallarErroresZod(resultado.error);
-        return res.status(400).json(crearError("Datos inválidos", errores));
+        const detalle = detallarErroresZod(resultado.error);
+        return next(crearError("Datos inválidos", detalle));
     }
-    next();
+    
+    req.consultaValidada = resultado.data;
+    return next();
 }
