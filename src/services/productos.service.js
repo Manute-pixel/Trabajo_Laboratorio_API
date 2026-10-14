@@ -43,11 +43,11 @@ export const consultarProductos = async (criterios) => {
     }
 
     if (precioMin !== undefined) {
-        where.precio = { gte: precioMin };
+        where.precio_producto = { gte: precioMin };
     }
 
     if (precioMax !== undefined) {
-        where.precio = { ...where.precio, lte: precioMax }; 
+        where.precio_producto = { ...where.precio_producto, lte: precioMax }; 
     }
 
     if (categoriaId !== undefined) {

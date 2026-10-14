@@ -5,7 +5,7 @@ export const validarProducto = (req, res, next) => {
     const resultado = productoSchema.safeParse(req.body);
     if (!resultado.success) {
         const detalle = detallarErroresZod(resultado.error);
-        return next(crearError("Datos inválidos", detalle));
+        return next(crearError("Datos inválidos", 400, detalle));
     }
     
     req.consultaValidada = resultado.data;
