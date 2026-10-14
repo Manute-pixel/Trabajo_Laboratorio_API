@@ -10,4 +10,9 @@ export const usuarioSchema = z.object({
         .trim()
         .transform((value) => value.toLowerCase())
         .pipe(z.enum(['administrador', 'artesano', 'operador']))
-})
+});
+
+export const inicioSesionSchema = z.object({
+    email: z.email("El email no tiene un formato válido."),
+    password: z.string().min(1, "La contraseña es obligatoria.")
+});

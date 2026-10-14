@@ -10,3 +10,18 @@ export const generarUsuario = async (req, res, next) => {
         next(error);
     }
 }
+
+export const iniciarSesionUsuario = async (req, res, next) => {
+    try {
+        const usuario = await usuarioService.iniciarSesion(
+            req.iniciarSesionDto
+        );
+
+        return res.status(200).json({
+            mensaje: "Credenciales verificadas correctamente.",
+            usuario: usuario
+        });
+    } catch (error) {
+        return next(error);
+    }
+}
