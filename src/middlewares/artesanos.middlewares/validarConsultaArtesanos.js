@@ -1,5 +1,5 @@
-import { crearError, detallarErroresZod } from "../utils/errores.js";
-import { consultarArtesanoSchema } from "../validators/artesanos.schemas.js";
+import { crearError, detallarErroresZod } from "../../utils/errores.js";
+import { consultarArtesanoSchema } from "../../validators/artesanos.schemas.js";
 
 export const validarConsultaArtesanos = (req, res, next) => {
     const resultado = consultarArtesanoSchema.safeParse(req.query);
