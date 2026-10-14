@@ -16,10 +16,6 @@ export const obtenerArtesanoPorId = async (req, res, next) => {
         const id = req.id;
         const artesano = await artesanosService.consultarArtesanoPorId(id);
 
-        if (!artesano) {
-            return next(crearError(`Artesano con id ${id} no encontrado`, 404));
-        }
-
         res.status(200).json(artesano);
     } catch (error) {
         next(error);
@@ -45,10 +41,6 @@ export const actualizarArtesano = async (req, res, next) => {
 
         const artesanoActualizado = await artesanosService.actualizarArtesano(id, datos);
 
-        if (!artesanoActualizado) {
-            return next(crearError(`Artesano con id ${id} no encontrado`, 404));
-        }
-
         res.status(200).json({mensaje: "actualizacion exitosa", artesano: artesanoActualizado});
     } catch (error) {
         next(error);
@@ -58,11 +50,7 @@ export const actualizarArtesano = async (req, res, next) => {
 export const borrarArtesano = async (req, res, next) => {
     try {
         const id = req.id;
-        const artesanoEliminado = await artesanosService.eliminarArtesano(id);
-
-        if (!artesanoEliminado) {
-            return next(crearError(`Artesano con id ${id} no encontrado`, 404));
-        }
+        await artesanosService.eliminarArtesano(id);
 
         res.status(204).send(`Artesano con id ${id} eliminado correctamente`);
     } catch (error) {
