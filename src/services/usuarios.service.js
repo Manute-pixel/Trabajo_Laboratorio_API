@@ -36,10 +36,10 @@ export const registrarUsuario = async (registrarUsuarioDTO) => {
 }
 
 export const iniciarSesion = async (iniciarSesionDto) => {
-    const {email_usuario, password} = iniciarSesionDto;
+    const {email, password} = iniciarSesionDto;
     
     const usuario = await prisma.usuario.findUnique({
-        where: {email_usuario: email_usuario}
+        where: {email_usuario: email}
     });
 
     if(!usuario){
