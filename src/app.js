@@ -6,6 +6,7 @@ import artesanosRoutes from './routes/artesanos.routes.js';
 import postulacionesRoutes from './routes/postulaciones.routes.js';
 import standsRoutes from './routes/stands.routes.js';
 import productosRoutes from './routes/productos.routes.js';
+import usuariosRoutes from './routes/usuarios.routes.js';
 import "./config/jwt.js";
 
 const app = express();
@@ -17,6 +18,7 @@ app.use('/stands', standsRoutes);
 app.use('/productos', productosRoutes);
 app.use('/postulaciones', postulacionesRoutes);
 app.use('/artesanos', artesanosRoutes);
+app.use('/usuarios', usuariosRoutes);
 
 
 //Ruta de bienvenida
