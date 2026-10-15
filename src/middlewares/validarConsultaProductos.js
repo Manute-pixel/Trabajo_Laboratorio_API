@@ -1,7 +1,7 @@
 import {crearError, detallarErroresZod} from "../utils/errores.js";
 import { consultarProductoSchema } from "../validators/productos.schemas.js";
 
-const validarConsultaProductos = (req, res, next) => {
+export const validarConsultaProductos = (req, res, next) => {
     const resultado = consultarProductoSchema.safeParse(req.query);
 
     if (!resultado.success) {

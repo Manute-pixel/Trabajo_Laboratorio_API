@@ -1,7 +1,7 @@
 import {crearError, detallarErroresZod} from "../utils/errores.js";
 import { usuarioSchema} from "../validators/usuarios.schema.js";
 
-const validarRegistroUsuario = (req, res, next) => {
+export const validarRegistroUsuario = (req, res, next) => {
     const resultado = usuarioSchema.safeParse(req.body);
     
     if(!resultado.success){
