@@ -59,30 +59,37 @@ export const consultarProductos = async (criterios) => {
     }
 
     const desplazamiento = (pagina - 1) * limite;
+   
+    const campoOrden = {
+        nombre: "nombre_producto", 
+        precio: "precio_producto", 
+        categoriaId: "categoriaId", 
+        artesanoId: "artesanoId"
+    };
 
-  const [productos, total] = await prisma.$transaction([
-    prisma.producto.findMany({
-      where,
-      orderBy: [{ [ordenPor]: direccion }, { id: "asc" }],
-      skip: desplazamiento,
-      take: limite,
-      include: {
-        categoria: true,
-        artesano: true,
-      },
-    }),
-    prisma.producto.count({ where }),
-  ]);
+    const [productos, total] = await prisma.$transaction([
+        prisma.producto.findMany({
+         where,
+         orderBy: [{ [campoOrden [ordenPor]]: direccion }, { id: "asc" }],
+         skip: desplazamiento,
+         take: limite,
+         include: {
+         categoria: true,
+         artesano: true,
+         },
+        }),
+        prisma.producto.count({ where }),
+    ]);
 
-  return {
-    productos,
-    paginacion: {
+    return {
+      productos,
+      paginacion: {
         pagina,
         limite,
         total,
         totalPaginas: Math.ceil(total / limite),
+      }
     }
-  }
 }
 
 export const consultarProductoPorId = async(productoId) => {
@@ -106,7 +113,7 @@ export const agregarProducto = async (nuevoProducto) => {
         data: {
             nombre_producto: nombre,
             descripcion: descripcion,
-            precio: precio,
+            precio_producto: precio,
             categoriaId: categoriaId,
             artesanoId: artesanoId
         }
@@ -132,7 +139,7 @@ export const actualizarProducto = async (id, datos) => {
        data: {
            nombre_producto: nombre,
            descripcion: descripcion,
-           precio: precio,
+           precio_producto: precio,
            categoriaId: categoriaId,
            artesanoId: artesanoId
        }
