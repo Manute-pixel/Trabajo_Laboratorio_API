@@ -1,7 +1,7 @@
 import { validarId } from '../middlewares/validarId.js';
-import { validarConsultaArtesanos } from '../middlewares/validarConsultaArtesanos.js';
+import { validarConsultaArtesanos } from '../middlewares/artesanos.middlewares/validarConsultaArtesanos.js';
 import { obtenerArtesanos, obtenerArtesanoPorId, crearArtesano, actualizarArtesano, borrarArtesano } from "../controllers/artesanos.controller.js";
-import { validarArtesano } from '../middlewares/validarArtesano.js';
+import { validarArtesano } from '../middlewares/artesanos.middlewares/validarArtesano.js';
 import express from 'express';
 
 const router = express.Router();

@@ -12,12 +12,12 @@ export const standConsultaSchema = z.object({
 });
 export const standCreacionSchema = z.object({
     numero: z.coerce.number().int().positive({ message: "El número debe ser un entero positivo" }),
-    estado: z.enum(["disponible", "ocupado"], { message: "El estado debe ser 'disponible' o 'ocupado'" }).toUpperCase(),
+    estado: z.string().trim().toUpperCase().pipe(z.enum(["DISPONIBLE", "OCUPADO"], { message: "El estado debe ser 'disponible' o 'ocupado'" })),
     sectorId: z.coerce.number().int().positive({ message: "El sectorId debe ser un entero positivo" }),
 });
 export const standActualizacionSchema = z.object({
     numero: z.coerce.number().int().positive({ message: "El número debe ser un entero positivo" }),
-    estado: z.enum(["disponible", "ocupado"], { message: "El estado debe ser 'disponible' o 'ocupado'" }).toUpperCase(),
+    estado: z.string().trim().toUpperCase().pipe(z.enum(["DISPONIBLE", "OCUPADO"], { message: "El estado debe ser 'disponible' o 'ocupado'" })),
     sectorId: z.coerce.number().int().positive({ message: "El sectorId debe ser un entero positivo" }),
     artesanoId: z.coerce.number().int().positive({ message: "El artesanoId debe ser un entero positivo" })
 });
