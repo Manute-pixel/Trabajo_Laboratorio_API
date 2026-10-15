@@ -58,3 +58,15 @@ export const iniciarSesion = async (iniciarSesionDto) => {
         email: usuario.email_usuario
     }
 }
+
+export const obtenerUsuarioPorId = async (id) => {
+    return prisma.usuario.findUnique({
+        where: {id: id},
+        select:{
+            id: true,
+            nombre_usuario: true,
+            apellido_usuario: true,
+            email_usuario: true,
+        }
+    });
+}

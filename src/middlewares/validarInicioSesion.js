@@ -1,4 +1,4 @@
-import { crearError, detallarErroresZod } from "../utils/errores";
+import { crearError, detallarErroresZod } from "../utils/errores.js";
 import {inicioSesionSchema} from "../validators/usuarios.schema.js";
 
 export const validarInicioSesion = (req, res, next) => {

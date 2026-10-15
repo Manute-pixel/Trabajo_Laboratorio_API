@@ -173,3 +173,10 @@ model Consulta {
   fecha_consulta DateTime @default(now())
   busqueda_realizada String @db.Text
 }
+
+model TokenRevocado {
+  jti     String   @id
+  venceEn DateTime
+
+  @@index([venceEn])
+}
