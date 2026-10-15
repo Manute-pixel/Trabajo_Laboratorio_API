@@ -12,7 +12,7 @@ export const registrarUsuario = async (registrarUsuarioDTO) => {
     });
 
     if(usuarioExistente){
-        return next(crearError("Ya existe un usuario con ese email", 409))
+        throw crearError("Ya existe un usuario con ese email", 409);
     }
 
     const passwordHash = await bcrypt.hash(password, FACTOR_COSTO);
@@ -43,13 +43,13 @@ export const iniciarSesion = async (iniciarSesionDto) => {
     });
 
     if(!usuario){
-        return next(crearError("Las credenciales son inválidas", 401));
+        throw crearError("Las credenciales son inválidas", 401);
     }
 
     const passwordValida = await bcrypt.compare(password, usuario.password);
 
     if(!passwordValida){
-        return next(crearError("Las credenciales son inválidas", 401));
+        throw crearError("Las credenciales son inválidas", 401);
     }
 
     return{

@@ -2,7 +2,7 @@ import * as usuarioService from '../services/usuarios.services.js';
 
 export const generarUsuario = async (req, res, next) => {
     try {
-        const registrarUsuarioDTO = req.registrarUsuarioDTO;
+        const registrarUsuarioDTO = req.registroValidado;
         const usuario = await usuarioService.registrarUsuario(registrarUsuarioDTO);
 
         return res.status(201).json(usuario);
@@ -14,7 +14,7 @@ export const generarUsuario = async (req, res, next) => {
 export const iniciarSesionUsuario = async (req, res, next) => {
     try {
         const usuario = await usuarioService.iniciarSesion(
-            req.iniciarSesionDto
+            req.inicioSesionValidado
         );
 
         return res.status(200).json({
