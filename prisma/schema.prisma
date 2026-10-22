@@ -60,12 +60,14 @@ model Artesano {
   provinciaId Int
   email_artesano String @unique @db.VarChar(100)
   telefono_artesano String @db.VarChar(20)
+  usuarioId String @unique @db.Uuid
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   rubro Rubro @relation (fields: [rubroId], references: [id], onDelete: Restrict)
   localidad Localidad @relation (fields: [localidadId], references: [id], onDelete: Restrict)
   provincia Provincia @relation (fields: [provinciaId], references: [id], onDelete: Restrict)
+  usuario Usuario @relation(fields: [usuarioId], references: [id], onDelete: Restrict)
 
   productos Producto[]
   stands Stand[]
@@ -160,11 +162,28 @@ model Usuario {
   apellido_usuario String @db.VarChar(100)
   email_usuario String @unique @db.VarChar(100)
   password String @db.VarChar(100)
-  rol_usuario String @db.VarChar(100)
+  roles UsuarioRol[]
   activo Boolean @default(true)
-  ultimoAcceso DateTime? 
+  ultimoAcceso DateTime?
+  participante Artesano?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Rol {
+  id Int @id @default(autoincrement())
+  nombre_rol String @unique
+  usuarios UsuarioRol[]  
+}
+
+model UsuarioRol {
+  usuarioId String @db.Uuid
+  rolId Int
+
+  usuario Usuario @relation(fields:[usuarioId], references:[id], onDelete: Cascade)
+  rol Rol @relation(fields: [rolId], references: [id], onDelete: Restrict)
+
+  @@id([usuarioId, rolId])
 }
 
 model Consulta {
