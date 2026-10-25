@@ -1,35 +1,42 @@
-import * as usuarioService from '../services/usuarios.service.js';
-import {generarToken} from '../services/tokens.service.js';
+import * as usuarioService from "../services/usuarios.service.js";
+import { generarToken } from "../services/tokens.service.js";
 
-export const generarUsuario = async (req, res, next) => {
-    try {
-        const registrarUsuarioDTO = req.registroValidado;
-        const usuario = await usuarioService.registrarUsuario(registrarUsuarioDTO);
+export const generarUsuarioArtesano = async (req, res, next) => {
+  try {
+    const datos = req.dto;
+    const usuario = await usuarioService.registrarUsuarioArtesano(datos);
 
-        return res.status(201).json(usuario);
-    }catch(error){
-        next(error);
-    }
-}
+    return res.status(201).json(usuario);
+  } catch (error) {
+    next(error);
+  }
+};
 
 export const iniciarSesionUsuario = async (req, res, next) => {
-    try {
-        const usuario = await usuarioService.iniciarSesion(
-            req.inicioSesionValidado
-        );
-        const token = generarToken(usuario);
-        return res.status(200).json({
-            mensaje: "Credenciales verificadas correctamente.",
-            token: token,
-            usuario: usuario
-        });
-    } catch (error) {
-        return next(error);
-    }
-}
+  try {
+    const usuario = await usuarioService.iniciarSesion(
+      req.inicioSesionValidado,
+    );
+    const token = generarToken(usuario);
+    return res.status(200).json({
+      mensaje: "Credenciales verificadas correctamente.",
+      token: token,
+      usuario: usuario,
+    });
+  } catch (error) {
+    return next(error);
+  }
+};
 
-export const obtenerMiPerfil = async (req, res, next) => {
-    try{
+export const crearAdministrador = async (req, res) => {
+  const usuario = await usuarioService.registrarAdministrador(req.dto);
+  return res.status(201).json(usuario);
+};
+
+export const obtenerMiPerfil = async (req, res) => {
+  return res.status(200).json({ usuario: req.contextoUsuario });
+
+  /*try{
         const usuario = await usuarioService.obtenerUsuarioPorId(req.usuario.id);
         if (!usuario) {
             res.set('WWW-Authenticate', 'Bearer error="invalid_token"');
@@ -41,5 +48,10 @@ export const obtenerMiPerfil = async (req, res, next) => {
     }
     catch(error){
         return next(error);
-    }
-}
+    }*/
+};
+
+export const asociarRolArtesano = async (req, res) => {
+  const rolArtesano = await asignarParticipante(req.dto);
+  return res.status(201).json(rolArtesano);
+};

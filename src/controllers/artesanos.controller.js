@@ -57,3 +57,8 @@ export const borrarArtesano = async (req, res, next) => {
         next(error);
     }
 };
+
+export const consultarMiArtesano = async(req, res) =>{
+    const datos = await artesanosService.obtenerMiArtesano(req.contextoUsuario.id);
+    return res.json(datos);
+}
