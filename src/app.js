@@ -41,8 +41,20 @@ app.get('/info', (req, res) => {
 //Manejo de rutas no encontradas
 app.use(noEncontrado);
 //Manejo de errores
-app.use(manejadorErrores);
 
+app.use((err, req, res, next) => {
+    if(res.headersSent) return next(err);
+    const mensajes ={
+        P2002: "Ya existe un registro con esos datos unicos.",
+        P2003: "La operación afecta a registros relacionados.",
+        P2025: "Registro no encontrado.",
+        P2034: "Hubo otro cambio simultáneo. Reintentar."
+    };
+    const mensajeErrorPrisma = mensajes [err.code];
+    const estado = mensajeErrorPrisma ? (err.code === "P2025" ? 404 : 409) : (err.status || 500);
+    const mensaje = estado >= 500 ? "Error interno del servidor." : (mensajeErrorPrisma || err.message);
+    return res.status(estado).json({mensaje});
+});
 
 app.listen(PORT, () => {
     console.log (`Servidor iniciado en el puerto ${PORT}`);
