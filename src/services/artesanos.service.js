@@ -24,8 +24,8 @@ export const consultarArtesanos = async (criterios) => {
     fechaNac: "fecha_Nacimiento",
     rubroId: "rubroId",
     localidadId: "localidadId",
-    provinciaId: "provinciaId"
-  }
+    provinciaId: "provinciaId",
+  };
   const where = {};
 
   if (nombre !== undefined) {
@@ -77,88 +77,170 @@ export const consultarArtesanos = async (criterios) => {
 };
 
 export const consultarArtesanoPorId = async (artesanoId) => {
-    const artesano = await prisma.artesano.findUnique({
-        where: { id: artesanoId },
-    });
+  const artesano = await prisma.artesano.findUnique({
+    where: { id: artesanoId },
+  });
 
-    if (!artesano) {
-      throw crearError(`Artesano con id ${id} no encontrado`, 404);
-    }
+  if (!artesano) {
+    throw crearError(`Artesano con id ${id} no encontrado`, 404);
+  }
 
-    return artesano;
+  return artesano;
 };
 
 export const crearArtesano = async (datos) => {
-    const { nombre, apellido, dni, email, telefono, fechaNac, rubroId, localidadId, provinciaId } = datos;
+  const {
+    nombre,
+    apellido,
+    dni,
+    email,
+    telefono,
+    fechaNac,
+    rubroId,
+    localidadId,
+    provinciaId,
+  } = datos;
 
-		const existeDni = await prisma.artesano.findUnique({
-			where: { dni },
-		});
+  const existeDni = await prisma.artesano.findUnique({
+    where: { dni },
+  });
 
-		if (existeDni) {
-			throw crearError(`Ya existe un artesano con el DNI ${dni}`, 400);
-		}
+  if (existeDni) {
+    throw crearError(`Ya existe un artesano con el DNI ${dni}`, 400);
+  }
 
-		const existeEmail = await prisma.artesano.findUnique({
-				where: { email_artesano: email },
-		});
+  const existeEmail = await prisma.artesano.findUnique({
+    where: { email_artesano: email },
+  });
 
-		if (existeEmail) {
-			throw crearError(`Ya existe un artesano con el email ${email}`, 400);
-		}
+  if (existeEmail) {
+    throw crearError(`Ya existe un artesano con el email ${email}`, 400);
+  }
 
-    return prisma.artesano.create({
-        data: {
-            nombre_artesano: nombre,
-            apellido_artesano: apellido,
-            dni: dni,
-            email_artesano: email,
-            telefono_artesano: telefono,
-            fecha_Nacimiento: fechaNac,
-            rubroId: rubroId,
-            localidadId: localidadId,
-            provinciaId: provinciaId
-        },
-    });
-}
+  return prisma.artesano.create({
+    data: {
+      nombre_artesano: nombre,
+      apellido_artesano: apellido,
+      dni: dni,
+      email_artesano: email,
+      telefono_artesano: telefono,
+      fecha_Nacimiento: fechaNac,
+      rubroId: rubroId,
+      localidadId: localidadId,
+      provinciaId: provinciaId,
+    },
+  });
+};
 
 export const actualizarArtesano = async (artesanoId, datos) => {
-    const existe = await prisma.artesano.findUnique({
-        where: { id: artesanoId },
-    });
+  const existe = await prisma.artesano.findUnique({
+    where: { id: artesanoId },
+  });
 
-    if (!existe) {
-      throw crearError(`Artesano con id ${artesanoId} no encontrado`, 404);
-    }
+  if (!existe) {
+    throw crearError(`Artesano con id ${artesanoId} no encontrado`, 404);
+  }
 
-    const { nombre, apellido, dni, email, telefono, fechaNac, rubroId, localidadId, provinciaId } = datos;
+  const {
+    nombre,
+    apellido,
+    dni,
+    email,
+    telefono,
+    fechaNac,
+    rubroId,
+    localidadId,
+    provinciaId,
+  } = datos;
 
-    return prisma.artesano.update({ 
-        where: { id: artesanoId },
-        data: {
-            nombre_artesano: nombre,
-            apellido_artesano: apellido,
-            dni: dni,
-            email_artesano: email,
-						telefono_artesano: telefono,
-            fecha_Nacimiento: fechaNac,
-            rubroId: rubroId,
-            localidadId: localidadId,
-            provinciaId: provinciaId
-        },
-    });
-}
+  return prisma.artesano.update({
+    where: { id: artesanoId },
+    data: {
+      nombre_artesano: nombre,
+      apellido_artesano: apellido,
+      dni: dni,
+      email_artesano: email,
+      telefono_artesano: telefono,
+      fecha_Nacimiento: fechaNac,
+      rubroId: rubroId,
+      localidadId: localidadId,
+      provinciaId: provinciaId,
+    },
+  });
+};
 
 export const eliminarArtesano = async (artesanoId) => {
-    const existe = await prisma.artesano.findUnique({
-      where: { id: artesanoId },
-    });
+  const existe = await prisma.artesano.findUnique({
+    where: { id: artesanoId },
+  });
 
-    if (!existe) {
-      throw crearError(`Artesano con id ${artesanoId} no encontrado`, 404);
+  if (!existe) {
+    throw crearError(`Artesano con id ${artesanoId} no encontrado`, 404);
+  }
+
+  return prisma.artesano.delete({
+    where: { id: artesanoId },
+  });
+};
+
+//servicios de rutas protegidas
+export const asignarArtesano = async (dto) => {
+  return prisma.$transaction(async (tx) => {
+    const usuario = await tx.usuario.findUniqueOrThrow({
+      where: { id: dto.usuarioId },
+      include: { roles: { include: { rol: true } }, artesano: true },
+    });
+    const esAdmin = usuario.roles.some((a) => a.rol.nombre === "ADMINISTRADOR");
+    if (!usuario.activo || !esAdmin || usuario.artesano) {
+      const error = new Error(
+        "Requiere administrador activo " + "Sin Artesano.",
+      );
+      error.status = 409;
+      throw error;
     }
-
-    return prisma.artesano.delete({
-      where: { id: artesanoId },
+    const actualizado = await tx.usuario.update({
+      where: { id: usuario.id },
+      data: {
+        artesano: {
+          create: {
+            nombre_artesano: dto.nombre,
+            apellido_artesano: dto.apellido,
+            dni: dto.dni,
+            email_artesano: dto.email,
+            telefono_artesano: dto.telefono,
+            fecha_Nacimiento: dto.fechaNac,
+            rubroId: dto.rubroId,
+            localidadId: dto.localidadId,
+            provinciaId: dto.provinciaId,
+          },
+        },
+        roles: {
+          create: {
+            rol: { connect: { nombre_rol: "ARTESANO" } },
+          },
+        },
+      },
+      select: { artesano: true },
     });
-}
+    return actualizado.artesano;
+  });
+};
+
+export const obtenerMiArtesano = async (usuarioId) => {
+  return prisma.artesano.findUniqueOrThrow({
+    where: { usuarioId },
+    select: {
+      id: true,
+      nombre_artesano: true,
+      apellido_artesano: true,
+      dni: true,
+      fecha_Nacimiento: true,
+      email_artesano: true,
+      telefono_artesano: true,
+      rubro: true,
+      provincia: true,
+      localidad: true,
+      usuario: true,
+    },
+  });
+};

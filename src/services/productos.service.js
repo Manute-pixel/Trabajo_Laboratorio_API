@@ -161,3 +161,65 @@ export const eliminarProducto = async (id) => {
         where: { id: id }
     });
 }
+
+//nuevos servicios de rutas protegidas
+
+export const crearMiProducto = async (usuarioId, categoriaId) => {
+  return prisma.$transaction(async (tx) => {
+    const artesano = await tx.artesano.findUniqueOrThrow({
+      where: { usuarioId },
+    });
+    await tx.categoria.findUniqueOrThrow({
+      where: { id: categoriaId },
+    });
+    return tx.producto.create({
+      data: {
+        nombre_producto: nombre,
+        descripcion: descripcion,
+        precio_producto: precio,
+        artesanoId : artesano.id,
+        categoriaId: categoriaId
+      },
+      select: {
+        nombre_producto: true,
+        descripcion: true,
+        precio_producto: true,
+        categoria: true,
+        artesano: true
+      },
+    });
+  });
+};
+
+export const listarMisProductos = async (usuarioId) => {
+  return prisma.producto.findMany({
+    where: { artesano: { usuarioId } },
+    select: {
+        nombre_producto: true,
+        descripcion: true,
+        precio_producto: true,
+        categoria: true,
+        artesano: true
+    },
+    orderBy: { updatedAt: "desc" },
+  });
+};
+
+export const obtenerMiproducto = async (id, usuarioId) => {
+  const producto = await prisma.producto.findFirst({
+    where: { id, artesano: { usuarioId } },
+    select: {
+        nombre_producto: true,
+        descripcion: true,
+        precio_producto: true,
+        categoria: true,
+        artesano: true
+    },
+  });
+  if (!producto) {
+    const error = new Error("producto no encontrado.");
+    error.status = 404;
+    throw error;
+  }
+  return producto;
+};
