@@ -165,7 +165,7 @@ model Usuario {
   roles UsuarioRol[]
   activo Boolean @default(true)
   ultimoAcceso DateTime?
-  participante Artesano?
+  artesano Artesano?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
