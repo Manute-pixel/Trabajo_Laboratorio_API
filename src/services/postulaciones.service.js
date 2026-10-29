@@ -128,12 +128,17 @@ export const actualizarPostulacion = async (id, datos) => {
 //servicios de rutas protegidas
 export const crearMiPostulacion = async (usuarioId, edicionId) => {
   return prisma.$transaction(async (tx) => {
-    const artesano = await tx.artesano.findUniqueOrThrow({
+    const artesano = await tx.artesano.findUnique({
       where: { usuarioId },
     });
-    await tx.edicion_Poncho.findUniqueOrThrow({
+    if (!artesano) throw crearError("usuario no es un artesano", 400);
+
+    const edicion = await tx.edicion_Poncho.findUnique({
       where: { id: edicionId },
     });
+    if (!edicion)
+      throw crearError(`edicion con id ${edicionId} no encontrada`, 404);
+
     return tx.postulacion.create({
       data: {
         edicionId: edicionId,
@@ -159,10 +164,9 @@ export const obtenerMiPostulacion = async (usuarioId) => {
       artesano: true,
     },
   });
-  if (!postulacion) {
-    const error = new Error("no tienes una postulacion registrada.");
-    error.status = 404;
-    throw error;
-  }
-  return inscripcion;
+
+  if (!postulacion)
+    throw crearError("no tienes una postulacion registrada.", 404);
+
+  return postulacion;
 };
