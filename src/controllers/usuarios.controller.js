@@ -29,8 +29,12 @@ export const iniciarSesionUsuario = async (req, res, next) => {
 };
 
 export const crearAdministrador = async (req, res) => {
-  const usuario = await usuarioService.registrarAdministrador(req.dto);
-  return res.status(201).json(usuario);
+  try {
+    const usuario = await usuarioService.registrarAdministrador(req.dto);
+    return res.status(201).json(usuario);
+  } catch (error) {
+    return next(error);
+  }
 };
 
 export const obtenerMiPerfil = async (req, res) => {
@@ -49,9 +53,4 @@ export const obtenerMiPerfil = async (req, res) => {
     catch(error){
         return next(error);
     }*/
-};
-
-export const asociarRolArtesano = async (req, res) => {
-  const rolArtesano = await asignarParticipante(req.dto);
-  return res.status(201).json(rolArtesano);
 };
