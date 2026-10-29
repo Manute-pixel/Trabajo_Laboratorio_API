@@ -64,6 +64,14 @@ export const registrarUsuarioArtesano = async (registrarUsuarioDTO) => {
 
 export const registrarAdministrador = async (dto) => {
   const { nombre, apellido, email, password } = dto;
+  const usuarioExistente = await prisma.usuario.findUnique({
+    where: { email_usuario: email },
+  });
+
+  if (usuarioExistente) {
+    throw crearError("Ya existe un usuario con ese email", 409);
+  }
+
   const passwordHash = await bcrypt.hash(password, FACTOR_COSTO);
 
   return prisma.usuario.create({
@@ -75,7 +83,7 @@ export const registrarAdministrador = async (dto) => {
       activo: true,
       roles: {
         create: {
-          rol: { connect: { nombre: "ADMINISTRADOR" } },
+          rol: { connect: { nombre_rol: "ADMINISTRADOR" } },
         },
       },
     },
@@ -119,14 +127,14 @@ export const obtenerUsuarioPorId = async (id) => {
     select: {
       id: true, nombre_usuario: true, apellido_usuario: true, email_usuario: true, activo: true,
       roles: {
-        select: { rol: {select: {nombre_usuario: true}}}
+        select: { rol: {select: {nombre_rol: true}}}
       },
       artesano: {select: {id: true}}
     }
   });
-  if (!usuario) return null;
+  if (!usuario) throw crearError("Usuario no encontrado", 404);
   return {
     ...usuario, 
-    roles: usuario.roles.map(asignacion => asignacion.rol.nombre_usuario)
+    roles: usuario.roles.map(asignacion => asignacion.rol.nombre_rol)
   };
 };
