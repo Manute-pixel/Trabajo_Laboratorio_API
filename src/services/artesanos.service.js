@@ -1,6 +1,42 @@
 import prisma from "../config/prisma.js";
 import { crearError } from "../utils/errores.js";
 
+export const verificarProvincia = async (provinciaId) => {
+  const provincia = await prisma.provincia.findUnique({
+    where: { id: provinciaId },
+  });
+
+  if (!provincia) {
+    throw crearError(`Provincia con id ${provinciaId} no encontrada`, 404);
+  }
+
+  return;
+};
+
+export const verificarLocalidad = async (localidadId) => {
+  const localidad = await prisma.localidad.findUnique({
+    where: { id: localidadId },
+  });
+
+  if (!localidad) {
+    throw crearError(`Localidad con id ${localidadId} no encontrada`, 404);
+  }
+
+  return;
+};
+
+export const verificarRubro = async (rubroId) => {
+  const rubro = await prisma.rubro.findUnique({
+    where: { id: rubroId },
+  });
+
+  if (!rubro) {
+    throw crearError(`Rubro con id ${rubroId} no encontrado`, 404);
+  }
+
+  return;
+};
+
 export const consultarArtesanos = async (criterios) => {
   const {
     nombre,
@@ -26,6 +62,7 @@ export const consultarArtesanos = async (criterios) => {
     localidadId: "localidadId",
     provinciaId: "provinciaId",
   };
+
   const where = {};
 
   if (nombre !== undefined) {
@@ -117,6 +154,10 @@ export const crearArtesano = async (datos) => {
     throw crearError(`Ya existe un artesano con el email ${email}`, 400);
   }
 
+  await verificarProvincia(provinciaId);
+  await verificarLocalidad(localidadId);
+  await verificarRubro(rubroId);
+
   return prisma.artesano.create({
     data: {
       nombre_artesano: nombre,
@@ -153,6 +194,10 @@ export const actualizarArtesano = async (artesanoId, datos) => {
     provinciaId,
   } = datos;
 
+  await verificarProvincia(provinciaId);
+  await verificarLocalidad(localidadId);
+  await verificarRubro(rubroId);
+
   return prisma.artesano.update({
     where: { id: artesanoId },
     data: {
@@ -184,34 +229,46 @@ export const eliminarArtesano = async (artesanoId) => {
 };
 
 //servicios de rutas protegidas
-export const asignarArtesano = async (dto) => {
+export const asignarArtesano = async (usuarioId, dto) => {
+  const {
+    nombre,
+    apellido,
+    dni,
+    email,
+    telefono,
+    fechaNac,
+    rubroId,
+    localidadId,
+    provinciaId,
+  } = dto;
   return prisma.$transaction(async (tx) => {
-    const usuario = await tx.usuario.findUniqueOrThrow({
-      where: { id: dto.usuarioId },
+    const usuario = await tx.usuario.findUnique({
+      where: { id: usuarioId },
       include: { roles: { include: { rol: true } }, artesano: true },
     });
-    const esAdmin = usuario.roles.some((a) => a.rol.nombre === "ADMINISTRADOR");
-    if (!usuario.activo || !esAdmin || usuario.artesano) {
-      const error = new Error(
-        "Requiere administrador activo " + "Sin Artesano.",
-      );
-      error.status = 409;
-      throw error;
-    }
+    if (!usuario)
+      throw crearError(`Usuario con id ${usuarioId} no encontrado`, 404);
+
+    const esAdmin = usuario.roles.some(
+      (a) => a.rol.nombre_rol === "ADMINISTRADOR",
+    );
+    if (!usuario.activo || !esAdmin || usuario.artesano)
+      throw crearError("requiere administrador activo y sin artesano.", 409);
+
     const actualizado = await tx.usuario.update({
       where: { id: usuario.id },
       data: {
         artesano: {
           create: {
-            nombre_artesano: dto.nombre,
-            apellido_artesano: dto.apellido,
-            dni: dto.dni,
-            email_artesano: dto.email,
-            telefono_artesano: dto.telefono,
-            fecha_Nacimiento: dto.fechaNac,
-            rubroId: dto.rubroId,
-            localidadId: dto.localidadId,
-            provinciaId: dto.provinciaId,
+            nombre_artesano: nombre,
+            apellido_artesano: apellido,
+            dni: dni,
+            email_artesano: email,
+            telefono_artesano: telefono,
+            fecha_Nacimiento: fechaNac,
+            rubroId: rubroId,
+            localidadId: localidadId,
+            provinciaId: provinciaId,
           },
         },
         roles: {
@@ -222,12 +279,13 @@ export const asignarArtesano = async (dto) => {
       },
       select: { artesano: true },
     });
+
     return actualizado.artesano;
   });
 };
 
 export const obtenerMiArtesano = async (usuarioId) => {
-  return prisma.artesano.findUniqueOrThrow({
+  const artesano = await prisma.artesano.findUnique({
     where: { usuarioId },
     select: {
       id: true,
@@ -243,4 +301,9 @@ export const obtenerMiArtesano = async (usuarioId) => {
       usuario: true,
     },
   });
+
+  if (!artesano)
+    throw crearError("usuario artesano invalido o desactivado", 404);
+
+  return artesano;
 };
