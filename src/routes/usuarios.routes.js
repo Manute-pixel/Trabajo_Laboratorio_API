@@ -20,7 +20,6 @@ import {
   iniciarSesionUsuario,
   obtenerMiPerfil,
   crearAdministrador,
-  asociarRolArtesano,
 } from "../controllers/usuarios.controller.js";
 import { actualizarActivo } from "../controllers/estado.controller.js";
 import { cerrarSesion } from "../controllers/sesiones.controller.js";
@@ -28,6 +27,7 @@ import {
   agregarRolAdmin,
   eliminarRol,
 } from "../controllers/roles.controller.js";
+import { asociarArtesano } from "../controllers/artesanos.controller.js";
 
 const router = express.Router();
 
@@ -40,12 +40,7 @@ router.post(
 router.post("/login", validarInicioSesion, iniciarSesionUsuario);
 
 //rutas solo autenticacion
-router.get(
-  "/me",
-  autenticarUsuario,
-  cargarContextoUsuario,
-  obtenerMiPerfil,
-);
+router.get("/me", autenticarUsuario, cargarContextoUsuario, obtenerMiPerfil);
 router.post("/logout", autenticarUsuario, cerrarSesion);
 
 //rutas protegidas
@@ -63,7 +58,7 @@ router.post(
   cargarContextoUsuario,
   autorizarRoles("ADMINISTRADOR"),
   validarAsignacionArtesano,
-  asociarRolArtesano,
+  asociarArtesano,
 );
 router.post(
   "/:id/roles",
@@ -71,7 +66,6 @@ router.post(
   cargarContextoUsuario,
   autorizarRoles("ADMINISTRADOR"),
   validarUuid,
-  asignarAdmin,
   asignarAdmin,
   agregarRolAdmin,
 );
