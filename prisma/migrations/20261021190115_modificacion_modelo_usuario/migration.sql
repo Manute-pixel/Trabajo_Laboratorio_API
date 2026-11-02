@@ -46,5 +46,5 @@ ALTER TABLE "UsuarioRol" ADD CONSTRAINT "UsuarioRol_rolId_fkey" FOREIGN KEY ("ro
 --Agregar Roles
 INSERT INTO "Rol" ("nombre_rol")
 VALUES
-('PARTICIPANTE'),
+('ARTESANO'),
 ('ADMINISTRADOR');
