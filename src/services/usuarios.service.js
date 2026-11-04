@@ -1,72 +1,161 @@
 import bcrypt from "bcrypt";
 import prisma from "../config/prisma.js";
 import { crearError } from "../utils/errores.js";
+import {
+  verificarProvincia,
+  verificarLocalidad,
+  verificarRubro,
+} from "./artesanos.service.js";
 
 const FACTOR_COSTO = 10;
 
-export const registrarUsuario = async (registrarUsuarioDTO) => {
-    const {nombre, apellido, email, password, rol_usuario} = registrarUsuarioDTO;
+export const registrarUsuarioArtesano = async (registrarUsuarioDTO) => {
+  const {
+    nombre,
+    apellido,
+    email,
+    password,
+    dni,
+    telefono,
+    fechaNac,
+    rubroId,
+    localidadId,
+    provinciaId,
+  } = registrarUsuarioDTO;
 
-    const usuarioExistente = await prisma.usuario.findUnique({ 
-        where: {email_usuario: email}
-    });
+  await verificarProvincia(provinciaId);
+  await verificarLocalidad(localidadId);
+  await verificarRubro(rubroId);
 
-    if(usuarioExistente){
-        throw crearError("Ya existe un usuario con ese email", 409);
-    }
+  const emailExistente = await prisma.usuario.findUnique({
+    where: { email_usuario: email },
+  });
 
-    const passwordHash = await bcrypt.hash(password, FACTOR_COSTO);
+  if (emailExistente) {
+    throw crearError("Ya existe un usuario con ese email", 409);
+  }
 
-    return prisma.usuario.create ({
-        data:{
-            nombre_usuario: nombre,
-            apellido_usuario: apellido,
-            email_usuario: email,
-            password: passwordHash,
-            rol_usuario: rol_usuario
+  const dniExistente = await prisma.artesano.findUnique({
+    where: { dni: dni },
+  });
+
+  if (dniExistente) {
+    throw crearError("Ya existe un artesano con ese DNI", 409);
+  }
+
+  const passwordHash = await bcrypt.hash(password, FACTOR_COSTO);
+
+  return prisma.usuario.create({
+    data: {
+      nombre_usuario: nombre,
+      apellido_usuario: apellido,
+      email_usuario: email,
+      password: passwordHash,
+      activo: true,
+      roles: { create: { rol: { connect: { nombre_rol: "ARTESANO" } } } },
+      artesano: {
+        create: {
+          nombre_artesano: nombre,
+          apellido_artesano: apellido,
+          dni: dni,
+          email_artesano: email,
+          telefono_artesano: telefono,
+          fecha_Nacimiento: fechaNac,
+          rubroId: rubroId,
+          localidadId: localidadId,
+          provinciaId: provinciaId,
         },
-        select:{
-            id: true,
-            nombre_usuario: true,
-            apellido_usuario: true,
-            email_usuario: true,
-            createdAt: true
-        }
-    });
-}
+      },
+    },
+    select: {
+      id: true,
+      nombre_usuario: true,
+      apellido_usuario: true,
+      email_usuario: true,
+      activo: true,
+      createdAt: true,
+      artesano: { select: { id: true } },
+    },
+  });
+};
+
+export const registrarAdministrador = async (dto) => {
+  const { nombre, apellido, email, password } = dto;
+  const usuarioExistente = await prisma.usuario.findUnique({
+    where: { email_usuario: email },
+  });
+
+  if (usuarioExistente) {
+    throw crearError("Ya existe un usuario con ese email", 409);
+  }
+
+  const passwordHash = await bcrypt.hash(password, FACTOR_COSTO);
+
+  return prisma.usuario.create({
+    data: {
+      nombre_usuario: nombre,
+      apellido_usuario: apellido,
+      email_usuario: email,
+      password: passwordHash,
+      activo: true,
+      roles: {
+        create: {
+          rol: { connect: { nombre_rol: "ADMINISTRADOR" } },
+        },
+      },
+    },
+    select: {
+      id: true,
+      nombre_usuario: true,
+      apellido_usuario: true,
+      email_usuario: true,
+      activo: true,
+    },
+  });
+};
 
 export const iniciarSesion = async (iniciarSesionDto) => {
-    const {email, password} = iniciarSesionDto;
-    
-    const usuario = await prisma.usuario.findUnique({
-        where: {email_usuario: email}
-    });
+  const { email, password } = iniciarSesionDto;
 
-    if(!usuario){
-        throw crearError("Las credenciales son inválidas", 401);
-    }
+  const usuario = await prisma.usuario.findUnique({
+    where: { email_usuario: email },
+  });
 
-    const passwordValida = await bcrypt.compare(password, usuario.password);
+  if (!usuario) {
+    throw crearError("Las credenciales son inválidas", 401);
+  }
 
-    if(!passwordValida){
-        throw crearError("Las credenciales son inválidas", 401);
-    }
+  const passwordValida = await bcrypt.compare(password, usuario.password);
 
-    return{
-        id: usuario.id,
-        nombre: usuario.nombre_usuario,
-        email: usuario.email_usuario
-    }
-}
+  if (!passwordValida || !usuario.activo) {
+    throw crearError("Las credenciales son inválidas", 401);
+  }
+
+  return {
+    id: usuario.id,
+    nombre: usuario.nombre_usuario,
+    email: usuario.email_usuario,
+  };
+};
 
 export const obtenerUsuarioPorId = async (id) => {
-    return prisma.usuario.findUnique({
-        where: {id: id},
-        select:{
-            id: true,
-            nombre_usuario: true,
-            apellido_usuario: true,
-            email_usuario: true,
-        }
-    });
-}
+  const usuario = await prisma.usuario.findUnique({
+    where: { id },
+    select: {
+      id: true,
+      nombre_usuario: true,
+      apellido_usuario: true,
+      email_usuario: true,
+      activo: true,
+      roles: {
+        select: { rol: { select: { nombre_rol: true } } },
+      },
+      artesano: { select: { id: true } },
+    },
+  });
+  if (!usuario) throw crearError("Usuario no encontrado", 404);
+  return {
+    ...usuario,
+    roles: usuario.roles.map((asignacion) => asignacion.rol.nombre_rol),
+  };
+};

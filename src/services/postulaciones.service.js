@@ -6,7 +6,9 @@ const verificarArtesano = async (artesanoId) => {
     return;
   }
 
-  const existe = await prisma.artesano.findUnique({where: {id: artesanoId}});
+  const existe = await prisma.artesano.findUnique({
+    where: { id: artesanoId },
+  });
 
   if (!existe) {
     throw crearError(`no existe un artesano con id ${artesanoId}`, 400);
@@ -18,7 +20,7 @@ const verificarEdicion = async (edicionId) => {
     return;
   }
 
-  const existe = await prisma.edicion.findUnique({where: {id: edicionId}});
+  const existe = await prisma.edicion.findUnique({ where: { id: edicionId } });
 
   if (!existe) {
     throw crearError(`no existe una edicion con id ${edicionId}`, 400);
@@ -49,7 +51,7 @@ export const obtenerPostulaciones = async (criterios) => {
       orderBy: [{ [campoOrden[ordenPor]]: direccion }, { id: "asc" }],
       skip: desplazamiento,
       take: limite,
-      include: {  artesano: true, edicion: true }
+      include: { artesano: true, edicion: true },
     }),
     prisma.postulacion.count({ where }),
   ]);
@@ -66,11 +68,11 @@ export const obtenerPostulaciones = async (criterios) => {
 };
 
 export const obtenerPostulacionPorId = async (id) => {
-    return prisma.postulacion.findUnique({
-        where: { id },
-        include: { artesano: true, edicion: true }
-    });
-}
+  return prisma.postulacion.findUnique({
+    where: { id },
+    include: { artesano: true, edicion: true },
+  });
+};
 
 export const crearPostulacion = async (datos) => {
   const { artesanoId, edicionId } = datos;
@@ -79,7 +81,7 @@ export const crearPostulacion = async (datos) => {
     where: {
       artesanoId: artesanoId,
       edicionId: edicionId,
-    }
+    },
   });
 
   if (existe) {
@@ -94,7 +96,7 @@ export const crearPostulacion = async (datos) => {
       artesanoId: artesanoId,
       edicionId: edicionId,
     },
-    include: { artesano: true, edicion: true }
+    include: { artesano: true, edicion: true },
   });
 };
 
@@ -108,7 +110,7 @@ export const actualizarPostulacion = async (id, datos) => {
   }
 
   const { artesanoId, edicionId, estado } = datos;
-  
+
   await verificarArtesano(artesanoId);
   await verificarEdicion(edicionId);
 
@@ -119,6 +121,52 @@ export const actualizarPostulacion = async (id, datos) => {
       edicionId: edicionId,
       estado_postulacion: estado,
     },
-    include : { artesano: true, edicion: true }
+    include: { artesano: true, edicion: true },
   });
+};
+
+//servicios de rutas protegidas
+export const crearMiPostulacion = async (usuarioId, edicionId) => {
+  return prisma.$transaction(async (tx) => {
+    const artesano = await tx.artesano.findUnique({
+      where: { usuarioId },
+    });
+    if (!artesano) throw crearError("usuario no es un artesano", 400);
+
+    const edicion = await tx.edicion_Poncho.findUnique({
+      where: { id: edicionId },
+    });
+    if (!edicion)
+      throw crearError(`edicion con id ${edicionId} no encontrada`, 404);
+
+    return tx.postulacion.create({
+      data: {
+        edicionId: edicionId,
+        artesanoId: artesano.id,
+      },
+      select: {
+        fecha_postulacion: true,
+        estado_postulacion: true,
+        edicion: true,
+        artesano: true,
+      },
+    });
+  });
+};
+
+export const obtenerMiPostulacion = async (usuarioId) => {
+  const postulacion = await prisma.postulacion.findFirst({
+    where: { artesano: { usuarioId } },
+    select: {
+      fecha_postulacion: true,
+      estado_postulacion: true,
+      edicion: true,
+      artesano: true,
+    },
+  });
+
+  if (!postulacion)
+    throw crearError("no tienes una postulacion registrada.", 404);
+
+  return postulacion;
 };
