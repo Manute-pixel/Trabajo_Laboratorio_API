@@ -437,6 +437,197 @@
           }
         },
         "security": []
+      },
+      "post": {
+        "tags": [
+          "Productos"
+        ],
+        "summary": "Crear un producto",
+        "description": "Permite a un administrador registrar un producto y asignarlo a un artesano.",
+        "responses": {
+          "201": {
+            "description": "Producto creado exitosamente"
+          },
+          "400": {
+            "description": "Los datos enviados no son válidos"
+          },
+          "401": {
+            "description": "No se proporcionó un token válido o la cuenta no existe"
+          },
+          "403": {
+            "description": "Cuenta inactiva o el usuario no tiene el rol ADMINISTRADOR"
+          },
+          "404": {
+            "description": "No se encontró la categoría o el artesano indicado"
+          },
+          "500": {
+            "description": "Error interno del servidor"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NuevoProducto"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/productos/{id}": {
+      "put": {
+        "tags": [
+          "Productos"
+        ],
+        "summary": "Actualizar un producto",
+        "description": "Permite a un administrador actualizar los datos de un producto existente.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID del producto",
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Producto actualizado exitosamente"
+          },
+          "400": {
+            "description": "El ID o los datos enviados no son válidos"
+          },
+          "401": {
+            "description": "No se proporcionó un token válido o la cuenta no existe"
+          },
+          "403": {
+            "description": "Cuenta inactiva o el usuario no tiene el rol ADMINISTRADOR"
+          },
+          "404": {
+            "description": "Producto no encontrado"
+          },
+          "500": {
+            "description": "Error interno del servidor"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ActualizarProducto"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Productos"
+        ],
+        "summary": "Eliminar un producto",
+        "description": "Permite a un administrador eliminar un producto por su ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID del producto",
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Producto eliminado correctamente"
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "El ID del producto es inválido"
+          },
+          "401": {
+            "description": "No se proporcionó un token válido o la cuenta no existe"
+          },
+          "403": {
+            "description": "Cuenta inactiva o el usuario no tiene el rol ADMINISTRADOR"
+          },
+          "404": {
+            "description": "Producto no encontrado"
+          },
+          "500": {
+            "description": "Error interno del servidor"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "get": {
+        "tags": [
+          "Productos"
+        ],
+        "summary": "Obtener un producto por su ID",
+        "description": "Busca un producto utilizando su identificador.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID del producto",
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Producto encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Producto"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Producto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "El ID es inválido"
+          },
+          "404": {
+            "description": "No se encontró el producto"
+          },
+          "500": {
+            "description": "Error interno del servidor"
+          }
+        },
+        "security": []
       }
     },
     "/productos/mis-productos": {
@@ -621,7 +812,11 @@
         ]
       },
       "put": {
-        "description": "",
+        "tags": [
+          "Productos"
+        ],
+        "summary": "Actualizar uno de mis productos",
+        "description": "Permite al artesano autenticado actualizar un producto que le pertenece.",
         "parameters": [
           {
             "name": "id",
@@ -629,17 +824,53 @@
             "required": true,
             "schema": {
               "type": "string"
-            }
+            },
+            "description": "ID del producto",
+            "example": 1
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Producto actualizado correctamente"
+          },
+          "400": {
+            "description": "El ID o los datos enviados no son válidos"
+          },
+          "401": {
+            "description": "No se proporcionó un token válido o la cuenta no existe"
+          },
+          "403": {
+            "description": "Cuenta inactiva o el usuario no tiene el rol ARTESANO"
+          },
+          "404": {
+            "description": "Producto no encontrado o no pertenece al artesano autenticado"
+          },
+          "500": {
+            "description": "Error interno del servidor"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ActualizarProducto"
+              }
+            }
           }
         }
       },
       "delete": {
-        "description": "",
+        "tags": [
+          "Productos"
+        ],
+        "summary": "Eliminar uno de mis productos",
+        "description": "Permite al artesano autenticado eliminar un producto que le pertenece.",
         "parameters": [
           {
             "name": "id",
@@ -647,14 +878,39 @@
             "required": true,
             "schema": {
               "type": "string"
-            }
+            },
+            "description": "ID del producto",
+            "example": 1
           }
         ],
         "responses": {
+          "200": {
+            "description": "Producto eliminado correctamente"
+          },
           "204": {
             "description": "No Content"
+          },
+          "400": {
+            "description": "El ID del producto es inválido"
+          },
+          "401": {
+            "description": "No se proporcionó un token válido o la cuenta no existe"
+          },
+          "403": {
+            "description": "Cuenta inactiva o el usuario no tiene el rol ARTESANO"
+          },
+          "404": {
+            "description": "Producto no encontrado o no pertenece al artesano autenticado"
+          },
+          "500": {
+            "description": "Error interno del servidor"
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     },
     "/productos/crear-mi-producto": {
@@ -694,74 +950,6 @@
                 "$ref": "#/components/schemas/MiProducto"
               }
             }
-          }
-        }
-      }
-    },
-    "/productos/{id}": {
-      "get": {
-        "tags": [
-          "Productos"
-        ],
-        "summary": "Obtener un producto por su ID",
-        "description": "Busca un producto utilizando su identificador.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "ID del producto",
-            "example": 1
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Producto encontrado",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Producto"
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "$ref": "#/components/schemas/Producto"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "El ID es inválido"
-          },
-          "404": {
-            "description": "No se encontró el producto"
-          },
-          "500": {
-            "description": "Error interno del servidor"
-          }
-        },
-        "security": []
-      }
-    },
-    "/postulaciones/mi-postulacion": {
-      "get": {
-        "description": "",
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/postulaciones/postularme": {
-      "post": {
-        "description": "",
-        "responses": {
-          "201": {
-            "description": "Created"
           }
         }
       }
@@ -818,6 +1006,26 @@
         "responses": {
           "200": {
             "description": "OK"
+          }
+        }
+      }
+    },
+    "/postulaciones/mi-postulacion": {
+      "get": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/postulaciones/postularme": {
+      "post": {
+        "description": "",
+        "responses": {
+          "201": {
+            "description": "Created"
           }
         }
       }
@@ -2346,6 +2554,138 @@
           "name": "MiProducto"
         }
       },
+      "NuevoProducto": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "object"
+          },
+          "properties": {
+            "type": "object",
+            "properties": {
+              "nombre": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "minLength": {
+                    "type": "number",
+                    "example": 1
+                  }
+                }
+              },
+              "descripcion": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "minLength": {
+                    "type": "number",
+                    "example": 1
+                  }
+                }
+              },
+              "precio": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "integer"
+                  },
+                  "minimum": {
+                    "type": "number",
+                    "example": 0
+                  },
+                  "maximum": {
+                    "type": "number",
+                    "example": 9007199254740991
+                  }
+                }
+              },
+              "categoriaId": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "integer"
+                  },
+                  "minimum": {
+                    "type": "number",
+                    "example": 1
+                  },
+                  "maximum": {
+                    "type": "number",
+                    "example": 9007199254740991
+                  }
+                }
+              },
+              "artesanoId": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "integer"
+                  },
+                  "minimum": {
+                    "type": "number",
+                    "example": 1
+                  },
+                  "maximum": {
+                    "type": "number",
+                    "example": 9007199254740991
+                  }
+                }
+              }
+            }
+          },
+          "required": {
+            "type": "array",
+            "example": [
+              "nombre",
+              "descripcion",
+              "precio",
+              "categoriaId",
+              "artesanoId"
+            ],
+            "items": {
+              "type": "string"
+            }
+          },
+          "example": {
+            "type": "object",
+            "properties": {
+              "nombre": {
+                "type": "string",
+                "example": "Poncho de lana"
+              },
+              "descripcion": {
+                "type": "string",
+                "example": "Poncho tejido a mano con lana de oveja"
+              },
+              "precio": {
+                "type": "number",
+                "example": 1500
+              },
+              "categoriaId": {
+                "type": "number",
+                "example": 1
+              },
+              "artesanoId": {
+                "type": "number",
+                "example": 1
+              }
+            }
+          }
+        },
+        "xml": {
+          "name": "NuevoProducto"
+        }
+      },
       "ConsultaProductos": {
         "type": "object",
         "properties": {
@@ -2657,6 +2997,125 @@
         },
         "xml": {
           "name": "Producto"
+        }
+      },
+      "ActualizarProducto": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "object"
+          },
+          "properties": {
+            "type": "object",
+            "properties": {
+              "nombre": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "minLength": {
+                    "type": "number",
+                    "example": 1
+                  }
+                }
+              },
+              "descripcion": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "minLength": {
+                    "type": "number",
+                    "example": 1
+                  }
+                }
+              },
+              "precio": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "integer"
+                  },
+                  "minimum": {
+                    "type": "number",
+                    "example": 0
+                  },
+                  "maximum": {
+                    "type": "number",
+                    "example": 9007199254740991
+                  }
+                }
+              },
+              "categoriaId": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "integer"
+                  },
+                  "minimum": {
+                    "type": "number",
+                    "example": 1
+                  },
+                  "maximum": {
+                    "type": "number",
+                    "example": 9007199254740991
+                  }
+                }
+              },
+              "artesanoId": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "integer"
+                  },
+                  "minimum": {
+                    "type": "number",
+                    "example": 1
+                  },
+                  "maximum": {
+                    "type": "number",
+                    "example": 9007199254740991
+                  }
+                }
+              }
+            }
+          },
+          "example": {
+            "type": "object",
+            "properties": {
+              "nombre": {
+                "type": "string",
+                "example": "Poncho de lana"
+              },
+              "descripcion": {
+                "type": "string",
+                "example": "Poncho tejido a mano con lana de oveja"
+              },
+              "precio": {
+                "type": "number",
+                "example": 1500
+              },
+              "categoriaId": {
+                "type": "number",
+                "example": 1
+              },
+              "artesanoId": {
+                "type": "number",
+                "example": 1
+              }
+            }
+          }
+        },
+        "xml": {
+          "name": "ActualizarProducto"
         }
       },
       "NuevoStand": {

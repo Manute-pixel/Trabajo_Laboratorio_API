@@ -8,8 +8,10 @@ import {
 
 import {
   MiProducto,
+  NuevoProducto,
   ConsultaProductos,
   Producto,
+  ActualizarProducto,
 } from "./src/documentacion/esquemas_productos.js";
 
 import {
@@ -72,8 +74,10 @@ const doc = {
       ConsultaArtesanos,
       Artesano,
       MiProducto,
+      NuevoProducto,
       ConsultaProductos,
       Producto,
+      ActualizarProducto,
       NuevoStand,
       ConsultaStands,
       Stand,

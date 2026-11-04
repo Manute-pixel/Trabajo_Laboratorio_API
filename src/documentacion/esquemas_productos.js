@@ -67,3 +67,31 @@ export const MiProducto = {
     categoriaId: 1,
   },
 };
+
+export const NuevoProducto = {
+    ...z.toJSONSchema(productoSchema, {
+        target: "openapi-3.0",
+        io: "input",
+    }),
+    example: {
+        nombre: "Poncho de lana",
+        descripcion: "Poncho tejido a mano con lana de oveja",
+        precio: 1500,
+        categoriaId: 1,
+        artesanoId: 1,
+    },
+};
+
+export const ActualizarProducto = {
+    ...z.toJSONSchema(actualizarProductoSchema, {
+        target: "openapi-3.0",
+        io: "input",
+    }),
+    example: {
+        nombre: "Poncho de lana",
+        descripcion: "Poncho tejido a mano con lana de oveja",
+        precio: 1500,
+        categoriaId: 1,
+        artesanoId: 1,
+    },
+};
