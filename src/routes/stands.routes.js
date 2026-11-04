@@ -26,18 +26,222 @@ const controlesAdministrador = [
 ];
 
 //rutas publicas
-router.get("/", validarConsultaStands, obtenerStands);
-router.get("/:id", validarId, obtenerStandPorId);
+router.get("/", 
+  /*
+    #swagger.tags = ["Stands"]
+    #swagger.summary = "Listar y buscar stands"
+    #swagger.description = "Permite consultar stands aplicando filtros, ordenamiento y paginación."
+    #swagger.security = []
+
+    #swagger.parameters['numero'] = {
+      in: "query",
+      description: "Filtrar por número de stand",
+      type: "integer"
+    }
+
+    #swagger.parameters['estado'] = {
+      in: "query",
+      description: "Filtrar por estado",
+      type: "string"
+    }
+
+    #swagger.parameters['sectorId'] = {
+      in: "query",
+      description: "Filtrar por sector",
+      type: "integer"
+    }
+
+    #swagger.parameters['artesanoId'] = {
+      in: "query",
+      description: "Filtrar por artesano",
+      type: "integer"
+    }
+  
+    #swagger.parameters['ordenPor'] = {
+      in: "query",
+      description: "Campo por el que se ordenan los resultados",
+      type: "string",
+      enum: ["numero", "estado", "sector", "artesano"]
+    }
+
+    #swagger.parameters['direccion'] = {
+      in: "query",
+      description: "Sentido del ordenamiento",
+      type: "string",
+      enum: ["asc", "desc"]
+    }
+
+    #swagger.parameters['pagina'] = {
+      in: "query",
+      description: "Número de página",
+      type: "integer",
+      default: 1
+    }
+
+    #swagger.parameters['limite'] = {
+      in: "query",
+      description: "Cantidad de resultados por página, entre 1 y 50",
+      type: "integer",
+      default: 10
+    }
+
+    #swagger.responses[200] = {
+      description: "Consulta realizada correctamente"
+    }
+
+    #swagger.responses[400] = {
+      description: "Los filtros enviados no son válidos"
+    }
+  */
+  validarConsultaStands, obtenerStands);
+
+router.get("/:id", 
+  /*
+    #swagger.tags = ["Stands"]
+    #swagger.summary = "Obtener un stand por su ID"
+    #swagger.description = "Busca un stand utilizando su identificador."
+    #swagger.security = []
+
+    #swagger.parameters['id'] = {
+      in: 'path',
+      description: 'ID del stand',
+      required: true,
+      type: 'integer',
+      example: 1
+    }
+
+    #swagger.responses[200] = {
+      description: 'Stand encontrado',
+      schema: { $ref: '#/components/schemas/Stand' }
+    }
+
+    #swagger.responses[400] = {
+      description: 'El ID es inválido'
+    }
+
+    #swagger.responses[404] = {
+      description: 'No se encontró el stand'
+    }
+
+    #swagger.responses[500] = {
+      description: 'Error interno del servidor'
+    }
+  */
+  validarId, obtenerStandPorId);
 
 //rutas protegidas
-router.post("/", ...controlesAdministrador, validarCreacionStand, crearStand);
+router.post("/", 
+  /*
+    #swagger.tags = ["Stands"]
+    #swagger.summary = "Crear un stand"
+    #swagger.description = "Registra un nuevo stand."
+    #swagger.security = [{
+       bearerAuth: []
+    }]
+
+    #swagger.requestBody = {
+      required: true,
+      content: {
+        "application/json": {
+          schema: {
+            $ref: "#/components/schemas/NuevoStand"
+          }
+        }
+      }
+    }
+
+    #swagger.responses[201] = {
+      description: "Stand creado exitosamente"
+    }
+
+    #swagger.responses[400] = {
+      description: "Los datos enviados no son válidos"
+    }
+  */
+  ...controlesAdministrador, validarCreacionStand, crearStand);
+
+
 router.put(
   "/:id",
+  /*
+    #swagger.tags = ["Stands"]
+    #swagger.summary = "Actualizar un stand"
+    #swagger.description = "Actualiza la información de un stand existente."
+    #swagger.security = [{
+       bearerAuth: []
+    }]
+    
+    #swagger.parameters['id'] = {
+      in: 'path',
+      description: 'ID del stand que se quiere actualizar',
+      required: true,
+      type: 'integer',
+      example: 1
+    }
+
+    #swagger.requestBody = {
+      required: true,
+      content: {
+        "application/json": {
+          schema: {
+            $ref: "#/components/schemas/ActualizarStand"
+          }
+        }
+      }
+    }
+
+    #swagger.responses[200] = {
+      description: "Stand actualizado exitosamente"
+    }
+
+    #swagger.responses[404] = {
+      description: "Stand no encontrado"
+    }
+
+    #swagger.responses[400] = {
+      description: "Los datos enviados no son válidos"
+    }
+  */
   ...controlesAdministrador,
   validarId,
   validarActualizacionStand,
   actualizarStand,
 );
-router.delete("/:id", ...controlesAdministrador, validarId, eliminarStand);
+
+
+router.delete("/:id", 
+/*
+    #swagger.tags = ["Stands"]
+    #swagger.summary = "Eliminar un stand"
+    #swagger.description = "Elimina un stand utilizando su ID."
+    #swagger.security = [{
+       bearerAuth: []
+    }]
+
+    #swagger.parameters['id'] = {
+      in: 'path',
+      description: 'ID del stand que se quiere eliminar',
+      required: true,
+      type: 'integer',
+      example: 1
+    }
+
+    #swagger.responses[204] = {
+      description: "Stand eliminado correctamente. La respuesta no contiene un cuerpo."
+    }
+
+    #swagger.responses[400] = {
+      description: "El ID es inválido"
+    }
+
+    #swagger.responses[404] = {
+      description: "No se encontró el stand"
+    }
+
+    #swagger.responses[500] = {
+      description: "Error interno del servidor"
+    }
+  */  
+...controlesAdministrador, validarId, eliminarStand);
 
 export default router;
