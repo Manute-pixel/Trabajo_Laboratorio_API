@@ -22,14 +22,24 @@ import {
 
 const router = express.Router();
 
-//rutas publicas
-router.get("/", validarConsultaProductos, obtenerProductos);
-router.get("/:id", validarId, obtenerProductoPorId);
-router.post("/", validarProducto, agregarProducto);
-router.put("/:id", validarId, validarActualizacionProducto, actualizarProducto);
-router.delete("/:id", validarId, eliminarProducto);
+const controlesAdministrador = [
+  autenticarUsuario,
+  cargarContextoUsuario,
+  autorizarRoles("ADMINISTRADOR"),
+];
 
-//rutas protegidas
+//rutas de administrador
+router.post("/", ...controlesAdministrador, validarProducto, agregarProducto);
+router.put(
+  "/:id",
+  ...controlesAdministrador,
+  validarId,
+  validarActualizacionProducto,
+  actualizarProducto,
+);
+router.delete("/:id", ...controlesAdministrador, validarId, eliminarProducto);
+
+//rutas de artesano
 router.get(
   "/mis-productos",
   autenticarUsuario,
@@ -54,5 +64,9 @@ router.post(
   validarProducto,
   crearMiProducto,
 );
+
+//rutas publicas
+router.get("/", validarConsultaProductos, obtenerProductos);
+router.get("/:id", validarId, obtenerProductoPorId);
 
 export default router;
