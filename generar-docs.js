@@ -13,6 +13,16 @@ import {
 } from "./src/documentacion/esquemas_productos.js";
 
 import {
+  NuevoUsuarioArtesano,
+  NuevoAdministrador,
+  InicioSesion,
+  AsignacionArtesano,
+  AsignarAdministrador,
+  RetirarRolParametros,
+  ActualizarActivo,
+} from "./src/documentacion/esquemas_usuarios.js";
+
+import {
   NuevoStand,
   ConsultaStands,
   Stand,
@@ -49,6 +59,10 @@ const doc = {
     {
       name: "Stands",
       description: "Endpoints para gestionar stands",
+    },
+    {
+      name: "Usuarios",
+      description: "Endpoints para gestionar usuarios",
     }
   ],
 
@@ -64,6 +78,13 @@ const doc = {
       ConsultaStands,
       Stand,
       ActualizarStand,
+      NuevoUsuarioArtesano,
+      NuevoAdministrador,
+      InicioSesion,
+      AsignacionArtesano,
+      AsignarAdministrador,
+      RetirarRolParametros,
+      ActualizarActivo,
     },
 
     securitySchemes: {

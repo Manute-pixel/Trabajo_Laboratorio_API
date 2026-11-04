@@ -157,6 +157,14 @@ router.post("/",
     #swagger.responses[400] = {
       description: "Los datos enviados no son válidos"
     }
+
+    #swagger.responses[401] = {
+      description: "No se proporcionó un token de autenticación válido o la cuenta no existe"
+    }
+
+    #swagger.responses[403] = {
+      description: "Cuenta inactiva o el usuario no tiene el rol ADMINISTRADOR"
+    }
   */
   ...controlesAdministrador, validarCreacionStand, crearStand);
 
@@ -201,6 +209,14 @@ router.put(
     #swagger.responses[400] = {
       description: "Los datos enviados no son válidos"
     }
+
+    #swagger.responses[401] = {
+      description: "No se proporcionó un token de autenticación válido o la cuenta no existe"
+    }
+
+    #swagger.responses[403] = {
+      description: "Cuenta inactiva o el usuario no tiene el rol ADMINISTRADOR"
+    }
   */
   ...controlesAdministrador,
   validarId,
@@ -236,6 +252,14 @@ router.delete("/:id",
 
     #swagger.responses[404] = {
       description: "No se encontró el stand"
+    }
+
+    #swagger.responses[401] = {
+      description: "No se proporcionó un token de autenticación válido o la cuenta no existe"
+    }
+
+    #swagger.responses[403] = {
+      description: "Cuenta inactiva o el usuario no tiene el rol ADMINISTRADOR"
     }
 
     #swagger.responses[500] = {

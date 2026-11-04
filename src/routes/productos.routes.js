@@ -210,6 +210,14 @@ router.get(
     #swagger.responses[400] = {
       description: "Los filtros enviados no son válidos"
     }
+
+    #swagger.responses[401] = {
+      description: "Cuenta inexistente o no autenticada"
+    }
+
+    #swagger.responses[403] = {
+      description: "Cuenta inactiva o el usuario no tiene el rol ARTESANO"
+    }
   */
   autenticarUsuario,
   cargarContextoUsuario,
@@ -246,6 +254,14 @@ router.get(
       description: 'El ID es inválido'
     }
 
+    #swagger.responses[401] = {
+      description: 'Cuenta inexistente o no autenticada'
+    }
+
+    #swagger.responses[403] = {
+      description: 'Cuenta inactiva o el usuario no tiene el rol ARTESANO'
+    }
+
     #swagger.responses[404] = {
       description: 'No se encontró el producto o no pertenece al artesano autenticado'
     }
@@ -260,6 +276,7 @@ router.get(
   validarId,
   obtenerMiProducto,
 );
+
 router.post(
   "/crear-mi-producto",
   /*
@@ -284,13 +301,21 @@ router.post(
     #swagger.responses[201] = {
       description: "Producto creado exitosamente"
     }
+    
+    #swagger.responses[401] = {
+      description: "Cuenta inexistente o no autenticada"
+    }
 
     #swagger.responses[403] = {
-      description: "El usuario no tiene el rol ARTESANO"
+      description: "Cuenta inactiva o el usuario no tiene el rol ARTESANO"
     }
 
     #swagger.responses[404] = {
       description: "La categoría solicitada no existe"
+    }
+
+    #swagger.responses[400] = {
+      description: "Datos inválidos"
     }
   */
   autenticarUsuario,
