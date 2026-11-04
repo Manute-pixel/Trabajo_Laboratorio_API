@@ -22,6 +22,13 @@ import {
 
 const router = express.Router();
 
+const controlesAdministrador = [
+  autenticarUsuario,
+  cargarContextoUsuario,
+  autorizarRoles("ADMINISTRADOR"),
+];
+
+
 //rutas publica para obtener productos
 router.get("/", 
   /*
@@ -105,7 +112,23 @@ router.get("/",
   validarConsultaProductos, obtenerProductos);
 
 
-//rutas protegidas
+//rutas de administrador
+router.post("/", 
+  
+...controlesAdministrador, validarProducto, agregarProducto);
+router.put(
+  "/:id",
+
+  ...controlesAdministrador,
+  validarId,
+  validarActualizacionProducto,
+  actualizarProducto,
+);
+router.delete("/:id", 
+  
+  ...controlesAdministrador, validarId, eliminarProducto);
+
+//rutas de artesano
 router.get(
   "/mis-productos",
    /*
@@ -277,9 +300,9 @@ router.post(
   crearMiProducto,
 );
 
-
 router.put(
   "/mi-productos/:id",
+
   autenticarUsuario,
   cargarContextoUsuario,
   autorizarRoles("ARTESANO", ),
@@ -330,14 +353,5 @@ router.get("/:id",
     }
   */
   validarId, obtenerProductoPorId);
-
-
-/*
-router.post("/", validarProducto, agregarProducto);
-router.put("/:id", validarId, validarActualizacionProducto, actualizarProducto);
-router.delete("/:id", validarId, eliminarProducto);
-*/
-
-
 
 export default router;
