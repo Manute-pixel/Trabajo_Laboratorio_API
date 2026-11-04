@@ -23,18 +23,40 @@ import {
 
 const router = express.Router();
 
-//rutas publicas
-router.get("/", validarConsultaPostulacion, obtenerPostulaciones);
-router.get("/:id", validarId, obtenerPostulacionPorId);
-router.post("/", validarPostulacion, crearPostulacion);
+const controlesAdministrador = [
+  autenticarUsuario,
+  cargarContextoUsuario,
+  autorizarRoles("ADMINISTRADOR"),
+];
+
+//rutas de administrador
+router.get(
+  "/",
+  ...controlesAdministrador,
+  validarConsultaPostulacion,
+  obtenerPostulaciones,
+);
+router.get(
+  "/:id",
+  ...controlesAdministrador,
+  validarId,
+  obtenerPostulacionPorId,
+);
+router.post(
+  "/",
+  ...controlesAdministrador,
+  validarPostulacion,
+  crearPostulacion,
+);
 router.put(
   "/:id",
+  ...controlesAdministrador,
   validarId,
   validarActualizacionPostulacion,
   actualizarPostulacion,
 );
 
-//rutas protegidas
+//rutas de artesano
 router.get(
   "/mi-postulacion",
   autenticarUsuario,
