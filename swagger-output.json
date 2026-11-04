@@ -1,0 +1,2900 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Poncho Digital API",
+    "description": "Documentación de la API Poncho Digital",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "Servidor local"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Artesanos",
+      "description": "Endpoints para gestionar artesanos"
+    },
+    {
+      "name": "Productos",
+      "description": "Endpoints para gestionar productos"
+    },
+    {
+      "name": "Stands",
+      "description": "Endpoints para gestionar stands"
+    }
+  ],
+  "paths": {
+    "/": {
+      "get": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/info": {
+      "get": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/stands/": {
+      "get": {
+        "tags": [
+          "Stands"
+        ],
+        "summary": "Listar y buscar stands",
+        "description": "Permite consultar stands aplicando filtros, ordenamiento y paginación.",
+        "parameters": [
+          {
+            "name": "numero",
+            "in": "query",
+            "description": "Filtrar por número de stand",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "estado",
+            "in": "query",
+            "description": "Filtrar por estado",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sectorId",
+            "in": "query",
+            "description": "Filtrar por sector",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "artesanoId",
+            "in": "query",
+            "description": "Filtrar por artesano",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "ordenPor",
+            "in": "query",
+            "description": "Campo por el que se ordenan los resultados",
+            "enum": [
+              "numero",
+              "estado",
+              "sector",
+              "artesano"
+            ],
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "direccion",
+            "in": "query",
+            "description": "Sentido del ordenamiento",
+            "enum": [
+              "asc",
+              "desc"
+            ],
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pagina",
+            "in": "query",
+            "description": "Número de página",
+            "default": 1,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "limite",
+            "in": "query",
+            "description": "Cantidad de resultados por página, entre 1 y 50",
+            "default": 10,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Consulta realizada correctamente"
+          },
+          "400": {
+            "description": "Los filtros enviados no son válidos"
+          }
+        },
+        "security": []
+      },
+      "post": {
+        "tags": [
+          "Stands"
+        ],
+        "summary": "Crear un stand",
+        "description": "Registra un nuevo stand.",
+        "responses": {
+          "201": {
+            "description": "Stand creado exitosamente"
+          },
+          "400": {
+            "description": "Los datos enviados no son válidos"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NuevoStand"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/stands/{id}": {
+      "get": {
+        "tags": [
+          "Stands"
+        ],
+        "summary": "Obtener un stand por su ID",
+        "description": "Busca un stand utilizando su identificador.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID del stand",
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Stand encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Stand"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Stand"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "El ID es inválido"
+          },
+          "404": {
+            "description": "No se encontró el stand"
+          },
+          "500": {
+            "description": "Error interno del servidor"
+          }
+        },
+        "security": []
+      },
+      "put": {
+        "tags": [
+          "Stands"
+        ],
+        "summary": "Actualizar un stand",
+        "description": "Actualiza la información de un stand existente.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID del stand que se quiere actualizar",
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Stand actualizado exitosamente"
+          },
+          "400": {
+            "description": "Los datos enviados no son válidos"
+          },
+          "404": {
+            "description": "Stand no encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ActualizarStand"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Stands"
+        ],
+        "summary": "Eliminar un stand",
+        "description": "Elimina un stand utilizando su ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID del stand que se quiere eliminar",
+            "example": 1
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Stand eliminado correctamente. La respuesta no contiene un cuerpo."
+          },
+          "400": {
+            "description": "El ID es inválido"
+          },
+          "404": {
+            "description": "No se encontró el stand"
+          },
+          "500": {
+            "description": "Error interno del servidor"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/productos/": {
+      "get": {
+        "tags": [
+          "Productos"
+        ],
+        "summary": "Listar y buscar productos",
+        "description": "Permite consultar productos aplicando filtros, ordenamiento y paginación.",
+        "parameters": [
+          {
+            "name": "nombre",
+            "in": "query",
+            "description": "Filtrar por nombre",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "descripcion",
+            "in": "query",
+            "description": "Filtrar por descripción",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "precioMin",
+            "in": "query",
+            "description": "Filtrar por precio mínimo",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "precioMax",
+            "in": "query",
+            "description": "Filtrar por precio máximo",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "categoriaId",
+            "in": "query",
+            "description": "Filtrar por categoría",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "artesanoId",
+            "in": "query",
+            "description": "Filtrar por artesano",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "ordenPor",
+            "in": "query",
+            "description": "Campo por el que se ordenan los resultados",
+            "enum": [
+              "nombre",
+              "descripcion",
+              "precioMin",
+              "precioMax",
+              "categoriaId",
+              "artesanoId"
+            ],
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "direccion",
+            "in": "query",
+            "description": "Sentido del ordenamiento",
+            "enum": [
+              "asc",
+              "desc"
+            ],
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pagina",
+            "in": "query",
+            "description": "Número de página",
+            "default": 1,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "limite",
+            "in": "query",
+            "description": "Cantidad de resultados por página, entre 1 y 50",
+            "default": 10,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Consulta realizada correctamente"
+          },
+          "400": {
+            "description": "Los filtros enviados no son válidos"
+          }
+        },
+        "security": []
+      }
+    },
+    "/productos/mis-productos": {
+      "get": {
+        "tags": [
+          "Productos"
+        ],
+        "summary": "Listar mis productos",
+        "description": "Permite al artesano autenticado consultar sus propios productos aplicando filtros, ordenamiento y paginación.",
+        "parameters": [
+          {
+            "name": "nombre",
+            "in": "query",
+            "description": "Filtrar por nombre",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "descripcion",
+            "in": "query",
+            "description": "Filtrar por descripción",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "precioMin",
+            "in": "query",
+            "description": "Filtrar por precio mínimo",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "precioMax",
+            "in": "query",
+            "description": "Filtrar por precio máximo",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "categoriaId",
+            "in": "query",
+            "description": "Filtrar por categoría",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "artesanoId",
+            "in": "query",
+            "description": "Filtrar por artesano",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "ordenPor",
+            "in": "query",
+            "description": "Campo por el que se ordenan los resultados",
+            "enum": [
+              "nombre",
+              "descripcion",
+              "precioMin",
+              "precioMax",
+              "categoriaId",
+              "artesanoId"
+            ],
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "direccion",
+            "in": "query",
+            "description": "Sentido del ordenamiento",
+            "enum": [
+              "asc",
+              "desc"
+            ],
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pagina",
+            "in": "query",
+            "description": "Número de página",
+            "default": 1,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "limite",
+            "in": "query",
+            "description": "Cantidad de resultados por página, entre 1 y 50",
+            "default": 10,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Consulta realizada correctamente"
+          },
+          "400": {
+            "description": "Los filtros enviados no son válidos"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/productos/mi-productos/{id}": {
+      "get": {
+        "tags": [
+          "Productos"
+        ],
+        "summary": "Obtener uno de mis productos",
+        "description": "Obtiene un producto por su ID, siempre que pertenezca al artesano autenticado.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID del producto",
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Producto encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Producto"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Producto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "El ID es inválido"
+          },
+          "404": {
+            "description": "No se encontró el producto o no pertenece al artesano autenticado"
+          },
+          "500": {
+            "description": "Error interno del servidor"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "put": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    },
+    "/productos/crear-mi-producto": {
+      "post": {
+        "tags": [
+          "Productos"
+        ],
+        "summary": "Crear un producto",
+        "description": "Registra un nuevo producto.",
+        "responses": {
+          "201": {
+            "description": "Producto creado exitosamente"
+          },
+          "403": {
+            "description": "El usuario no tiene el rol ARTESANO"
+          },
+          "404": {
+            "description": "La categoría solicitada no existe"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MiProducto"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/productos/{id}": {
+      "get": {
+        "tags": [
+          "Productos"
+        ],
+        "summary": "Obtener un producto por su ID",
+        "description": "Busca un producto utilizando su identificador.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID del producto",
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Producto encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Producto"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Producto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "El ID es inválido"
+          },
+          "404": {
+            "description": "No se encontró el producto"
+          },
+          "500": {
+            "description": "Error interno del servidor"
+          }
+        },
+        "security": []
+      }
+    },
+    "/postulaciones/": {
+      "get": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "description": "",
+        "responses": {
+          "201": {
+            "description": "Created"
+          }
+        }
+      }
+    },
+    "/postulaciones/{id}": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "put": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/postulaciones/mi-postulacion": {
+      "get": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/postulaciones/postularme": {
+      "post": {
+        "description": "",
+        "responses": {
+          "201": {
+            "description": "Created"
+          }
+        }
+      }
+    },
+    "/artesanos/": {
+      "get": {
+        "tags": [
+          "Artesanos"
+        ],
+        "summary": "Listar y buscar artesanos",
+        "description": "Permite consultar artesanos aplicando filtros, ordenamiento y paginación.",
+        "parameters": [
+          {
+            "name": "nombre",
+            "in": "query",
+            "description": "Filtrar por nombre",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "apellido",
+            "in": "query",
+            "description": "Filtrar por apellido",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "dni",
+            "in": "query",
+            "description": "Filtrar por DNI",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "email",
+            "in": "query",
+            "description": "Filtrar por email",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "rubroId",
+            "in": "query",
+            "description": "Filtrar por rubro",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "localidadId",
+            "in": "query",
+            "description": "Filtrar por localidad",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "provinciaId",
+            "in": "query",
+            "description": "Filtrar por provincia",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "ordenPor",
+            "in": "query",
+            "description": "Campo por el que se ordenan los resultados",
+            "enum": [
+              "nombre",
+              "apellido",
+              "dni",
+              "email",
+              "fechaNac",
+              "rubroId",
+              "localidadId",
+              "provinciaId"
+            ],
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "direccion",
+            "in": "query",
+            "description": "Sentido del ordenamiento",
+            "enum": [
+              "asc",
+              "desc"
+            ],
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pagina",
+            "in": "query",
+            "description": "Número de página",
+            "default": 1,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "limite",
+            "in": "query",
+            "description": "Cantidad de resultados por página, entre 1 y 50",
+            "default": 10,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Consulta realizada correctamente"
+          },
+          "400": {
+            "description": "Los filtros enviados no son válidos"
+          }
+        },
+        "security": []
+      },
+      "post": {
+        "tags": [
+          "Artesanos"
+        ],
+        "summary": "Crear un artesano",
+        "description": "Registra un nuevo artesano.",
+        "responses": {
+          "201": {
+            "description": "Artesano creado exitosamente"
+          },
+          "400": {
+            "description": "Los datos enviados no son válidos"
+          }
+        },
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NuevoArtesano"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/artesanos/{id}": {
+      "put": {
+        "tags": [
+          "Artesanos"
+        ],
+        "summary": "Actualizar un artesano",
+        "description": "Actualiza los datos de un artesano existente.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID del artesano que se quiere actualizar",
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Artesano actualizado correctamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "object"
+                    },
+                    "properties": {
+                      "type": "object",
+                      "properties": {
+                        "mensaje": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "example": "string"
+                            }
+                          }
+                        },
+                        "artesano": {
+                          "$ref": "#/components/schemas/Artesano"
+                        }
+                      }
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "object"
+                    },
+                    "properties": {
+                      "type": "object",
+                      "properties": {
+                        "mensaje": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "example": "string"
+                            }
+                          }
+                        },
+                        "artesano": {
+                          "$ref": "#/components/schemas/Artesano"
+                        }
+                      }
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "El ID o los datos enviados no son válidos"
+          },
+          "404": {
+            "description": "No se encontró el artesano"
+          },
+          "500": {
+            "description": "Error interno del servidor"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NuevoArtesano"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Artesanos"
+        ],
+        "summary": "Eliminar un artesano",
+        "description": "Elimina un artesano utilizando su ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID del artesano que se quiere eliminar",
+            "example": 1
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Artesano eliminado correctamente. La respuesta no contiene un cuerpo."
+          },
+          "400": {
+            "description": "El ID es inválido"
+          },
+          "404": {
+            "description": "No se encontró el artesano"
+          },
+          "500": {
+            "description": "Error interno del servidor"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Artesanos"
+        ],
+        "summary": "Obtener un artesano por su ID",
+        "description": "Busca un artesano utilizando su identificador.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID del artesano",
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Artesano encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Artesano"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Artesano"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "El ID es inválido"
+          },
+          "404": {
+            "description": "No se encontró el artesano"
+          },
+          "500": {
+            "description": "Error interno del servidor"
+          }
+        }
+      }
+    },
+    "/artesanos/me": {
+      "get": {
+        "tags": [
+          "Artesanos"
+        ],
+        "summary": "Consultar mi perfil de artesano",
+        "description": "Obtiene los datos del artesano asociado al usuario autenticado. Requiere el rol ARTESANO.",
+        "responses": {
+          "200": {
+            "description": "Datos del artesano obtenidos correctamente"
+          },
+          "401": {
+            "description": "El usuario no está autenticado"
+          },
+          "403": {
+            "description": "El usuario no tiene el rol ARTESANO"
+          },
+          "404": {
+            "description": "El usuario autenticado no tiene un artesano asociado"
+          },
+          "500": {
+            "description": "Error interno del servidor"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/usuarios/registro-artesano": {
+      "post": {
+        "description": "",
+        "responses": {
+          "201": {
+            "description": "Created"
+          }
+        }
+      }
+    },
+    "/usuarios/login": {
+      "post": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/usuarios/me": {
+      "get": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/usuarios/logout": {
+      "post": {
+        "description": "",
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    },
+    "/usuarios/registro-administrador": {
+      "post": {
+        "description": "",
+        "responses": {
+          "201": {
+            "description": "Created"
+          }
+        }
+      }
+    },
+    "/usuarios/asignar-rolArtersano": {
+      "post": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/usuarios/{id}/roles": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/usuarios/{id}/roles/{rol}": {
+      "delete": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "rol",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    },
+    "/usuarios/{id}/activo": {
+      "patch": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "NuevoArtesano": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "object"
+          },
+          "properties": {
+            "type": "object",
+            "properties": {
+              "nombre": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "minLength": {
+                    "type": "number",
+                    "example": 3
+                  }
+                }
+              },
+              "apellido": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "minLength": {
+                    "type": "number",
+                    "example": 3
+                  }
+                }
+              },
+              "dni": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "minLength": {
+                    "type": "number",
+                    "example": 7
+                  }
+                }
+              },
+              "email": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "format": {
+                    "type": "string",
+                    "example": "email"
+                  },
+                  "pattern": {
+                    "type": "string",
+                    "example": "^(?:[A-Za-z0-9_'+\\-]+\\.)*[A-Za-z0-9_'+\\-]*[A-Za-z0-9_+-]@(?:[A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$"
+                  }
+                }
+              },
+              "fechaNac": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  }
+                }
+              },
+              "telefono": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "minLength": {
+                    "type": "number",
+                    "example": 10
+                  }
+                }
+              },
+              "rubroId": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "integer"
+                  },
+                  "minimum": {
+                    "type": "number",
+                    "example": 0
+                  },
+                  "exclusiveMinimum": {
+                    "type": "boolean",
+                    "example": true
+                  },
+                  "maximum": {
+                    "type": "number",
+                    "example": 9007199254740991
+                  }
+                }
+              },
+              "localidadId": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "integer"
+                  },
+                  "minimum": {
+                    "type": "number",
+                    "example": 0
+                  },
+                  "exclusiveMinimum": {
+                    "type": "boolean",
+                    "example": true
+                  },
+                  "maximum": {
+                    "type": "number",
+                    "example": 9007199254740991
+                  }
+                }
+              },
+              "provinciaId": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "integer"
+                  },
+                  "minimum": {
+                    "type": "number",
+                    "example": 0
+                  },
+                  "exclusiveMinimum": {
+                    "type": "boolean",
+                    "example": true
+                  },
+                  "maximum": {
+                    "type": "number",
+                    "example": 9007199254740991
+                  }
+                }
+              }
+            }
+          },
+          "required": {
+            "type": "array",
+            "example": [
+              "nombre",
+              "apellido",
+              "dni",
+              "email",
+              "fechaNac",
+              "telefono",
+              "rubroId",
+              "localidadId",
+              "provinciaId"
+            ],
+            "items": {
+              "type": "string"
+            }
+          },
+          "example": {
+            "type": "object",
+            "properties": {
+              "nombre": {
+                "type": "string",
+                "example": "María"
+              },
+              "apellido": {
+                "type": "string",
+                "example": "Pérez"
+              },
+              "dni": {
+                "type": "string",
+                "example": "12345678"
+              },
+              "email": {
+                "type": "string",
+                "example": "maria@example.com"
+              },
+              "fechaNac": {
+                "type": "string",
+                "example": "1990-05-20"
+              },
+              "telefono": {
+                "type": "string",
+                "example": "3834123456"
+              },
+              "rubroId": {
+                "type": "number",
+                "example": 1
+              },
+              "localidadId": {
+                "type": "number",
+                "example": 1
+              },
+              "provinciaId": {
+                "type": "number",
+                "example": 1
+              }
+            }
+          }
+        },
+        "xml": {
+          "name": "NuevoArtesano"
+        }
+      },
+      "ConsultaArtesanos": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "object"
+          },
+          "properties": {
+            "type": "object",
+            "properties": {
+              "nombre": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  }
+                }
+              },
+              "apellido": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  }
+                }
+              },
+              "dni": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  }
+                }
+              },
+              "email": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "format": {
+                    "type": "string",
+                    "example": "email"
+                  },
+                  "pattern": {
+                    "type": "string",
+                    "example": "^(?:[A-Za-z0-9_'+\\-]+\\.)*[A-Za-z0-9_'+\\-]*[A-Za-z0-9_+-]@(?:[A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$"
+                  }
+                }
+              },
+              "fechaNac": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  }
+                }
+              },
+              "rubroId": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "integer"
+                  },
+                  "minimum": {
+                    "type": "number",
+                    "example": 0
+                  },
+                  "exclusiveMinimum": {
+                    "type": "boolean",
+                    "example": true
+                  },
+                  "maximum": {
+                    "type": "number",
+                    "example": 9007199254740991
+                  }
+                }
+              },
+              "localidadId": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "integer"
+                  },
+                  "minimum": {
+                    "type": "number",
+                    "example": 0
+                  },
+                  "exclusiveMinimum": {
+                    "type": "boolean",
+                    "example": true
+                  },
+                  "maximum": {
+                    "type": "number",
+                    "example": 9007199254740991
+                  }
+                }
+              },
+              "provinciaId": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "integer"
+                  },
+                  "minimum": {
+                    "type": "number",
+                    "example": 0
+                  },
+                  "exclusiveMinimum": {
+                    "type": "boolean",
+                    "example": true
+                  },
+                  "maximum": {
+                    "type": "number",
+                    "example": 9007199254740991
+                  }
+                }
+              },
+              "ordenPor": {
+                "type": "object",
+                "properties": {
+                  "default": {
+                    "type": "string",
+                    "example": "nombre"
+                  },
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "enum": {
+                    "type": "array",
+                    "example": [
+                      "nombre",
+                      "apellido",
+                      "dni",
+                      "email",
+                      "fechaNac",
+                      "rubroId",
+                      "localidadId",
+                      "provinciaId"
+                    ],
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "direccion": {
+                "type": "object",
+                "properties": {
+                  "default": {
+                    "type": "string",
+                    "example": "asc"
+                  },
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "enum": {
+                    "type": "array",
+                    "example": [
+                      "asc",
+                      "desc"
+                    ],
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "pagina": {
+                "type": "object",
+                "properties": {
+                  "default": {
+                    "type": "number",
+                    "example": 1
+                  },
+                  "type": {
+                    "type": "string",
+                    "example": "integer"
+                  },
+                  "minimum": {
+                    "type": "number",
+                    "example": 0
+                  },
+                  "exclusiveMinimum": {
+                    "type": "boolean",
+                    "example": true
+                  },
+                  "maximum": {
+                    "type": "number",
+                    "example": 9007199254740991
+                  }
+                }
+              },
+              "limite": {
+                "type": "object",
+                "properties": {
+                  "default": {
+                    "type": "number",
+                    "example": 10
+                  },
+                  "type": {
+                    "type": "string",
+                    "example": "integer"
+                  },
+                  "minimum": {
+                    "type": "number",
+                    "example": 1
+                  },
+                  "maximum": {
+                    "type": "number",
+                    "example": 50
+                  }
+                }
+              }
+            }
+          }
+        },
+        "xml": {
+          "name": "ConsultaArtesanos"
+        }
+      },
+      "Artesano": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "object"
+          },
+          "properties": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "integer"
+                  },
+                  "example": {
+                    "type": "number",
+                    "example": 1
+                  }
+                }
+              },
+              "nombre_artesano": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "example": {
+                    "type": "string",
+                    "example": "María"
+                  }
+                }
+              },
+              "apellido_artesano": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "example": {
+                    "type": "string",
+                    "example": "Gómez"
+                  }
+                }
+              },
+              "dni": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "example": {
+                    "type": "string",
+                    "example": "30123456"
+                  }
+                }
+              },
+              "fecha_Nacimiento": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "format": {
+                    "type": "string",
+                    "example": "date"
+                  },
+                  "example": {
+                    "type": "string",
+                    "example": "1990-05-20"
+                  }
+                }
+              },
+              "rubroId": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "integer"
+                  },
+                  "example": {
+                    "type": "number",
+                    "example": 2
+                  }
+                }
+              },
+              "localidadId": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "integer"
+                  },
+                  "example": {
+                    "type": "number",
+                    "example": 3
+                  }
+                }
+              },
+              "provinciaId": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "integer"
+                  },
+                  "example": {
+                    "type": "number",
+                    "example": 1
+                  }
+                }
+              },
+              "email_artesano": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "format": {
+                    "type": "string",
+                    "example": "email"
+                  },
+                  "example": {
+                    "type": "string",
+                    "example": "maria@example.com"
+                  }
+                }
+              },
+              "telefono_artesano": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "example": {
+                    "type": "string",
+                    "example": "3834123456"
+                  }
+                }
+              },
+              "usuarioId": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "format": {
+                    "type": "string",
+                    "example": "uuid"
+                  },
+                  "example": {
+                    "type": "string",
+                    "example": "550e8400-e29b-41d4-a716-446655440000"
+                  }
+                }
+              },
+              "createdAt": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "format": {
+                    "type": "string",
+                    "example": "date-time"
+                  },
+                  "example": {
+                    "type": "string",
+                    "example": "2026-08-20T12:00:00.000Z"
+                  }
+                }
+              },
+              "updatedAt": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "format": {
+                    "type": "string",
+                    "example": "date-time"
+                  },
+                  "example": {
+                    "type": "string",
+                    "example": "2026-08-20T12:00:00.000Z"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "xml": {
+          "name": "Artesano"
+        }
+      },
+      "MiProducto": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "object"
+          },
+          "properties": {
+            "type": "object",
+            "properties": {
+              "nombre": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "minLength": {
+                    "type": "number",
+                    "example": 1
+                  }
+                }
+              },
+              "descripcion": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "minLength": {
+                    "type": "number",
+                    "example": 1
+                  }
+                }
+              },
+              "precio": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "integer"
+                  },
+                  "minimum": {
+                    "type": "number",
+                    "example": 0
+                  },
+                  "maximum": {
+                    "type": "number",
+                    "example": 9007199254740991
+                  }
+                }
+              },
+              "categoriaId": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "integer"
+                  },
+                  "minimum": {
+                    "type": "number",
+                    "example": 1
+                  },
+                  "maximum": {
+                    "type": "number",
+                    "example": 9007199254740991
+                  }
+                }
+              }
+            }
+          },
+          "required": {
+            "type": "array",
+            "example": [
+              "nombre",
+              "descripcion",
+              "precio",
+              "categoriaId"
+            ],
+            "items": {
+              "type": "string"
+            }
+          },
+          "example": {
+            "type": "object",
+            "properties": {
+              "nombre_producto": {
+                "type": "string",
+                "example": "Poncho de lana"
+              },
+              "descripcion": {
+                "type": "string",
+                "example": "Poncho tejido a mano con lana de oveja"
+              },
+              "precio_producto": {
+                "type": "number",
+                "example": 1500
+              },
+              "categoriaId": {
+                "type": "number",
+                "example": 1
+              }
+            }
+          }
+        },
+        "xml": {
+          "name": "MiProducto"
+        }
+      },
+      "ConsultaProductos": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "object"
+          },
+          "properties": {
+            "type": "object",
+            "properties": {
+              "nombre": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  }
+                }
+              },
+              "precioMin": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "integer"
+                  },
+                  "minimum": {
+                    "type": "number",
+                    "example": 0
+                  },
+                  "maximum": {
+                    "type": "number",
+                    "example": 9007199254740991
+                  }
+                }
+              },
+              "precioMax": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "integer"
+                  },
+                  "minimum": {
+                    "type": "number",
+                    "example": 0
+                  },
+                  "maximum": {
+                    "type": "number",
+                    "example": 9007199254740991
+                  }
+                }
+              },
+              "categoriaId": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "integer"
+                  },
+                  "minimum": {
+                    "type": "number",
+                    "example": 1
+                  },
+                  "maximum": {
+                    "type": "number",
+                    "example": 9007199254740991
+                  }
+                }
+              },
+              "artesanoId": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "integer"
+                  },
+                  "minimum": {
+                    "type": "number",
+                    "example": 1
+                  },
+                  "maximum": {
+                    "type": "number",
+                    "example": 9007199254740991
+                  }
+                }
+              },
+              "ordenPor": {
+                "type": "object",
+                "properties": {
+                  "default": {
+                    "type": "string",
+                    "example": "nombre"
+                  },
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "enum": {
+                    "type": "array",
+                    "example": [
+                      "nombre",
+                      "precio",
+                      "categoriaId",
+                      "artesanoId"
+                    ],
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "direccion": {
+                "type": "object",
+                "properties": {
+                  "default": {
+                    "type": "string",
+                    "example": "asc"
+                  },
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "enum": {
+                    "type": "array",
+                    "example": [
+                      "asc",
+                      "desc"
+                    ],
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "pagina": {
+                "type": "object",
+                "properties": {
+                  "default": {
+                    "type": "number",
+                    "example": 1
+                  },
+                  "type": {
+                    "type": "string",
+                    "example": "integer"
+                  },
+                  "minimum": {
+                    "type": "number",
+                    "example": 0
+                  },
+                  "exclusiveMinimum": {
+                    "type": "boolean",
+                    "example": true
+                  },
+                  "maximum": {
+                    "type": "number",
+                    "example": 9007199254740991
+                  }
+                }
+              },
+              "limite": {
+                "type": "object",
+                "properties": {
+                  "default": {
+                    "type": "number",
+                    "example": 10
+                  },
+                  "type": {
+                    "type": "string",
+                    "example": "integer"
+                  },
+                  "minimum": {
+                    "type": "number",
+                    "example": 1
+                  },
+                  "maximum": {
+                    "type": "number",
+                    "example": 50
+                  }
+                }
+              }
+            }
+          }
+        },
+        "xml": {
+          "name": "ConsultaProductos"
+        }
+      },
+      "Producto": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "object"
+          },
+          "properties": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "integer"
+                  },
+                  "example": {
+                    "type": "number",
+                    "example": 1
+                  }
+                }
+              },
+              "nombre_producto": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "example": {
+                    "type": "string",
+                    "example": "Poncho de lana"
+                  }
+                }
+              },
+              "descripcion": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  }
+                }
+              },
+              "precio_producto": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "number"
+                  },
+                  "example": {
+                    "type": "number",
+                    "example": 1500
+                  }
+                }
+              },
+              "categoriaId": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "integer"
+                  },
+                  "example": {
+                    "type": "number",
+                    "example": 1
+                  }
+                }
+              },
+              "artesanoId": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "integer"
+                  },
+                  "example": {
+                    "type": "number",
+                    "example": 1
+                  }
+                }
+              },
+              "createdAt": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "format": {
+                    "type": "string",
+                    "example": "date-time"
+                  },
+                  "example": {
+                    "type": "string",
+                    "example": "2026-08-20T12:00:00.000Z"
+                  }
+                }
+              },
+              "updatedAt": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "format": {
+                    "type": "string",
+                    "example": "date-time"
+                  },
+                  "example": {
+                    "type": "string",
+                    "example": "2026-08-20T12:00:00.000Z"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "xml": {
+          "name": "Producto"
+        }
+      },
+      "NuevoStand": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "object"
+          },
+          "properties": {
+            "type": "object",
+            "properties": {
+              "numero": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "integer"
+                  },
+                  "minimum": {
+                    "type": "number",
+                    "example": 0
+                  },
+                  "exclusiveMinimum": {
+                    "type": "boolean",
+                    "example": true
+                  },
+                  "maximum": {
+                    "type": "number",
+                    "example": 9007199254740991
+                  }
+                }
+              },
+              "estado": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  }
+                }
+              },
+              "sectorId": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "integer"
+                  },
+                  "minimum": {
+                    "type": "number",
+                    "example": 0
+                  },
+                  "exclusiveMinimum": {
+                    "type": "boolean",
+                    "example": true
+                  },
+                  "maximum": {
+                    "type": "number",
+                    "example": 9007199254740991
+                  }
+                }
+              }
+            }
+          },
+          "required": {
+            "type": "array",
+            "example": [
+              "numero",
+              "estado",
+              "sectorId"
+            ],
+            "items": {
+              "type": "string"
+            }
+          },
+          "example": {
+            "type": "object",
+            "properties": {
+              "numero_stand": {
+                "type": "number",
+                "example": 1
+              },
+              "estado_stand": {
+                "type": "string",
+                "example": "DISPONIBLE"
+              },
+              "sectorId": {
+                "type": "number",
+                "example": 1
+              }
+            }
+          }
+        },
+        "xml": {
+          "name": "NuevoStand"
+        }
+      },
+      "ConsultaStands": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "object"
+          },
+          "properties": {
+            "type": "object",
+            "properties": {
+              "pagina": {
+                "type": "object",
+                "properties": {
+                  "default": {
+                    "type": "number",
+                    "example": 1
+                  },
+                  "type": {
+                    "type": "string",
+                    "example": "integer"
+                  },
+                  "minimum": {
+                    "type": "number",
+                    "example": 0
+                  },
+                  "exclusiveMinimum": {
+                    "type": "boolean",
+                    "example": true
+                  },
+                  "maximum": {
+                    "type": "number",
+                    "example": 9007199254740991
+                  }
+                }
+              },
+              "limite": {
+                "type": "object",
+                "properties": {
+                  "default": {
+                    "type": "number",
+                    "example": 10
+                  },
+                  "type": {
+                    "type": "string",
+                    "example": "integer"
+                  },
+                  "minimum": {
+                    "type": "number",
+                    "example": 0
+                  },
+                  "exclusiveMinimum": {
+                    "type": "boolean",
+                    "example": true
+                  },
+                  "maximum": {
+                    "type": "number",
+                    "example": 9007199254740991
+                  }
+                }
+              },
+              "ordenPor": {
+                "type": "object",
+                "properties": {
+                  "default": {
+                    "type": "string",
+                    "example": "numero"
+                  },
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "enum": {
+                    "type": "array",
+                    "example": [
+                      "numero",
+                      "estado",
+                      "sector",
+                      "artesano"
+                    ],
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "direccion": {
+                "type": "object",
+                "properties": {
+                  "default": {
+                    "type": "string",
+                    "example": "asc"
+                  },
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "enum": {
+                    "type": "array",
+                    "example": [
+                      "asc",
+                      "desc"
+                    ],
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "numero": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "integer"
+                  },
+                  "minimum": {
+                    "type": "number",
+                    "example": 0
+                  },
+                  "exclusiveMinimum": {
+                    "type": "boolean",
+                    "example": true
+                  },
+                  "maximum": {
+                    "type": "number",
+                    "example": 9007199254740991
+                  }
+                }
+              },
+              "estado": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "enum": {
+                    "type": "array",
+                    "example": [
+                      "disponible",
+                      "ocupado"
+                    ],
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "sectorId": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "integer"
+                  },
+                  "minimum": {
+                    "type": "number",
+                    "example": 0
+                  },
+                  "exclusiveMinimum": {
+                    "type": "boolean",
+                    "example": true
+                  },
+                  "maximum": {
+                    "type": "number",
+                    "example": 9007199254740991
+                  }
+                }
+              },
+              "artesanoId": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "integer"
+                  },
+                  "minimum": {
+                    "type": "number",
+                    "example": 0
+                  },
+                  "exclusiveMinimum": {
+                    "type": "boolean",
+                    "example": true
+                  },
+                  "maximum": {
+                    "type": "number",
+                    "example": 9007199254740991
+                  }
+                }
+              }
+            }
+          }
+        },
+        "xml": {
+          "name": "ConsultaStands"
+        }
+      },
+      "Stand": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "object"
+          },
+          "properties": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "integer"
+                  },
+                  "example": {
+                    "type": "number",
+                    "example": 1
+                  }
+                }
+              },
+              "numero_stand": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "integer"
+                  },
+                  "example": {
+                    "type": "number",
+                    "example": 1
+                  }
+                }
+              },
+              "estado_stand": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "example": {
+                    "type": "string",
+                    "example": "DISPONIBLE"
+                  }
+                }
+              },
+              "sectorId": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "integer"
+                  },
+                  "example": {
+                    "type": "number",
+                    "example": 1
+                  }
+                }
+              },
+              "artesanoId": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "integer"
+                  },
+                  "example": {
+                    "type": "number",
+                    "example": 1
+                  }
+                }
+              },
+              "createdAt": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "format": {
+                    "type": "string",
+                    "example": "date-time"
+                  },
+                  "example": {
+                    "type": "string",
+                    "example": "2026-08-20T12:00:00.000Z"
+                  }
+                }
+              },
+              "updatedAt": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "format": {
+                    "type": "string",
+                    "example": "date-time"
+                  },
+                  "example": {
+                    "type": "string",
+                    "example": "2026-08-20T12:00:00.000Z"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "xml": {
+          "name": "Stand"
+        }
+      },
+      "ActualizarStand": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "object"
+          },
+          "properties": {
+            "type": "object",
+            "properties": {
+              "numero": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "integer"
+                  },
+                  "minimum": {
+                    "type": "number",
+                    "example": 0
+                  },
+                  "exclusiveMinimum": {
+                    "type": "boolean",
+                    "example": true
+                  },
+                  "maximum": {
+                    "type": "number",
+                    "example": 9007199254740991
+                  }
+                }
+              },
+              "estado": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  }
+                }
+              },
+              "sectorId": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "integer"
+                  },
+                  "minimum": {
+                    "type": "number",
+                    "example": 0
+                  },
+                  "exclusiveMinimum": {
+                    "type": "boolean",
+                    "example": true
+                  },
+                  "maximum": {
+                    "type": "number",
+                    "example": 9007199254740991
+                  }
+                }
+              },
+              "artesanoId": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "integer"
+                  },
+                  "minimum": {
+                    "type": "number",
+                    "example": 0
+                  },
+                  "exclusiveMinimum": {
+                    "type": "boolean",
+                    "example": true
+                  },
+                  "maximum": {
+                    "type": "number",
+                    "example": 9007199254740991
+                  }
+                }
+              }
+            }
+          },
+          "required": {
+            "type": "array",
+            "example": [
+              "numero",
+              "estado",
+              "sectorId",
+              "artesanoId"
+            ],
+            "items": {
+              "type": "string"
+            }
+          },
+          "example": {
+            "type": "object",
+            "properties": {
+              "numero_stand": {
+                "type": "number",
+                "example": 1
+              },
+              "estado_stand": {
+                "type": "string",
+                "example": "OCUPADO"
+              },
+              "sectorId": {
+                "type": "number",
+                "example": 1
+              },
+              "artesanoId": {
+                "type": "number",
+                "example": 1
+              }
+            }
+          }
+        },
+        "xml": {
+          "name": "ActualizarStand"
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}
