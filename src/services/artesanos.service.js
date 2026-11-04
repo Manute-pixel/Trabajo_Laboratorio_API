@@ -119,7 +119,7 @@ export const consultarArtesanoPorId = async (artesanoId) => {
   });
 
   if (!artesano) {
-    throw crearError(`Artesano con id ${id} no encontrado`, 404);
+    throw crearError(`Artesano con id ${artesanoId} no encontrado`, 404);
   }
 
   return artesano;

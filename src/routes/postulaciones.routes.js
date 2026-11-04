@@ -57,6 +57,8 @@ router.put(
 );
 
 //rutas de artesano
+
+//rutas protegidas
 router.get(
   "/mi-postulacion",
   autenticarUsuario,
@@ -72,5 +74,6 @@ router.post(
   validarMipostulacion,
   crearMiPostulacion,
 );
+
 
 export default router;

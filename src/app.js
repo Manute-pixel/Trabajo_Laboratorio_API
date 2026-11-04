@@ -9,6 +9,8 @@ import productosRoutes from "./routes/productos.routes.js";
 import usuariosRoutes from "./routes/usuarios.routes.js";
 import "./config/jwt.js";
 import { iniciarLimpiezaRevocaciones } from "./tareas/limpiezaRevocaciones.js";
+import swaggerUi from "swagger-ui-express";
+import { readFileSync } from "node:fs";
 
 const app = express();
 const PORT = 3000;
@@ -34,6 +36,15 @@ app.get("/info", (req, res) => {
     estado: `En desarrollo`,
   });
 });
+
+const swaggerDocument = JSON.parse(
+  readFileSync(
+    new URL("../swagger-output.json", import.meta.url),
+    "utf8",
+  ),
+);
+
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 //Manejo de rutas no encontradas
 app.use(noEncontrado);
