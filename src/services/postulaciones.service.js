@@ -3,7 +3,10 @@ import { crearError } from "../utils/errores.js";
 
 const verificarArtesano = async (artesanoId) => {
   if (artesanoId == undefined || artesanoId == null) {
-    return;
+    throw crearError(
+      "artesanoId es obligatorio para crear una postulacion",
+      400,
+    );
   }
 
   const existe = await prisma.artesano.findUnique({
@@ -11,19 +14,24 @@ const verificarArtesano = async (artesanoId) => {
   });
 
   if (!existe) {
-    throw crearError(`no existe un artesano con id ${artesanoId}`, 400);
+    throw crearError(`no existe un artesano con id ${artesanoId}`, 404);
   }
 };
 
 const verificarEdicion = async (edicionId) => {
   if (edicionId == undefined || edicionId == null) {
-    return;
+    throw crearError(
+      "edicionId es obligatorio para crear una postulacion",
+      400,
+    );
   }
 
-  const existe = await prisma.edicion.findUnique({ where: { id: edicionId } });
+  const existe = await prisma.edicion_Poncho.findUnique({
+    where: { id: edicionId },
+  });
 
   if (!existe) {
-    throw crearError(`no existe una edicion con id ${edicionId}`, 400);
+    throw crearError(`no existe una edicion con id ${edicionId}`, 404);
   }
 };
 
@@ -75,7 +83,7 @@ export const obtenerPostulacionPorId = async (id) => {
 };
 
 export const crearPostulacion = async (datos) => {
-  const { artesanoId, edicionId } = datos;
+  const { artesanoId, edicionId, estado } = datos;
 
   const existe = await prisma.postulacion.findFirst({
     where: {
@@ -95,6 +103,7 @@ export const crearPostulacion = async (datos) => {
     data: {
       artesanoId: artesanoId,
       edicionId: edicionId,
+      estado_postulacion: estado || null,
     },
     include: { artesano: true, edicion: true },
   });
@@ -128,6 +137,19 @@ export const actualizarPostulacion = async (id, datos) => {
 //servicios de rutas protegidas
 export const crearMiPostulacion = async (usuarioId, edicionId) => {
   return prisma.$transaction(async (tx) => {
+    const existe = await tx.postulacion.findFirst({
+      where: {
+        artesano: { usuarioId },
+        edicionId: edicionId,
+      },
+    });
+
+    if (existe) {
+      throw crearError(
+        "ya existe una postulacion para este artesano en esta edicion",
+        400,
+      );
+    }
     const artesano = await tx.artesano.findUnique({
       where: { usuarioId },
     });
