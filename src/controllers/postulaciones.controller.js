@@ -73,7 +73,7 @@ export const actualizarPostulacion = async (req, res, next) => {
 export const crearMiPostulacion = async (req, res, next) => {
   try {
     const usuarioId = req.contextoUsuario.id;
-    const { edicionId } = req.postulacionValidada;
+    const { edicionId } = req.MipostulacionValidada;
 
     const nuevaPostulacion = await postulacionesService.crearMiPostulacion(
       usuarioId,
