@@ -36,8 +36,8 @@ export const consultarStands = async (criterios) => {
   } = criterios;
   const where = {};
   if (numero !== undefined) {
-    where.numero = {
-      contains: numero,
+    where.numero_stand = {
+      equals: numero,
     };
   }
   if (estado !== undefined) {
