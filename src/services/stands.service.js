@@ -27,47 +27,145 @@ export const consultarStands = async (criterios) => {
   const {
     numero,
     estado,
-    sectorId,
-    artesanoId,
+    fecha,
+    fechaDesde,
+    fechaHasta,
+    sector,
+    pabellon,
+    edicion,
+    artesano,
     ordenPor,
     direccion,
     pagina,
     limite,
   } = criterios;
   const where = {};
-  if (numero !== undefined) {
-    where.numero = {
-      contains: numero,
+  if (numero !== undefined) where.numero_stand = { equals: numero };
+  if (estado !== undefined)
+    where.estado_stand = { contains: estado, mode: "insensitive" };
+  // filtra por fecha y pone en prioridad la fecha exacta sobre el rango de fechas
+  if (fecha !== undefined) {
+    where.createdAt = { equals: fecha };
+  } else if (fechaDesde !== undefined || fechaHasta !== undefined) {
+    where.createdAt = {};
+
+    if (fechaDesde !== undefined) where.createdAt.gte = fechaDesde;
+    if (fechaHasta !== undefined) where.createdAt.lte = fechaHasta;
+  }
+  //filtra por relaciones para obtener ubicacion del stand
+  if (sector !== undefined || pabellon !== undefined || edicion !== undefined) {
+    where.sector = {};
+
+    if (sector !== undefined) {
+      where.sector.nombre_sector = { contains: sector, mode: "insensitive" };
+    }
+
+    if (pabellon !== undefined || edicion !== undefined) {
+      where.sector.pabellon = {};
+
+      if (pabellon !== undefined) {
+        where.sector.pabellon.nombre_pabellon = {
+          contains: pabellon,
+          mode: "insensitive",
+        };
+      }
+
+      if (edicion !== undefined) {
+        where.sector.pabellon.edicion = {
+          nombre_edicion: {
+            contains: edicion,
+            mode: "insensitive",
+          },
+        };
+      }
+    }
+  }
+
+  if (artesano !== undefined)
+    where.artesano = {
+      nombre_artesano: { contains: artesano, mode: "insensitive" },
     };
-  }
-  if (estado !== undefined) {
-    where.estado = {
-      contains: estado,
-      mode: "insensitive",
-    };
-  }
-  if (sectorId !== undefined) {
-    where.sectorId = sectorId;
-  }
-  if (artesanoId !== undefined) {
-    where.artesanoId = artesanoId;
-  }
+
   const desplazamiento = (pagina - 1) * limite;
   const campoOrden = {
     numero: "numero_stand",
     estado: "estado_stand",
-    sector: "sectorId",
-    artesano: "artesanoId",
+    sector: "sector",
+    pabellon: "pabellon",
+    edicion: "edicion",
+    artesano: "artesano",
+    fecha: "createdAt",
   };
+  const orden = campoOrden[ordenPor];
+
+  let orderBy;
+
+  switch (orden) {
+    case "sector":
+      orderBy = { sector: { nombre_sector: direccion } };
+      break;
+
+    case "pabellon":
+      orderBy = {
+        sector: {
+          pabellon: { nombre_pabellon: direccion },
+        },
+      };
+      break;
+
+    case "edicion":
+      orderBy = {
+        sector: {
+          pabellon: {
+            edicion: { nombre_edicion: direccion },
+          },
+        },
+      };
+      break;
+
+    case "artesano":
+      orderBy = { artesano: { nombre_artesano: direccion } };
+      break;
+
+    default:
+      orderBy = { [orden]: direccion };
+  }
+
   const [stands, total] = await prisma.$transaction([
     prisma.stand.findMany({
       where,
-      orderBy: [{ [campoOrden[ordenPor]]: direccion }, { id: "asc" }],
+      orderBy: [orderBy, { id: "asc" }],
       skip: desplazamiento,
       take: limite,
-      include: {
-        sector: true,
-        artesano: true,
+      select: {
+        id: true,
+        numero_stand: true,
+        estado_stand: true,
+        createdAt: true,
+        artesano: {
+          select: {
+            id: true,
+            nombre_artesano: true,
+          },
+        },
+        sector: {
+          select: {
+            id: true,
+            nombre_sector: true,
+            pabellon: {
+              select: {
+                id: true,
+                nombre_pabellon: true,
+                edicion: {
+                  select: {
+                    id: true,
+                    nombre_edicion: true,
+                  },
+                },
+              },
+            },
+          },
+        },
       },
     }),
     prisma.stand.count({ where }),
