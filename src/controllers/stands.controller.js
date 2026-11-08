@@ -74,3 +74,17 @@ export const asignarStand = async (req, res, next) => {
     next(error);
   }
 };
+
+export const desasignarStand = async (req, res, next) => {
+  try {
+    const standId = req.id;
+    const standDesvinculado = await standsService.desvincularStand(standId);
+
+    res.status(200).json({
+      message: `stand con id ${standId} desvinculado correctamente`,
+      standDesvinculado,
+    });
+  } catch (error) {
+    next(error);
+  }
+};

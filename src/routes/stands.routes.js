@@ -19,6 +19,7 @@ import {
   actualizarStand,
   eliminarStand,
   asignarStand,
+  desasignarStand,
 } from "../controllers/stands.controller.js";
 
 const router = express.Router();
@@ -45,6 +46,12 @@ router.patch(
   validarId,
   validarAsignacionStand,
   asignarStand,
+);
+router.patch(
+  "/desvincular-stand-artesano/:id",
+  ...controlesAdministrador,
+  validarId,
+  desasignarStand,
 );
 
 //rutas publicas
