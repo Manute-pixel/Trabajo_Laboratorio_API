@@ -5,7 +5,7 @@ import {
   validarPostulacion,
   validarMipostulacion,
 } from "../middlewares/postulaciones.middlewares/validarPostulacion.js";
-import { validarActualizacionPostulacion } from "../middlewares/postulaciones.middlewares/validarActualizacionPostulacion.js";
+import { validarActualizacionPostulacionAdmin, validarActualizacionPostulacionArtesano } from "../middlewares/postulaciones.middlewares/validarActualizacionPostulacion.js";
 import { validarConsultaPostulacion } from "../middlewares/postulaciones.middlewares/validarConsultaPostulacion.js";
 import { autenticarUsuario } from "../middlewares/autenticacion.middleware.js";
 import { cargarContextoUsuario } from "../middlewares/autorizacion.middleware/cargarContextoUsuario.js";
@@ -16,9 +16,10 @@ import {
   obtenerPostulaciones,
   obtenerPostulacionPorId,
   crearPostulacion,
-  actualizarPostulacion,
+  actualizarPostulacionAdmin,
   crearMiPostulacion,
   obtenerMiPostulacion,
+  actualizarMiPostulacion
 } from "../controllers/postulaciones.controller.js";
 
 const router = express.Router();
@@ -38,6 +39,10 @@ router.post(
   autorizarRoles("ARTESANO"),
   validarMipostulacion,
   crearMiPostulacion,
+);
+router.patch("/actualizar-mi-postulacion", autenticarUsuario,
+  cargarContextoUsuario, autorizarRoles("ARTESANO"),
+  validarActualizacionPostulacionArtesano, actualizarMiPostulacion
 );
 
 //controles seguridad para rutas de administrador
@@ -64,8 +69,8 @@ router.put(
   "/:id",
   ...controlesAdministrador,
   validarId,
-  validarActualizacionPostulacion,
-  actualizarPostulacion,
+  validarActualizacionPostulacionAdmin,
+  actualizarPostulacionAdmin,
 );
 router.get(
   "/:id",
