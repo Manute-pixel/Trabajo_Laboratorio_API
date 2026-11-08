@@ -18,6 +18,7 @@ import {
   obtenerMisProductos,
   obtenerMiProducto,
   crearMiProducto,
+  actualizarMiProducto,
 } from "../controllers/productos.controller.js";
 
 const router = express.Router();
@@ -64,6 +65,10 @@ router.post(
   validarProducto,
   crearMiProducto,
 );
+router.put(
+  "/actualizar-mi-producto/:id",
+  autenticarUsuario, cargarContextoUsuario, autorizarRoles("ARTESANO"), 
+  validarId, validarActualizacionProducto, actualizarMiProducto);
 
 //rutas publicas
 router.get("/", validarConsultaProductos, obtenerProductos);
