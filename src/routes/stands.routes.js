@@ -3,7 +3,10 @@ import express from "express";
 import { validarId } from "../middlewares/validarId.js";
 import { validarConsultaStands } from "../middlewares/validarConsultaStands.js";
 import { validarCreacionStand } from "../middlewares/validarCreacionStand.js";
-import { validarActualizacionStand } from "../middlewares/validarActualizacionStand.js";
+import {
+  validarActualizacionStand,
+  validarAsignacionStand,
+} from "../middlewares/validarActualizacionStand.js";
 import { autenticarUsuario } from "../middlewares/autenticacion.middleware.js";
 import { cargarContextoUsuario } from "../middlewares/autorizacion.middleware/cargarContextoUsuario.js";
 import { autorizarRoles } from "../middlewares/autorizacion.middleware/autorizarRoles.js";
@@ -15,6 +18,7 @@ import {
   crearStand,
   actualizarStand,
   eliminarStand,
+  asignarStand,
 } from "../controllers/stands.controller.js";
 
 const router = express.Router();
@@ -25,11 +29,7 @@ const controlesAdministrador = [
   autorizarRoles("ADMINISTRADOR"),
 ];
 
-//rutas publicas
-router.get("/", validarConsultaStands, obtenerStands);
-router.get("/:id", validarId, obtenerStandPorId);
-
-//rutas protegidas
+//rutas protegidas de Administrador
 router.post("/", ...controlesAdministrador, validarCreacionStand, crearStand);
 router.put(
   "/:id",
@@ -39,5 +39,16 @@ router.put(
   actualizarStand,
 );
 router.delete("/:id", ...controlesAdministrador, validarId, eliminarStand);
+router.patch(
+  "/asignar-stand-artesano/:id",
+  ...controlesAdministrador,
+  validarId,
+  validarAsignacionStand,
+  asignarStand,
+);
+
+//rutas publicas
+router.get("/", validarConsultaStands, obtenerStands);
+router.get("/:id", validarId, obtenerStandPorId);
 
 export default router;
