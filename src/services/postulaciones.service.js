@@ -165,6 +165,7 @@ export const crearMiPostulacion = async (usuarioId, edicionId) => {
       data: {
         edicionId: edicionId,
         artesanoId: artesano.id,
+        estado_postulacion: "PENDIENTE"
       },
       select: {
         fecha_postulacion: true,
@@ -191,4 +192,32 @@ export const obtenerMiPostulacion = async (usuarioId) => {
     throw crearError("no tienes una postulacion registrada.", 404);
 
   return postulacion;
+};
+
+
+export const actualizarMiPostulacion = async (usuarioId, datos) => {
+  const { edicionId } = datos;
+
+  const existe = await prisma.postulacion.findFirst({
+    where: {
+      artesano: {
+        usuarioId: usuarioId
+      }
+    }
+  });
+
+  if (!existe) {
+    throw crearError("Postulacion no encontrada", 404);
+  }
+  await verificarEdicion(edicionId);
+  await verificarArtesano(existe.artesanoId);
+
+  return prisma.postulacion.update({
+    where: {
+      id: existe.id
+    },
+    data: {
+      edicionId: edicionId
+    }
+  });
 };
