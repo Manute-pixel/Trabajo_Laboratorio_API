@@ -8,13 +8,18 @@ export const postulacionSchema = z.object({
     .transform((e) => e.toUpperCase()),
 });
 
-export const actualizarPostulacionSchema = z.object({
+export const actualizarPostulacionSchemaAdmin = z.object({
   artesanoId: z.coerce.number().int().positive(),
   edicionId: z.coerce.number().int().positive(),
   estado: z
     .enum(["pendiente", "aceptada", "rechazada", "corregir"])
     .transform((e) => e.toUpperCase()),
 });
+
+export const actualizarPostulacionSchemaArtesano = z.object({
+  edicionId: z.coerce.number().int().positive()
+  
+}).strict(); 
 
 export const consultarPostulacionSchema = z.object({
   artesanoId: z.coerce.number().int().positive().optional(),
@@ -32,3 +37,4 @@ export const consultarPostulacionSchema = z.object({
 export const MipostulacionSchema = z.object({
   edicionId: z.coerce.number().int().positive(),
 });
+
