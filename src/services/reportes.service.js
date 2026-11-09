@@ -6,3 +6,21 @@ export const obtenerTotalArtesanos = async () => {
 
   return { totalArtesanos };
 };
+
+export const obtenerArtesanosLocalidad = async () => {
+  const artesanosPorLocalidad = await prisma.localidad.findMany({
+    select: {
+      nombre_localidad: true,
+      _count: {
+        select: {
+          artesanos: true
+        }
+      }
+    }
+  });
+
+  return artesanosPorLocalidad.map(localidad => ({
+    localidad: localidad.nombre_localidad,
+    totalArtesanos: localidad._count.artesanos
+  }));
+};
