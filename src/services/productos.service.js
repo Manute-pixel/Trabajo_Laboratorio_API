@@ -305,3 +305,19 @@ export const actualizarMiProducto = async (productoId, usuarioId, datos) => {
     }
   });
 }
+
+export const eliminarMiProducto = async (productoId, usuarioId) => {
+  const existeProducto = await prisma.producto.findFirst({
+    where: { id: productoId, artesano: { usuarioId } },
+  });
+  if (!existeProducto) {
+    throw crearError(
+      `Producto con ID ${productoId} no encontrado o no pertenece al artesano`,
+      404
+    );
+  }
+
+  return prisma.producto.delete({
+    where: { id: productoId }
+  });
+}
