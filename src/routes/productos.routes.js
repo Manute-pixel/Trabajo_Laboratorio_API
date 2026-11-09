@@ -28,90 +28,6 @@ const controlesAdministrador = [
   autorizarRoles("ADMINISTRADOR"),
 ];
 
-
-//rutas publica para obtener productos
-router.get("/", 
-  /*
-    #swagger.tags = ["Productos"]
-    #swagger.summary = "Listar y buscar productos"
-    #swagger.description = "Permite consultar productos aplicando filtros, ordenamiento y paginación."
-    #swagger.security = []
-
-    #swagger.parameters['nombre'] = {
-      in: "query",
-      description: "Filtrar por nombre",
-      type: "string"
-    }
-
-    #swagger.parameters['descripcion'] = {
-      in: "query",
-      description: "Filtrar por descripción",
-      type: "string"
-    }
-
-    #swagger.parameters['precioMin'] = {
-      in: "query",
-      description: "Filtrar por precio mínimo",
-      type: "number"
-    }
-
-    #swagger.parameters['precioMax'] = {
-      in: "query",
-      description: "Filtrar por precio máximo",
-      type: "number"
-    }
-
-    #swagger.parameters['categoriaId'] = {
-      in: "query",
-      description: "Filtrar por categoría",
-      type: "integer"
-    }
-
-    #swagger.parameters['artesanoId'] = {
-      in: "query",
-      description: "Filtrar por artesano",
-      type: "integer"
-    }
-  
-    #swagger.parameters['ordenPor'] = {
-      in: "query",
-      description: "Campo por el que se ordenan los resultados",
-      type: "string",
-      enum: ["nombre", "descripcion", "precioMin", "precioMax", "categoriaId", "artesanoId"]
-    }
-
-    #swagger.parameters['direccion'] = {
-      in: "query",
-      description: "Sentido del ordenamiento",
-      type: "string",
-      enum: ["asc", "desc"]
-    }
-
-    #swagger.parameters['pagina'] = {
-      in: "query",
-      description: "Número de página",
-      type: "integer",
-      default: 1
-    }
-
-    #swagger.parameters['limite'] = {
-      in: "query",
-      description: "Cantidad de resultados por página, entre 1 y 50",
-      type: "integer",
-      default: 10
-    }
-
-    #swagger.responses[200] = {
-      description: "Consulta realizada correctamente"
-    }
-
-    #swagger.responses[400] = {
-      description: "Los filtros enviados no son válidos"
-    }
-  */
-  validarConsultaProductos, obtenerProductos);
-
-
 //rutas de administrador
 router.post("/", 
   /* #swagger.tags = ["Productos"]
@@ -515,6 +431,88 @@ router.delete(
   eliminarProducto
 );
 
+
+//rutas publica para obtener productos
+router.get("/", 
+  /*
+    #swagger.tags = ["Productos"]
+    #swagger.summary = "Listar y buscar productos"
+    #swagger.description = "Permite consultar productos aplicando filtros, ordenamiento y paginación."
+    #swagger.security = []
+
+    #swagger.parameters['nombre'] = {
+      in: "query",
+      description: "Filtrar por nombre",
+      type: "string"
+    }
+
+    #swagger.parameters['descripcion'] = {
+      in: "query",
+      description: "Filtrar por descripción",
+      type: "string"
+    }
+
+    #swagger.parameters['precioMin'] = {
+      in: "query",
+      description: "Filtrar por precio mínimo",
+      type: "number"
+    }
+
+    #swagger.parameters['precioMax'] = {
+      in: "query",
+      description: "Filtrar por precio máximo",
+      type: "number"
+    }
+
+    #swagger.parameters['categoriaId'] = {
+      in: "query",
+      description: "Filtrar por categoría",
+      type: "integer"
+    }
+
+    #swagger.parameters['artesanoId'] = {
+      in: "query",
+      description: "Filtrar por artesano",
+      type: "integer"
+    }
+  
+    #swagger.parameters['ordenPor'] = {
+      in: "query",
+      description: "Campo por el que se ordenan los resultados",
+      type: "string",
+      enum: ["nombre", "descripcion", "precioMin", "precioMax", "categoriaId", "artesanoId"]
+    }
+
+    #swagger.parameters['direccion'] = {
+      in: "query",
+      description: "Sentido del ordenamiento",
+      type: "string",
+      enum: ["asc", "desc"]
+    }
+
+    #swagger.parameters['pagina'] = {
+      in: "query",
+      description: "Número de página",
+      type: "integer",
+      default: 1
+    }
+
+    #swagger.parameters['limite'] = {
+      in: "query",
+      description: "Cantidad de resultados por página, entre 1 y 50",
+      type: "integer",
+      default: 10
+    }
+
+    #swagger.responses[200] = {
+      description: "Consulta realizada correctamente"
+    }
+
+    #swagger.responses[400] = {
+      description: "Los filtros enviados no son válidos"
+    }
+  */
+  validarConsultaProductos, obtenerProductos);
 
 //ruta publica para obtener un producto por su id
 router.get("/:id", 
