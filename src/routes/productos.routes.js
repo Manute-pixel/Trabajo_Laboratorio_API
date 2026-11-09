@@ -18,7 +18,7 @@ import {
   obtenerMisProductos,
   obtenerMiProducto,
   crearMiProducto,
-  actualizarMiProducto,
+  actualizarMiProducto,eliminarMiProducto
 } from "../controllers/productos.controller.js";
 
 const router = express.Router();
@@ -69,7 +69,11 @@ router.put(
   "/actualizar-mi-producto/:id",
   autenticarUsuario, cargarContextoUsuario, autorizarRoles("ARTESANO"), 
   validarId, validarActualizacionProducto, actualizarMiProducto);
-
+router.delete(
+  "/eliminar-mi-producto/:id",
+  autenticarUsuario, cargarContextoUsuario, autorizarRoles("ARTESANO"),
+  validarId, eliminarMiProducto
+);
 //rutas publicas
 router.get("/", validarConsultaProductos, obtenerProductos);
 router.get("/:id", validarId, obtenerProductoPorId);
