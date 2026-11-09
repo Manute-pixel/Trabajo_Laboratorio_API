@@ -65,30 +65,25 @@ export const actualizarProductoSchema = z
     nombre: z
       .string()
       .trim()
-      .min(1, { message: "El nombre del producto es requerido" })
-      .optional(),
+      .min(1, { message: "El nombre del producto es requerido" }),
     descripcion: z
       .string()
       .trim()
-      .min(1, { message: "La descripción no puede estar vacía" })
-      .optional(),
+      .min(1, { message: "La descripción no puede estar vacía" }),
     precio: z.coerce
       .number()
       .int()
       .min(0, {
         message: "El precio del producto debe ser un número entero positivo",
-      })
-      .optional(),
+      }),
     categoriaId: z.coerce
       .number()
       .int()
-      .min(1, { message: "La categoría del producto es requerida" })
-      .optional(),
+      .min(1, { message: "La categoría del producto es requerida" }),
     artesanoId: z.coerce
       .number()
       .int()
-      .min(1, { message: "El artesano del producto es requerido" })
-      .optional(),
+      .min(1, { message: "El artesano del producto es requerido" }),
   })
   .refine((producto) => Object.keys(producto).length > 0, {
     message: "Debe proporcionar al menos un atributo para actualizar",
