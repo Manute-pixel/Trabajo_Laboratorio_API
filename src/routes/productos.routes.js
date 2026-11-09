@@ -4,7 +4,10 @@ import { autenticarUsuario } from "../middlewares/autenticacion.middleware.js";
 import { cargarContextoUsuario } from "../middlewares/autorizacion.middleware/cargarContextoUsuario.js";
 import { autorizarRoles } from "../middlewares/autorizacion.middleware/autorizarRoles.js";
 import { validarConsultaProductos } from "../middlewares/validarConsultaProductos.js";
-import { validarProducto } from "../middlewares/validarProducto.js";
+import {
+  validarProducto,
+  validarMiproducto,
+} from "../middlewares/validarProducto.js";
 import { validarActualizacionProducto } from "../middlewares/validarActualizacionProducto.js";
 import { validarId } from "../middlewares/validarId.js";
 
@@ -18,7 +21,8 @@ import {
   obtenerMisProductos,
   obtenerMiProducto,
   crearMiProducto,
-  actualizarMiProducto,eliminarMiProducto
+  actualizarMiProducto,
+  eliminarMiProducto,
 } from "../controllers/productos.controller.js";
 
 const router = express.Router();
@@ -50,7 +54,7 @@ router.get(
   obtenerMisProductos,
 );
 router.get(
-  "mi-productos/:id",
+  "/mis-productos/:id",
   autenticarUsuario,
   cargarContextoUsuario,
   autorizarRoles("ARTESANO"),
@@ -62,17 +66,25 @@ router.post(
   autenticarUsuario,
   cargarContextoUsuario,
   autorizarRoles("ARTESANO"),
-  validarProducto,
+  validarMiproducto,
   crearMiProducto,
 );
 router.put(
   "/actualizar-mi-producto/:id",
-  autenticarUsuario, cargarContextoUsuario, autorizarRoles("ARTESANO"), 
-  validarId, validarActualizacionProducto, actualizarMiProducto);
+  autenticarUsuario,
+  cargarContextoUsuario,
+  autorizarRoles("ARTESANO"),
+  validarId,
+  validarMiproducto,
+  actualizarMiProducto,
+);
 router.delete(
   "/eliminar-mi-producto/:id",
-  autenticarUsuario, cargarContextoUsuario, autorizarRoles("ARTESANO"),
-  validarId, eliminarMiProducto
+  autenticarUsuario,
+  cargarContextoUsuario,
+  autorizarRoles("ARTESANO"),
+  validarId,
+  eliminarMiProducto,
 );
 //rutas publicas
 router.get("/", validarConsultaProductos, obtenerProductos);
