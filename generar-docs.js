@@ -74,6 +74,10 @@ const doc = {
     {
       name: "Usuarios",
       description: "Endpoints para gestionar usuarios",
+    },
+    {
+      name: "Postulaciones",
+      description: "Endpoints para gestionar postulaciones",
     }
   ],
 
