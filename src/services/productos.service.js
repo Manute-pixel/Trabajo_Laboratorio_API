@@ -280,3 +280,44 @@ export const obtenerMiProducto = async (id, usuarioId) => {
     );
   return producto;
 };
+
+export const actualizarMiProducto = async (productoId, usuarioId, datos) => {
+  const { nombre, descripcion, precio, categoriaId } = datos;
+  const existeProducto = await prisma.producto.findFirst({
+    where: { id: productoId, artesano: { usuarioId } },
+  });
+  if (!existeProducto) {
+    throw crearError(
+      `Producto con ID ${productoId} no encontrado o no pertenece al artesano`,
+      404,
+    );
+  }
+
+  await validarReferenciasProducto({ categoriaId, artesanoId: existeProducto.artesanoId });
+
+  return prisma.producto.update({
+    where: { id: productoId },
+    data: {
+      nombre_producto: nombre,
+      descripcion: descripcion,
+      precio_producto: precio,
+      categoriaId: categoriaId,
+    }
+  });
+}
+
+export const eliminarMiProducto = async (productoId, usuarioId) => {
+  const existeProducto = await prisma.producto.findFirst({
+    where: { id: productoId, artesano: { usuarioId } },
+  });
+  if (!existeProducto) {
+    throw crearError(
+      `Producto con ID ${productoId} no encontrado o no pertenece al artesano`,
+      404
+    );
+  }
+
+  return prisma.producto.delete({
+    where: { id: productoId }
+  });
+}
