@@ -9,3 +9,12 @@ export const obtenerTotalArtesanos = async (req, res, next) => {
     next(error);
   }
 };
+
+export const obtenerArtesanosLocalidad = async (req, res, next) => {
+    try {
+        const reporte = await reportesService.obtenerArtesanosLocalidad();
+        return res.status(200).json(reporte);
+    } catch (error) {
+        next(error);
+    }
+};
