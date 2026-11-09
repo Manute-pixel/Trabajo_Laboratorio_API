@@ -2,7 +2,7 @@ import express from "express";
 // middlewares:
 import { validarId } from "../middlewares/validarId.js";
 import { validarConsultaArtesanos } from "../middlewares/artesanos.middlewares/validarConsultaArtesanos.js";
-import { validarArtesano } from "../middlewares/artesanos.middlewares/validarArtesano.js";
+import { validarActualizacionArtesano } from "../middlewares/artesanos.middlewares/validarActualizacionArtesano.js";
 import { cargarContextoUsuario } from "../middlewares/autorizacion.middleware/cargarContextoUsuario.js";
 import { autorizarRoles } from "../middlewares/autorizacion.middleware/autorizarRoles.js";
 import { autenticarUsuario } from "../middlewares/autenticacion.middleware.js";
@@ -11,12 +11,166 @@ import { autenticarUsuario } from "../middlewares/autenticacion.middleware.js";
 import {
   obtenerArtesanos,
   obtenerArtesanoPorId,
-  crearArtesano,
   actualizarArtesano,
   borrarArtesano,
   consultarMiArtesano,
 } from "../controllers/artesanos.controller.js";
+
 const router = express.Router();
+
+const controlesAdministrador = [
+  autenticarUsuario,
+  cargarContextoUsuario,
+  autorizarRoles("ADMINISTRADOR"),
+];
+
+//rutas protegidas para administradores
+router.patch("/:id", 
+  /*
+    #swagger.tags = ["Artesanos"]
+    #swagger.summary = "Actualizar un artesano"
+    #swagger.description = "Actualiza los datos de un artesano existente."
+    #swagger.security = [{
+      bearerAuth: []
+    }]
+
+    #swagger.parameters['id'] = {
+      in: 'path',
+      description: 'ID del artesano que se quiere actualizar',
+      required: true,
+      type: 'integer',
+      example: 1
+    }
+
+    #swagger.requestBody = {
+      required: true,
+      content: {
+        "application/json": {
+          schema: {
+            $ref: "#/components/schemas/NuevoArtesano"
+          }
+        }
+      }
+    }
+
+    #swagger.responses[200] = {
+      description: "Artesano actualizado correctamente",
+      schema: {
+        type: "object",
+        properties: {
+          mensaje: { type: "string" },
+          artesano: {
+            $ref: "#/components/schemas/Artesano"
+          }
+        }
+      }
+    }
+
+    #swagger.responses[400] = {
+      description: "El ID o los datos enviados no son válidos"
+    }
+
+    #swagger.responses[401] = {
+      description: "No se proporcionó un token de autenticación válido o la cuenta no existe"
+    }
+
+    #swagger.responses[403] = {
+      description: "Cuenta inactiva o el usuario no tiene el rol ADMINISTRADOR"
+    }
+
+    #swagger.responses[404] = {
+      description: "No se encontró el artesano"
+    }
+
+    #swagger.responses[500] = {
+      description: "Error interno del servidor"
+    }
+  */
+  ...controlesAdministrador,validarId, validarActualizacionArtesano, actualizarArtesano);
+
+
+router.delete("/:id", 
+  /*
+    #swagger.tags = ["Artesanos"]
+    #swagger.summary = "Eliminar un artesano"
+    #swagger.description = "Elimina un artesano utilizando su ID."
+    #swagger.security = [{
+      bearerAuth: []
+    }]
+
+    #swagger.parameters['id'] = {
+      in: 'path',
+      description: 'ID del artesano que se quiere eliminar',
+      required: true,
+      type: 'integer',
+      example: 1
+    }
+
+    #swagger.responses[204] = {
+      description: "Artesano eliminado correctamente. La respuesta no contiene un cuerpo."
+    }
+
+    #swagger.responses[400] = {
+      description: "El ID es inválido"
+    }
+
+    #swagger.responses[401] = {
+      description: "No se proporcionó un token de autenticación válido o la cuenta no existe"
+    }
+
+    #swagger.responses[403] = {
+      description: "Cuenta inactiva o el usuario no tiene el rol ADMINISTRADOR"
+    }
+
+    #swagger.responses[404] = {
+      description: "No se encontró el artesano"
+    }
+
+    #swagger.responses[500] = {
+      description: "Error interno del servidor"
+    }
+  */
+  ...controlesAdministrador, validarId, borrarArtesano);
+
+//rutas protegidas:
+//ruta protegida para consultar el perfil del artesano
+router.get(
+  "/me",
+  /*
+    #swagger.tags = ["Artesanos"]
+    #swagger.summary = "Consultar mi perfil de artesano"
+    #swagger.description = "Obtiene los datos del artesano asociado al usuario autenticado. Requiere el rol ARTESANO."
+
+    #swagger.security = [{
+      bearerAuth: []
+    }]
+
+    #swagger.responses[200] = {
+      description: "Datos del artesano obtenidos correctamente"
+    }
+
+    #swagger.responses[401] = {
+      description: "El usuario no está autenticado"
+    }
+
+    #swagger.responses[403] = {
+      description: "El usuario no tiene el rol ARTESANO"
+    }
+
+    #swagger.responses[404] = {
+      description: "El usuario autenticado no tiene un artesano asociado"
+    }
+
+    #swagger.responses[500] = {
+      description: "Error interno del servidor"
+    }
+  */
+  autenticarUsuario,
+  cargarContextoUsuario,
+  autorizarRoles("ARTESANO"),
+  consultarMiArtesano,
+);
+
 
 //rutas publicas:
 router.get("/", 
@@ -106,159 +260,6 @@ router.get("/",
   */
   validarConsultaArtesanos, obtenerArtesanos);
 
-
-router.post("/", 
-   /*
-    #swagger.tags = ["Artesanos"]
-    #swagger.summary = "Crear un artesano"
-    #swagger.description = "Registra un nuevo artesano."
-    #swagger.security = []
-
-    #swagger.requestBody = {
-      required: true,
-      content: {
-        "application/json": {
-          schema: {
-            $ref: "#/components/schemas/NuevoArtesano"
-          }
-        }
-      }
-    }
-
-    #swagger.responses[201] = {
-      description: "Artesano creado exitosamente"
-    }
-
-    #swagger.responses[400] = {
-      description: "Los datos enviados no son válidos"
-    }
-  */
-  validarArtesano, crearArtesano);
-
-
-router.put("/:id", 
-  /*
-    #swagger.tags = ["Artesanos"]
-    #swagger.summary = "Actualizar un artesano"
-    #swagger.description = "Actualiza los datos de un artesano existente."
-
-    #swagger.parameters['id'] = {
-      in: 'path',
-      description: 'ID del artesano que se quiere actualizar',
-      required: true,
-      type: 'integer',
-      example: 1
-    }
-
-    #swagger.requestBody = {
-      required: true,
-      content: {
-        "application/json": {
-          schema: {
-            $ref: "#/components/schemas/NuevoArtesano"
-          }
-        }
-      }
-    }
-
-    #swagger.responses[200] = {
-      description: "Artesano actualizado correctamente",
-      schema: {
-        type: "object",
-        properties: {
-          mensaje: { type: "string" },
-          artesano: {
-            $ref: "#/components/schemas/Artesano"
-          }
-        }
-      }
-    }
-
-    #swagger.responses[400] = {
-      description: "El ID o los datos enviados no son válidos"
-    }
-
-    #swagger.responses[404] = {
-      description: "No se encontró el artesano"
-    }
-
-    #swagger.responses[500] = {
-      description: "Error interno del servidor"
-    }
-  */
-  validarId, validarArtesano, actualizarArtesano);
-
-
-router.delete("/:id", 
-  /*
-    #swagger.tags = ["Artesanos"]
-    #swagger.summary = "Eliminar un artesano"
-    #swagger.description = "Elimina un artesano utilizando su ID."
-
-    #swagger.parameters['id'] = {
-      in: 'path',
-      description: 'ID del artesano que se quiere eliminar',
-      required: true,
-      type: 'integer',
-      example: 1
-    }
-
-    #swagger.responses[204] = {
-      description: "Artesano eliminado correctamente. La respuesta no contiene un cuerpo."
-    }
-
-    #swagger.responses[400] = {
-      description: "El ID es inválido"
-    }
-
-    #swagger.responses[404] = {
-      description: "No se encontró el artesano"
-    }
-
-    #swagger.responses[500] = {
-      description: "Error interno del servidor"
-    }
-  */
-  validarId, borrarArtesano);
-
-//rutas protegidas:
-router.get(
-  "/me",
-  /*
-    #swagger.tags = ["Artesanos"]
-    #swagger.summary = "Consultar mi perfil de artesano"
-    #swagger.description = "Obtiene los datos del artesano asociado al usuario autenticado. Requiere el rol ARTESANO."
-
-    #swagger.security = [{
-      bearerAuth: []
-    }]
-
-    #swagger.responses[200] = {
-      description: "Datos del artesano obtenidos correctamente"
-    }
-
-    #swagger.responses[401] = {
-      description: "El usuario no está autenticado"
-    }
-
-    #swagger.responses[403] = {
-      description: "El usuario no tiene el rol ARTESANO"
-    }
-
-    #swagger.responses[404] = {
-      description: "El usuario autenticado no tiene un artesano asociado"
-    }
-
-    #swagger.responses[500] = {
-      description: "Error interno del servidor"
-    }
-  */
-  autenticarUsuario,
-  cargarContextoUsuario,
-  autorizarRoles("ARTESANO"),
-  consultarMiArtesano,
-);
-
 //ruta publica para obtener un artesano por su id
 router.get("/:id", 
    /*
@@ -291,6 +292,6 @@ router.get("/:id",
       description: 'Error interno del servidor'
     }
   */
-  validarId, obtenerArtesanoPorId);
+ validarId, obtenerArtesanoPorId);
 
 export default router;

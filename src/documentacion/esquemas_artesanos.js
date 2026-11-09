@@ -1,12 +1,12 @@
 import z from "zod";
 import {
-  artesanoSchema,
+  actualizarArtesanoSchema,
   consultarArtesanoSchema,
 } from "../validators/artesanos.schemas.js";
 
-// Datos que se envían al crear un artesano
+// Datos que se envían al actualizar un artesano
 export const NuevoArtesano = {
-  ...z.toJSONSchema(artesanoSchema, {
+  ...z.toJSONSchema(actualizarArtesanoSchema, {
     target: "openapi-3.0",
     io: "input",
   }),

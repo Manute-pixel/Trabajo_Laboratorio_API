@@ -1292,6 +1292,246 @@
         }
       }
     },
+    "/artesanos/{id}": {
+      "patch": {
+        "tags": [
+          "Artesanos"
+        ],
+        "summary": "Actualizar un artesano",
+        "description": "Actualiza los datos de un artesano existente.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID del artesano que se quiere actualizar",
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Artesano actualizado correctamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "object"
+                    },
+                    "properties": {
+                      "type": "object",
+                      "properties": {
+                        "mensaje": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "example": "string"
+                            }
+                          }
+                        },
+                        "artesano": {
+                          "$ref": "#/components/schemas/Artesano"
+                        }
+                      }
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "object"
+                    },
+                    "properties": {
+                      "type": "object",
+                      "properties": {
+                        "mensaje": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "example": "string"
+                            }
+                          }
+                        },
+                        "artesano": {
+                          "$ref": "#/components/schemas/Artesano"
+                        }
+                      }
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "El ID o los datos enviados no son válidos"
+          },
+          "401": {
+            "description": "No se proporcionó un token de autenticación válido o la cuenta no existe"
+          },
+          "403": {
+            "description": "Cuenta inactiva o el usuario no tiene el rol ADMINISTRADOR"
+          },
+          "404": {
+            "description": "No se encontró el artesano"
+          },
+          "500": {
+            "description": "Error interno del servidor"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NuevoArtesano"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Artesanos"
+        ],
+        "summary": "Eliminar un artesano",
+        "description": "Elimina un artesano utilizando su ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID del artesano que se quiere eliminar",
+            "example": 1
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Artesano eliminado correctamente. La respuesta no contiene un cuerpo."
+          },
+          "400": {
+            "description": "El ID es inválido"
+          },
+          "401": {
+            "description": "No se proporcionó un token de autenticación válido o la cuenta no existe"
+          },
+          "403": {
+            "description": "Cuenta inactiva o el usuario no tiene el rol ADMINISTRADOR"
+          },
+          "404": {
+            "description": "No se encontró el artesano"
+          },
+          "500": {
+            "description": "Error interno del servidor"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "get": {
+        "tags": [
+          "Artesanos"
+        ],
+        "summary": "Obtener un artesano por su ID",
+        "description": "Busca un artesano utilizando su identificador.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID del artesano",
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Artesano encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Artesano"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Artesano"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "El ID es inválido"
+          },
+          "404": {
+            "description": "No se encontró el artesano"
+          },
+          "500": {
+            "description": "Error interno del servidor"
+          }
+        }
+      }
+    },
+    "/artesanos/me": {
+      "get": {
+        "tags": [
+          "Artesanos"
+        ],
+        "summary": "Consultar mi perfil de artesano",
+        "description": "Obtiene los datos del artesano asociado al usuario autenticado. Requiere el rol ARTESANO.",
+        "responses": {
+          "200": {
+            "description": "Datos del artesano obtenidos correctamente"
+          },
+          "401": {
+            "description": "El usuario no está autenticado"
+          },
+          "403": {
+            "description": "El usuario no tiene el rol ARTESANO"
+          },
+          "404": {
+            "description": "El usuario autenticado no tiene un artesano asociado"
+          },
+          "500": {
+            "description": "Error interno del servidor"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
     "/artesanos/": {
       "get": {
         "tags": [
@@ -1414,250 +1654,6 @@
           }
         },
         "security": []
-      },
-      "post": {
-        "tags": [
-          "Artesanos"
-        ],
-        "summary": "Crear un artesano",
-        "description": "Registra un nuevo artesano.",
-        "responses": {
-          "201": {
-            "description": "Artesano creado exitosamente"
-          },
-          "400": {
-            "description": "Los datos enviados no son válidos"
-          }
-        },
-        "security": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/NuevoArtesano"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/artesanos/{id}": {
-      "put": {
-        "tags": [
-          "Artesanos"
-        ],
-        "summary": "Actualizar un artesano",
-        "description": "Actualiza los datos de un artesano existente.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "ID del artesano que se quiere actualizar",
-            "example": 1
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Artesano actualizado correctamente",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "type": {
-                      "type": "string",
-                      "example": "object"
-                    },
-                    "properties": {
-                      "type": "object",
-                      "properties": {
-                        "mensaje": {
-                          "type": "object",
-                          "properties": {
-                            "type": {
-                              "type": "string",
-                              "example": "string"
-                            }
-                          }
-                        },
-                        "artesano": {
-                          "$ref": "#/components/schemas/Artesano"
-                        }
-                      }
-                    }
-                  },
-                  "xml": {
-                    "name": "main"
-                  }
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "type": {
-                      "type": "string",
-                      "example": "object"
-                    },
-                    "properties": {
-                      "type": "object",
-                      "properties": {
-                        "mensaje": {
-                          "type": "object",
-                          "properties": {
-                            "type": {
-                              "type": "string",
-                              "example": "string"
-                            }
-                          }
-                        },
-                        "artesano": {
-                          "$ref": "#/components/schemas/Artesano"
-                        }
-                      }
-                    }
-                  },
-                  "xml": {
-                    "name": "main"
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "El ID o los datos enviados no son válidos"
-          },
-          "404": {
-            "description": "No se encontró el artesano"
-          },
-          "500": {
-            "description": "Error interno del servidor"
-          }
-        },
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/NuevoArtesano"
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "Artesanos"
-        ],
-        "summary": "Eliminar un artesano",
-        "description": "Elimina un artesano utilizando su ID.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "ID del artesano que se quiere eliminar",
-            "example": 1
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "Artesano eliminado correctamente. La respuesta no contiene un cuerpo."
-          },
-          "400": {
-            "description": "El ID es inválido"
-          },
-          "404": {
-            "description": "No se encontró el artesano"
-          },
-          "500": {
-            "description": "Error interno del servidor"
-          }
-        }
-      },
-      "get": {
-        "tags": [
-          "Artesanos"
-        ],
-        "summary": "Obtener un artesano por su ID",
-        "description": "Busca un artesano utilizando su identificador.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "ID del artesano",
-            "example": 1
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Artesano encontrado",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Artesano"
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "$ref": "#/components/schemas/Artesano"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "El ID es inválido"
-          },
-          "404": {
-            "description": "No se encontró el artesano"
-          },
-          "500": {
-            "description": "Error interno del servidor"
-          }
-        }
-      }
-    },
-    "/artesanos/me": {
-      "get": {
-        "tags": [
-          "Artesanos"
-        ],
-        "summary": "Consultar mi perfil de artesano",
-        "description": "Obtiene los datos del artesano asociado al usuario autenticado. Requiere el rol ARTESANO.",
-        "responses": {
-          "200": {
-            "description": "Datos del artesano obtenidos correctamente"
-          },
-          "401": {
-            "description": "El usuario no está autenticado"
-          },
-          "403": {
-            "description": "El usuario no tiene el rol ARTESANO"
-          },
-          "404": {
-            "description": "El usuario autenticado no tiene un artesano asociado"
-          },
-          "500": {
-            "description": "Error interno del servidor"
-          }
-        },
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ]
       }
     },
     "/usuarios/registro-artesano": {
@@ -2206,22 +2202,9 @@
               }
             }
           },
-          "required": {
-            "type": "array",
-            "example": [
-              "nombre",
-              "apellido",
-              "dni",
-              "email",
-              "fechaNac",
-              "telefono",
-              "rubroId",
-              "localidadId",
-              "provinciaId"
-            ],
-            "items": {
-              "type": "string"
-            }
+          "additionalProperties": {
+            "type": "boolean",
+            "example": false
           },
           "example": {
             "type": "object",
