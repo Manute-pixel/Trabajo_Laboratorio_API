@@ -336,7 +336,55 @@ router.post(
   crearMiPostulacion,
 );
 
-router.patch("/actualizar-mi-postulacion", autenticarUsuario,
+router.patch("/actualizar-mi-postulacion", 
+  /*
+    #swagger.tags = ["Postulaciones"]
+    #swagger.summary = "Actualizar mi postulación"
+    #swagger.description = "Actualiza la edición a la que el artesano está postulando."
+    #swagger.security = [{
+       bearerAuth: []
+    }]
+    
+    #swagger.parameters['id'] = {
+      in: 'path',
+      description: 'ID de la postulación que se quiere actualizar',
+      required: true,
+      type: 'integer',
+      example: 1
+    }
+
+    #swagger.requestBody = {
+      required: true,
+      content: {
+        "application/json": {
+          schema: {
+            $ref: "#/components/schemas/ActualizarMiPostulacion"
+          }
+        }
+      }
+    }
+
+    #swagger.responses[200] = {
+      description: "Postulación actualizada exitosamente"
+    }
+
+    #swagger.responses[404] = {
+      description: "Postulación no encontrada"
+    }
+
+    #swagger.responses[400] = {
+      description: "Los datos enviados no son válidos"
+    }
+
+    #swagger.responses[401] = {
+      description: "No se proporcionó un token de autenticación válido o la cuenta no existe"
+    }
+
+    #swagger.responses[403] = {
+      description: "Cuenta inactiva o el usuario no tiene el rol ARTESANO"
+    }
+  */
+  autenticarUsuario,
   cargarContextoUsuario, autorizarRoles("ARTESANO"),
   validarActualizacionPostulacionArtesano, actualizarMiPostulacion
 );

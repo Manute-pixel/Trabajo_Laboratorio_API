@@ -35,7 +35,8 @@ import {
   ConsultarPostulaciones,
   Postulacion,
   NuevaPostulacion,
-  ActualizarPostulacion,
+  ActualizarPostulacionAdmin,
+  ActualizarMiPostulacion,
   MiPostulacion,
   CrearMiPostulacion
 } from "./src/documentacion/esquemas_postulaciones.js";
@@ -105,7 +106,8 @@ const doc = {
       ConsultarPostulaciones,
       Postulacion,
       NuevaPostulacion,
-      ActualizarPostulacion,
+      ActualizarPostulacionAdmin,
+      ActualizarMiPostulacion,
       MiPostulacion,
       CrearMiPostulacion
     },

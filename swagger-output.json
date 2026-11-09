@@ -55,6 +55,42 @@
       }
     },
     "/stands/": {
+      "post": {
+        "tags": [
+          "Stands"
+        ],
+        "summary": "Crear un stand",
+        "description": "Registra un nuevo stand.",
+        "responses": {
+          "201": {
+            "description": "Stand creado exitosamente"
+          },
+          "400": {
+            "description": "Los datos enviados no son válidos"
+          },
+          "401": {
+            "description": "No se proporcionó un token de autenticación válido o la cuenta no existe"
+          },
+          "403": {
+            "description": "Cuenta inactiva o el usuario no tiene el rol ADMINISTRADOR"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NuevoStand"
+              }
+            }
+          }
+        }
+      },
       "get": {
         "tags": [
           "Stands"
@@ -148,91 +184,9 @@
           }
         },
         "security": []
-      },
-      "post": {
-        "tags": [
-          "Stands"
-        ],
-        "summary": "Crear un stand",
-        "description": "Registra un nuevo stand.",
-        "responses": {
-          "201": {
-            "description": "Stand creado exitosamente"
-          },
-          "400": {
-            "description": "Los datos enviados no son válidos"
-          },
-          "401": {
-            "description": "No se proporcionó un token de autenticación válido o la cuenta no existe"
-          },
-          "403": {
-            "description": "Cuenta inactiva o el usuario no tiene el rol ADMINISTRADOR"
-          }
-        },
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/NuevoStand"
-              }
-            }
-          }
-        }
       }
     },
     "/stands/{id}": {
-      "get": {
-        "tags": [
-          "Stands"
-        ],
-        "summary": "Obtener un stand por su ID",
-        "description": "Busca un stand utilizando su identificador.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "ID del stand",
-            "example": 1
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Stand encontrado",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Stand"
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "$ref": "#/components/schemas/Stand"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "El ID es inválido"
-          },
-          "404": {
-            "description": "No se encontró el stand"
-          },
-          "500": {
-            "description": "Error interno del servidor"
-          }
-        },
-        "security": []
-      },
       "put": {
         "tags": [
           "Stands"
@@ -327,6 +281,92 @@
             "bearerAuth": []
           }
         ]
+      },
+      "get": {
+        "tags": [
+          "Stands"
+        ],
+        "summary": "Obtener un stand por su ID",
+        "description": "Busca un stand utilizando su identificador.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID del stand",
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Stand encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Stand"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Stand"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "El ID es inválido"
+          },
+          "404": {
+            "description": "No se encontró el stand"
+          },
+          "500": {
+            "description": "Error interno del servidor"
+          }
+        },
+        "security": []
+      }
+    },
+    "/stands/asignar-stand-artesano/{id}": {
+      "patch": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/stands/desvincular-stand-artesano/{id}": {
+      "patch": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
       }
     },
     "/productos/": {
@@ -1204,7 +1244,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ActualizarPostulacion"
+                "$ref": "#/components/schemas/ActualizarPostulacionAdmin"
               }
             }
           }
@@ -1286,6 +1326,59 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/CrearMiPostulacion"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/postulaciones/actualizar-mi-postulacion": {
+      "patch": {
+        "tags": [
+          "Postulaciones"
+        ],
+        "summary": "Actualizar mi postulación",
+        "description": "Actualiza la edición a la que el artesano está postulando.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID de la postulación que se quiere actualizar",
+            "required": true,
+            "example": 1,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Postulación actualizada exitosamente"
+          },
+          "400": {
+            "description": "Los datos enviados no son válidos"
+          },
+          "401": {
+            "description": "No se proporcionó un token de autenticación válido o la cuenta no existe"
+          },
+          "403": {
+            "description": "Cuenta inactiva o el usuario no tiene el rol ARTESANO"
+          },
+          "404": {
+            "description": "Postulación no encontrada"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ActualizarMiPostulacion"
               }
             }
           }
@@ -3333,6 +3426,19 @@
               }
             }
           },
+          "required": {
+            "type": "array",
+            "example": [
+              "nombre",
+              "descripcion",
+              "precio",
+              "categoriaId",
+              "artesanoId"
+            ],
+            "items": {
+              "type": "string"
+            }
+          },
           "example": {
             "type": "object",
             "properties": {
@@ -3524,7 +3630,7 @@
                 "properties": {
                   "default": {
                     "type": "string",
-                    "example": "numero"
+                    "example": "fecha"
                   },
                   "type": {
                     "type": "string",
@@ -3536,7 +3642,10 @@
                       "numero",
                       "estado",
                       "sector",
-                      "artesano"
+                      "pabellon",
+                      "edicion",
+                      "artesano",
+                      "fecha"
                     ],
                     "items": {
                       "type": "string"
@@ -3607,45 +3716,106 @@
                   }
                 }
               },
-              "sectorId": {
+              "sector": {
                 "type": "object",
                 "properties": {
                   "type": {
                     "type": "string",
-                    "example": "integer"
+                    "example": "string"
                   },
-                  "minimum": {
+                  "minLength": {
                     "type": "number",
-                    "example": 0
-                  },
-                  "exclusiveMinimum": {
-                    "type": "boolean",
-                    "example": true
-                  },
-                  "maximum": {
-                    "type": "number",
-                    "example": 9007199254740991
+                    "example": 1
                   }
                 }
               },
-              "artesanoId": {
+              "pabellon": {
                 "type": "object",
                 "properties": {
                   "type": {
                     "type": "string",
-                    "example": "integer"
+                    "example": "string"
                   },
-                  "minimum": {
+                  "minLength": {
                     "type": "number",
-                    "example": 0
+                    "example": 1
+                  }
+                }
+              },
+              "edicion": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
                   },
-                  "exclusiveMinimum": {
-                    "type": "boolean",
-                    "example": true
-                  },
-                  "maximum": {
+                  "minLength": {
                     "type": "number",
-                    "example": 9007199254740991
+                    "example": 1
+                  }
+                }
+              },
+              "artesano": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "minLength": {
+                    "type": "number",
+                    "example": 1
+                  }
+                }
+              },
+              "fecha": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "format": {
+                    "type": "string",
+                    "example": "date"
+                  },
+                  "example": {
+                    "type": "string",
+                    "example": "2026-11-09"
+                  }
+                }
+              },
+              "fechaDesde": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "format": {
+                    "type": "string",
+                    "example": "date"
+                  },
+                  "example": {
+                    "type": "string",
+                    "example": "2026-11-01"
+                  }
+                }
+              },
+              "fechaHasta": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "format": {
+                    "type": "string",
+                    "example": "date"
+                  },
+                  "example": {
+                    "type": "string",
+                    "example": "2026-11-30"
                   }
                 }
               }
@@ -5063,7 +5233,7 @@
           "name": "NuevaPostulacion"
         }
       },
-      "ActualizarPostulacion": {
+      "ActualizarPostulacionAdmin": {
         "type": "object",
         "properties": {
           "type": {
@@ -5114,6 +5284,27 @@
                     "example": 9007199254740991
                   }
                 }
+              },
+              "estado": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "enum": {
+                    "type": "array",
+                    "example": [
+                      "pendiente",
+                      "aceptada",
+                      "rechazada",
+                      "corregir"
+                    ],
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
               }
             }
           },
@@ -5121,7 +5312,8 @@
             "type": "array",
             "example": [
               "artesanoId",
-              "edicionId"
+              "edicionId",
+              "estado"
             ],
             "items": {
               "type": "string"
@@ -5146,7 +5338,67 @@
           }
         },
         "xml": {
-          "name": "ActualizarPostulacion"
+          "name": "ActualizarPostulacionAdmin"
+        }
+      },
+      "ActualizarMiPostulacion": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "object"
+          },
+          "properties": {
+            "type": "object",
+            "properties": {
+              "edicionId": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "integer"
+                  },
+                  "minimum": {
+                    "type": "number",
+                    "example": 0
+                  },
+                  "exclusiveMinimum": {
+                    "type": "boolean",
+                    "example": true
+                  },
+                  "maximum": {
+                    "type": "number",
+                    "example": 9007199254740991
+                  }
+                }
+              }
+            }
+          },
+          "required": {
+            "type": "array",
+            "example": [
+              "edicionId"
+            ],
+            "items": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": {
+            "type": "boolean",
+            "example": false
+          },
+          "example": {
+            "type": "object",
+            "properties": {
+              "edicionId": {
+                "type": "number",
+                "example": 1
+              }
+            }
+          }
+        },
+        "xml": {
+          "name": "ActualizarMiPostulacion"
         }
       },
       "MiPostulacion": {
