@@ -14,11 +14,23 @@ export const standConsultaSchema = z.object({
     .optional()
     .default(10),
   ordenPor: z
-    .enum(["numero", "estado", "sector", "artesano"], {
-      message: "El ordenPor debe ser 'numero', 'estado', 'sector' o 'artesano'",
-    })
+    .enum(
+      [
+        "numero",
+        "estado",
+        "sector",
+        "pabellon",
+        "edicion",
+        "artesano",
+        "fecha",
+      ],
+      {
+        message:
+          "El ordenPor debe ser 'numero', 'estado', 'sector', 'pabellon', 'edicion', 'artesano' o 'fecha'",
+      },
+    )
     .optional()
-    .default("numero"),
+    .default("fecha"),
   direccion: z
     .enum(["asc", "desc"], { message: "La dirección debe ser 'asc' o 'desc'" })
     .optional()
@@ -33,17 +45,21 @@ export const standConsultaSchema = z.object({
       message: "El estado debe ser 'disponible' o 'ocupado'",
     })
     .optional(),
-  sectorId: z.coerce
-    .number()
-    .int()
-    .positive({ message: "El sectorId debe ser un entero positivo" })
+  sector: z.string().trim().min(1).optional(),
+  pabellon: z.string().trim().min(1).optional(),
+  edicion: z.string().trim().min(1).optional(),
+  artesano: z.string().trim().min(1).optional(),
+  fecha: z.coerce
+    .date({ message: "La fecha debe ser una fecha válida" })
     .optional(),
-  artesanoId: z.coerce
-    .number()
-    .int()
-    .positive({ message: "El artesanoId debe ser un entero positivo" })
+  fechaDesde: z.coerce
+    .date({ message: "La fechaDesde debe ser una fecha válida" })
+    .optional(),
+  fechaHasta: z.coerce
+    .date({ message: "La fechaHasta debe ser una fecha válida" })
     .optional(),
 });
+
 export const standCreacionSchema = z.object({
   numero: z.coerce
     .number()
@@ -63,6 +79,7 @@ export const standCreacionSchema = z.object({
     .int()
     .positive({ message: "El sectorId debe ser un entero positivo" }),
 });
+
 export const standActualizacionSchema = z.object({
   numero: z.coerce
     .number()
