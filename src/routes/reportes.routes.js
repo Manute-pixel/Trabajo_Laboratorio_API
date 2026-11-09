@@ -7,12 +7,13 @@ import { autenticarUsuario } from "../middlewares/autenticacion.middleware.js";
 
 // controllers:
 import {
-    obtenerTotalArtesanos
+    obtenerTotalArtesanos,
+    obtenerArtesanosLocalidad
 } from "../controllers/reportes.controller.js";
 const router = express.Router();
 
 
 
 router.get('/artesano', autenticarUsuario, cargarContextoUsuario, autorizarRoles("ADMINISTRADOR"), obtenerTotalArtesanos);
-
+router.get('/artesano/localidad', autenticarUsuario, cargarContextoUsuario, autorizarRoles("ADMINISTRADOR"), obtenerArtesanosLocalidad);
 export default router;
