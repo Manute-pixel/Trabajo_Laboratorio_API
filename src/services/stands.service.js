@@ -205,3 +205,29 @@ export const asociarStand = async (standId, artesanoId) => {
     include: { sector: true, artesano: true },
   });
 };
+
+export const desvincularStand = async (standId) => {
+  const standExistente = await prisma.stand.findUnique({
+    where: { id: standId },
+  });
+
+  if (!standExistente) {
+    throw crearError(`Stand con id ${standId} no encontrado`, 404);
+  }
+
+  if (!standExistente.artesanoId) {
+    throw crearError(
+      `El stand con id ${standId} no está asignado a ningún artesano`,
+      400,
+    );
+  }
+
+  return prisma.stand.update({
+    where: { id: standId },
+    data: {
+      artesano: { disconnect: true },
+      estado_stand: "DISPONIBLE",
+    },
+    include: { sector: true, artesano: true },
+  });
+};
