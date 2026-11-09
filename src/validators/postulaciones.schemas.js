@@ -2,19 +2,28 @@ import z from "zod";
 
 export const postulacionSchema = z.object({
   artesanoId: z.coerce.number().int().positive(),
-  edicionId: z.coerce.number().int().positive()
+  edicionId: z.coerce.number().int().positive(),
 });
 
-export const actualizarPostulacionSchema = z.object({
+export const actualizarPostulacionSchemaAdmin = z.object({
   artesanoId: z.coerce.number().int().positive(),
   edicionId: z.coerce.number().int().positive(),
-  estado: z.enum(["aceptada", "rechazada", "corregir"]),
+  estado: z
+    .enum(["pendiente", "aceptada", "rechazada", "corregir"])
+    .transform((e) => e.toUpperCase()),
 });
+
+export const actualizarPostulacionSchemaArtesano = z.object({
+  edicionId: z.coerce.number().int().positive()
+}).strict(); 
 
 export const consultarPostulacionSchema = z.object({
   artesanoId: z.coerce.number().int().positive().optional(),
   edicionId: z.coerce.number().int().positive().optional(),
-  estado: z.enum(["pendiente", "aceptada", "rechazada", "corregir"]).optional(),
+  estado: z
+    .enum(["pendiente", "aceptada", "rechazada", "corregir"])
+    .optional()
+    .transform((e) => e.toUpperCase()),
   ordenPor: z.enum(["artesanoId", "edicionId", "estado"]).default("artesanoId"),
   direccion: z.enum(["asc", "desc"]).default("asc"),
   pagina: z.coerce.number().int().positive().default(1),
@@ -24,3 +33,4 @@ export const consultarPostulacionSchema = z.object({
 export const MipostulacionSchema = z.object({
   edicionId: z.coerce.number().int().positive(),
 });
+

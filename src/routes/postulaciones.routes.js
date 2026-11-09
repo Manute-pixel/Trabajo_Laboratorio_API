@@ -5,7 +5,7 @@ import {
   validarPostulacion,
   validarMipostulacion,
 } from "../middlewares/postulaciones.middlewares/validarPostulacion.js";
-import { validarActualizacionPostulacion } from "../middlewares/postulaciones.middlewares/validarActualizacionPostulacion.js";
+import { validarActualizacionPostulacionAdmin, validarActualizacionPostulacionArtesano } from "../middlewares/postulaciones.middlewares/validarActualizacionPostulacion.js";
 import { validarConsultaPostulacion } from "../middlewares/postulaciones.middlewares/validarConsultaPostulacion.js";
 import { autenticarUsuario } from "../middlewares/autenticacion.middleware.js";
 import { cargarContextoUsuario } from "../middlewares/autorizacion.middleware/cargarContextoUsuario.js";
@@ -16,9 +16,10 @@ import {
   obtenerPostulaciones,
   obtenerPostulacionPorId,
   crearPostulacion,
-  actualizarPostulacion,
+  actualizarPostulacionAdmin,
   crearMiPostulacion,
   obtenerMiPostulacion,
+  actualizarMiPostulacion
 } from "../controllers/postulaciones.controller.js";
 
 const router = express.Router();
@@ -155,7 +156,7 @@ router.get(
   obtenerPostulacionPorId,
 );
   
-  router.post(
+router.post(
     "/:id",
     /*
       #swagger.tags = ["Postulaciones"]
@@ -220,7 +221,7 @@ router.put(
       content: {
         "application/json": {
           schema: {
-            $ref: "#/components/schemas/ActualizarPostulacion"
+            $ref: "#/components/schemas/ActualizarPostulacionAdmin"
           }
         }
       }
@@ -248,13 +249,12 @@ router.put(
   */
   ...controlesAdministrador,
   validarId,
-  validarActualizacionPostulacion,
-  actualizarPostulacion,
+  validarActualizacionPostulacionAdmin,
+  actualizarPostulacionAdmin
 );
 
-//rutas de artesano
 
-//rutas protegidas
+//rutas protegidas de artesano
 router.get(
   "/mi-postulacion",
   /*
@@ -287,6 +287,7 @@ router.get(
   autorizarRoles("ARTESANO"),
   obtenerMiPostulacion,
 );
+
 router.post(
   "/postularme",
   /*
@@ -333,6 +334,11 @@ router.post(
   autorizarRoles("ARTESANO"),
   validarMipostulacion,
   crearMiPostulacion,
+);
+
+router.patch("/actualizar-mi-postulacion", autenticarUsuario,
+  cargarContextoUsuario, autorizarRoles("ARTESANO"),
+  validarActualizacionPostulacionArtesano, actualizarMiPostulacion
 );
 
 

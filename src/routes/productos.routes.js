@@ -18,6 +18,7 @@ import {
   obtenerMisProductos,
   obtenerMiProducto,
   crearMiProducto,
+  actualizarMiProducto,eliminarMiProducto
 } from "../controllers/productos.controller.js";
 
 const router = express.Router();
@@ -28,7 +29,7 @@ const controlesAdministrador = [
   autorizarRoles("ADMINISTRADOR"),
 ];
 
-//rutas de administrador
+//rutas protegidas de administrador
 router.post("/", 
   /* #swagger.tags = ["Productos"]
        #swagger.summary = "Crear un producto"
@@ -146,7 +147,8 @@ router.delete("/:id",
     */
   ...controlesAdministrador, validarId, eliminarProducto);
 
-//rutas de artesano
+
+//rutas protegidas de artesano
 router.get(
   "/mis-productos",
    /*
@@ -243,7 +245,6 @@ router.get(
   validarConsultaProductos,
   obtenerMisProductos,
 );
-
 
 router.get(
   "/mi-productos/:id",
@@ -389,7 +390,7 @@ router.put(
   cargarContextoUsuario,
   autorizarRoles("ARTESANO", ),
   validarId,
-  actualizarProducto
+  actualizarMiProducto,
 );
 
 router.delete(
@@ -428,7 +429,7 @@ router.delete(
   cargarContextoUsuario,
   autorizarRoles("ARTESANO"),
   validarId,
-  eliminarProducto
+  eliminarMiProducto
 );
 
 

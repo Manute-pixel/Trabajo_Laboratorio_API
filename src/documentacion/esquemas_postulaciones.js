@@ -1,7 +1,8 @@
 import z from "zod";
 import { postulacionSchema,
     consultarPostulacionSchema,
-    MipostulacionSchema
+    MipostulacionSchema,
+    actualizarPostulacionSchemaAdmin
  } from "../validators/postulaciones.schemas.js";
 
 export const ConsultarPostulaciones = {
@@ -44,8 +45,8 @@ export const NuevaPostulacion = {
     }
 };
 
-export const ActualizarPostulacion = {
-    ...z.toJSONSchema(postulacionSchema, {
+export const ActualizarPostulacionAdmin = {
+    ...z.toJSONSchema(actualizarPostulacionSchemaAdmin, {
         target: "openapi-3.0",
         io: "input"
     }),
