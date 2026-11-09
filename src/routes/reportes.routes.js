@@ -13,9 +13,17 @@ import {
 } from "../controllers/reportes.controller.js";
 const router = express.Router();
 
+const controlesAdministrador = [
+  autenticarUsuario,
+  cargarContextoUsuario,
+  autorizarRoles("ADMINISTRADOR"),
+];
 
 
-router.get('/artesano', autenticarUsuario, cargarContextoUsuario, autorizarRoles("ADMINISTRADOR"), obtenerTotalArtesanos);
-router.get('/artesano-localidad', autenticarUsuario, cargarContextoUsuario, autorizarRoles("ADMINISTRADOR"), obtenerArtesanosLocalidad);
-router.get('/artesano-rubro', autenticarUsuario, cargarContextoUsuario, autorizarRoles("ADMINISTRADOR"), obtenerArtesanosRubro);
+
+
+
+router.get('/artesano', ...controlesAdministrador, obtenerTotalArtesanos);
+router.get('/artesano-localidad', ...controlesAdministrador, obtenerArtesanosLocalidad);
+router.get('/artesano-rubro', ...controlesAdministrador, obtenerArtesanosRubro);
 export default router;
