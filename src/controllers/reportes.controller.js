@@ -18,3 +18,12 @@ export const obtenerArtesanosLocalidad = async (req, res, next) => {
         next(error);
     }
 };
+
+export const obtenerArtesanosRubro = async (req, res, next) => {
+    try {
+        const reporte = await reportesService.obtenerArtesanosRubro();
+        return res.status(200).json(reporte);
+    } catch (error) {
+        next(error);
+    }
+};
