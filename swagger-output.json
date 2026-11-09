@@ -115,19 +115,65 @@
             }
           },
           {
-            "name": "sectorId",
+            "name": "sector",
             "in": "query",
-            "description": "Filtrar por sector",
+            "description": "Filtrar por nombre del sector",
             "schema": {
-              "type": "integer"
+              "type": "string"
             }
           },
           {
-            "name": "artesanoId",
+            "name": "pabellon",
             "in": "query",
-            "description": "Filtrar por artesano",
+            "description": "Filtrar por nombre del pabellón",
             "schema": {
-              "type": "integer"
+              "type": "string"
+            }
+          },
+          {
+            "name": "edicion",
+            "in": "query",
+            "description": "Filtrar por nombre de la edición",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "artesano",
+            "in": "query",
+            "description": "Filtrar por nombre del artesano",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fecha",
+            "in": "query",
+            "description": "Filtrar por fecha exacta de creación del stand",
+            "format": "date",
+            "example": "2026-11-09",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fechaDesde",
+            "in": "query",
+            "description": "Filtrar desde una fecha de creación",
+            "format": "date",
+            "example": "2026-11-01",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fechaHasta",
+            "in": "query",
+            "description": "Filtrar hasta una fecha de creación",
+            "format": "date",
+            "example": "2026-11-30",
+            "schema": {
+              "type": "string"
             }
           },
           {
@@ -138,8 +184,12 @@
               "numero",
               "estado",
               "sector",
-              "artesano"
+              "pabellon",
+              "edicion",
+              "artesano",
+              "fecha"
             ],
+            "default": "fecha",
             "schema": {
               "type": "string"
             }
@@ -177,7 +227,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Consulta realizada correctamente"
+            "description": "Listado de stands obtenido correctamente"
           },
           "400": {
             "description": "Los filtros enviados no son válidos"
@@ -331,7 +381,11 @@
     },
     "/stands/asignar-stand-artesano/{id}": {
       "patch": {
-        "description": "",
+        "tags": [
+          "Stands"
+        ],
+        "summary": "Asignar stand a un artesano",
+        "description": "Asigna un stand a un artesano específico.",
         "parameters": [
           {
             "name": "id",
@@ -339,19 +393,52 @@
             "required": true,
             "schema": {
               "type": "string"
-            }
+            },
+            "description": "ID del stand que se quiere actualizar",
+            "example": 1
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Stand asignado exitosamente"
+          },
+          "400": {
+            "description": "Los datos enviados no son válidos"
+          },
+          "401": {
+            "description": "No se proporcionó un token de autenticación válido o la cuenta no existe"
+          },
+          "403": {
+            "description": "Cuenta inactiva o el usuario no tiene el rol ADMINISTRADOR"
+          },
+          "404": {
+            "description": "Stand no encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AsignarStand"
+              }
+            }
           }
         }
       }
     },
     "/stands/desvincular-stand-artesano/{id}": {
       "patch": {
-        "description": "",
+        "tags": [
+          "Stands"
+        ],
+        "summary": "Desasignar stand de un artesano",
+        "description": "Desvincula al artesano asignado a un stand y cambia su estado a DISPONIBLE.",
         "parameters": [
           {
             "name": "id",
@@ -359,14 +446,33 @@
             "required": true,
             "schema": {
               "type": "string"
-            }
+            },
+            "description": "ID del stand que se quiere desvincular",
+            "example": 1
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Stand desvinculado exitosamente"
+          },
+          "400": {
+            "description": "El stand no está asignado a ningún artesano"
+          },
+          "401": {
+            "description": "No se proporcionó un token de autenticación válido o la cuenta no existe"
+          },
+          "403": {
+            "description": "Cuenta inactiva o el usuario no tiene el rol ADMINISTRADOR"
+          },
+          "404": {
+            "description": "Stand no encontrado"
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     },
     "/productos/": {
@@ -3546,11 +3652,11 @@
           "example": {
             "type": "object",
             "properties": {
-              "numero_stand": {
+              "numero": {
                 "type": "number",
                 "example": 1
               },
-              "estado_stand": {
+              "estado": {
                 "type": "string",
                 "example": "DISPONIBLE"
               },
@@ -3875,32 +3981,6 @@
                   }
                 }
               },
-              "sectorId": {
-                "type": "object",
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "example": "integer"
-                  },
-                  "example": {
-                    "type": "number",
-                    "example": 1
-                  }
-                }
-              },
-              "artesanoId": {
-                "type": "object",
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "example": "integer"
-                  },
-                  "example": {
-                    "type": "number",
-                    "example": 1
-                  }
-                }
-              },
               "createdAt": {
                 "type": "object",
                 "properties": {
@@ -3914,24 +3994,171 @@
                   },
                   "example": {
                     "type": "string",
-                    "example": "2026-08-20T12:00:00.000Z"
+                    "example": "2026-11-09T12:00:00.000Z"
                   }
                 }
               },
-              "updatedAt": {
+              "artesano": {
                 "type": "object",
                 "properties": {
                   "type": {
                     "type": "string",
-                    "example": "string"
+                    "example": "object"
                   },
-                  "format": {
-                    "type": "string",
-                    "example": "date-time"
+                  "nullable": {
+                    "type": "boolean",
+                    "example": true
                   },
-                  "example": {
+                  "properties": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "example": "integer"
+                          },
+                          "example": {
+                            "type": "number",
+                            "example": 1
+                          }
+                        }
+                      },
+                      "nombre_artesano": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "example": "string"
+                          },
+                          "example": {
+                            "type": "string",
+                            "example": "Juan"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "sector": {
+                "type": "object",
+                "properties": {
+                  "type": {
                     "type": "string",
-                    "example": "2026-08-20T12:00:00.000Z"
+                    "example": "object"
+                  },
+                  "properties": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "example": "integer"
+                          },
+                          "example": {
+                            "type": "number",
+                            "example": 1
+                          }
+                        }
+                      },
+                      "nombre_sector": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "example": "string"
+                          },
+                          "example": {
+                            "type": "string",
+                            "example": "Sector A"
+                          }
+                        }
+                      },
+                      "pabellon": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "example": "object"
+                          },
+                          "properties": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "object",
+                                "properties": {
+                                  "type": {
+                                    "type": "string",
+                                    "example": "integer"
+                                  },
+                                  "example": {
+                                    "type": "number",
+                                    "example": 1
+                                  }
+                                }
+                              },
+                              "nombre_pabellon": {
+                                "type": "object",
+                                "properties": {
+                                  "type": {
+                                    "type": "string",
+                                    "example": "string"
+                                  },
+                                  "example": {
+                                    "type": "string",
+                                    "example": "Pabellón Norte"
+                                  }
+                                }
+                              },
+                              "edicion": {
+                                "type": "object",
+                                "properties": {
+                                  "type": {
+                                    "type": "string",
+                                    "example": "object"
+                                  },
+                                  "properties": {
+                                    "type": "object",
+                                    "properties": {
+                                      "id": {
+                                        "type": "object",
+                                        "properties": {
+                                          "type": {
+                                            "type": "string",
+                                            "example": "integer"
+                                          },
+                                          "example": {
+                                            "type": "number",
+                                            "example": 1
+                                          }
+                                        }
+                                      },
+                                      "nombre_edicion": {
+                                        "type": "object",
+                                        "properties": {
+                                          "type": {
+                                            "type": "string",
+                                            "example": "string"
+                                          },
+                                          "example": {
+                                            "type": "string",
+                                            "example": "Edición 2026"
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
                   }
                 }
               }
@@ -3940,6 +4167,62 @@
         },
         "xml": {
           "name": "Stand"
+        }
+      },
+      "AsignarStand": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "object"
+          },
+          "properties": {
+            "type": "object",
+            "properties": {
+              "artesanoId": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "integer"
+                  },
+                  "minimum": {
+                    "type": "number",
+                    "example": 0
+                  },
+                  "exclusiveMinimum": {
+                    "type": "boolean",
+                    "example": true
+                  },
+                  "maximum": {
+                    "type": "number",
+                    "example": 9007199254740991
+                  }
+                }
+              }
+            }
+          },
+          "required": {
+            "type": "array",
+            "example": [
+              "artesanoId"
+            ],
+            "items": {
+              "type": "string"
+            }
+          },
+          "example": {
+            "type": "object",
+            "properties": {
+              "artesanoId": {
+                "type": "number",
+                "example": 1
+              }
+            }
+          }
+        },
+        "xml": {
+          "name": "AsignarStand"
         }
       },
       "ActualizarStand": {
@@ -4041,11 +4324,11 @@
           "example": {
             "type": "object",
             "properties": {
-              "numero_stand": {
+              "numero": {
                 "type": "number",
                 "example": 1
               },
-              "estado_stand": {
+              "estado": {
                 "type": "string",
                 "example": "OCUPADO"
               },

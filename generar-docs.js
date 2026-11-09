@@ -29,6 +29,7 @@ import {
   ConsultaStands,
   Stand,
   ActualizarStand,
+  AsignarStand,
 } from "./src/documentacion/esquemas_stands.js";
 
 import {
@@ -95,6 +96,7 @@ const doc = {
       NuevoStand,
       ConsultaStands,
       Stand,
+      AsignarStand,
       ActualizarStand,
       NuevoUsuarioArtesano,
       NuevoAdministrador,

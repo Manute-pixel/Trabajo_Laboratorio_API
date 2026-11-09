@@ -169,13 +169,97 @@ router.delete("/:id",
 
 router.patch(
   "/asignar-stand-artesano/:id",
+  /*
+    #swagger.tags = ["Stands"]
+    #swagger.summary = "Asignar stand a un artesano"
+    #swagger.description = "Asigna un stand a un artesano específico."
+    #swagger.security = [{
+       bearerAuth: []
+    }]
+    
+    #swagger.parameters['id'] = {
+      in: 'path',
+      description: 'ID del stand que se quiere actualizar',
+      required: true,
+      type: 'integer',
+      example: 1
+    }
+
+    #swagger.requestBody = {
+      required: true,
+      content: {
+        "application/json": {
+          schema: {
+            $ref: "#/components/schemas/AsignarStand"
+          }
+        }
+      }
+    }
+
+    #swagger.responses[200] = {
+      description: "Stand asignado exitosamente"
+    }
+
+    #swagger.responses[404] = {
+      description: "Stand no encontrado"
+    }
+
+    #swagger.responses[400] = {
+      description: "Los datos enviados no son válidos"
+    }
+
+    #swagger.responses[401] = {
+      description: "No se proporcionó un token de autenticación válido o la cuenta no existe"
+    }
+
+    #swagger.responses[403] = {
+      description: "Cuenta inactiva o el usuario no tiene el rol ADMINISTRADOR"
+    }
+  */
   ...controlesAdministrador,
   validarId,
   validarAsignacionStand,
   asignarStand,
 );
+
 router.patch(
   "/desvincular-stand-artesano/:id",
+  /* 
+    #swagger.tags = ["Stands"]
+    #swagger.summary = "Desasignar stand de un artesano"
+    #swagger.description = "Desvincula al artesano asignado a un stand y cambia su estado a DISPONIBLE."
+    #swagger.security = [{
+      bearerAuth: []
+    }]
+
+    #swagger.parameters['id'] = {
+      in: 'path',
+      description: 'ID del stand que se quiere desvincular',
+      required: true,
+      type: 'integer',
+      example: 1
+    }
+
+    #swagger.responses[200] = {
+      description: "Stand desvinculado exitosamente"
+    }
+
+    #swagger.responses[400] = {
+      description: "El stand no está asignado a ningún artesano"
+    }
+
+    #swagger.responses[404] = {
+      description: "Stand no encontrado"
+    }
+
+    #swagger.responses[401] = {
+      description: "No se proporcionó un token de autenticación válido o la cuenta no existe"
+    }
+
+    #swagger.responses[403] = {
+      description: "Cuenta inactiva o el usuario no tiene el rol ADMINISTRADOR"
+    }
+  */
   ...controlesAdministrador,
   validarId,
   desasignarStand,
@@ -202,23 +286,60 @@ router.get("/",
       type: "string"
     }
 
-    #swagger.parameters['sectorId'] = {
-      in: "query",
-      description: "Filtrar por sector",
-      type: "integer"
+    #swagger.parameters['sector'] = {
+     in: "query",
+     description: "Filtrar por nombre del sector",
+     type: "string"
     }
 
-    #swagger.parameters['artesanoId'] = {
-      in: "query",
-      description: "Filtrar por artesano",
-      type: "integer"
+    #swagger.parameters['pabellon'] = {
+     in: "query",
+     description: "Filtrar por nombre del pabellón",
+     type: "string"
     }
-  
+
+    #swagger.parameters['edicion'] = {
+     in: "query",
+     description: "Filtrar por nombre de la edición",
+     type: "string"
+    }
+
+    #swagger.parameters['artesano'] = {
+     in: "query",
+     description: "Filtrar por nombre del artesano",
+     type: "string"
+     }
+
+    #swagger.parameters['fecha'] = {
+     in: "query",
+     description: "Filtrar por fecha exacta de creación del stand",
+     type: "string",
+     format: "date",
+     example: "2026-11-09"
+    }
+
+    #swagger.parameters['fechaDesde'] = {
+     in: "query",
+     description: "Filtrar desde una fecha de creación",
+     type: "string",
+     format: "date",
+     example: "2026-11-01"
+    }
+
+    #swagger.parameters['fechaHasta'] = {
+     in: "query",
+     description: "Filtrar hasta una fecha de creación",
+     type: "string",
+     format: "date",
+     example: "2026-11-30"
+    }
+
     #swagger.parameters['ordenPor'] = {
-      in: "query",
-      description: "Campo por el que se ordenan los resultados",
-      type: "string",
-      enum: ["numero", "estado", "sector", "artesano"]
+     in: "query",
+     description: "Campo por el que se ordenan los resultados",
+     type: "string",
+     enum: ["numero", "estado", "sector", "pabellon", "edicion", "artesano", "fecha"],
+     default: "fecha"
     }
 
     #swagger.parameters['direccion'] = {
@@ -243,7 +364,7 @@ router.get("/",
     }
 
     #swagger.responses[200] = {
-      description: "Consulta realizada correctamente"
+    description: "Listado de stands obtenido correctamente",
     }
 
     #swagger.responses[400] = {
