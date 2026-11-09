@@ -2,8 +2,7 @@ import z from "zod";
 
 export const postulacionSchema = z.object({
   artesanoId: z.coerce.number().int().positive(),
-  edicionId: z.coerce.number().int().positive(),
-  estado: z.enum(["pendiente", "aceptada", "rechazada", "corregir"]),
+  edicionId: z.coerce.number().int().positive()
 });
 
 export const actualizarPostulacionSchema = z.object({

@@ -326,6 +326,48 @@
       }
     },
     "/productos/": {
+      "post": {
+        "tags": [
+          "Productos"
+        ],
+        "summary": "Crear un producto",
+        "description": "Permite a un administrador registrar un producto y asignarlo a un artesano.",
+        "responses": {
+          "201": {
+            "description": "Producto creado exitosamente"
+          },
+          "400": {
+            "description": "Los datos enviados no son válidos"
+          },
+          "401": {
+            "description": "No se proporcionó un token válido o la cuenta no existe"
+          },
+          "403": {
+            "description": "Cuenta inactiva o el usuario no tiene el rol ADMINISTRADOR"
+          },
+          "404": {
+            "description": "No se encontró la categoría o el artesano indicado"
+          },
+          "500": {
+            "description": "Error interno del servidor"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NuevoProducto"
+              }
+            }
+          }
+        }
+      },
       "get": {
         "tags": [
           "Productos"
@@ -437,48 +479,6 @@
           }
         },
         "security": []
-      },
-      "post": {
-        "tags": [
-          "Productos"
-        ],
-        "summary": "Crear un producto",
-        "description": "Permite a un administrador registrar un producto y asignarlo a un artesano.",
-        "responses": {
-          "201": {
-            "description": "Producto creado exitosamente"
-          },
-          "400": {
-            "description": "Los datos enviados no son válidos"
-          },
-          "401": {
-            "description": "No se proporcionó un token válido o la cuenta no existe"
-          },
-          "403": {
-            "description": "Cuenta inactiva o el usuario no tiene el rol ADMINISTRADOR"
-          },
-          "404": {
-            "description": "No se encontró la categoría o el artesano indicado"
-          },
-          "500": {
-            "description": "Error interno del servidor"
-          }
-        },
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/NuevoProducto"
-              }
-            }
-          }
-        }
       }
     },
     "/productos/{id}": {
@@ -956,25 +956,165 @@
     },
     "/postulaciones/": {
       "get": {
-        "description": "",
+        "tags": [
+          "Postulaciones"
+        ],
+        "summary": "Listar y buscar postulaciones",
+        "description": "Permite consultar postulaciones aplicando filtros, ordenamiento y paginación.",
+        "parameters": [
+          {
+            "name": "artesanoId",
+            "in": "query",
+            "description": "Filtrar por el id de un artesano",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "edicionId",
+            "in": "query",
+            "description": "Filtrar por el id de una edición",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "estado_postulacion",
+            "in": "query",
+            "description": "Filtrar por el estado de una postulación",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ordenPor",
+            "in": "query",
+            "description": "Campo por el que se ordenan los resultados",
+            "enum": [
+              "artesanoId",
+              "edicionId",
+              "fecha_postulacion",
+              "estado_postulacion"
+            ],
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "direccion",
+            "in": "query",
+            "description": "Sentido del ordenamiento",
+            "enum": [
+              "asc",
+              "desc"
+            ],
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pagina",
+            "in": "query",
+            "description": "Número de página",
+            "default": 1,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "limite",
+            "in": "query",
+            "description": "Cantidad de resultados por página, entre 1 y 50",
+            "default": 10,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Consulta realizada correctamente"
+          },
+          "400": {
+            "description": "Los filtros enviados no son válidos"
+          },
+          "401": {
+            "description": "No se proporcionó un token de autenticación válido o la cuenta no existe"
+          },
+          "403": {
+            "description": "Cuenta inactiva o el usuario no tiene el rol ADMINISTRADOR"
           }
-        }
-      },
-      "post": {
-        "description": "",
-        "responses": {
-          "201": {
-            "description": "Created"
+        },
+        "security": [
+          {
+            "bearerAuth": []
           }
-        }
+        ]
       }
     },
     "/postulaciones/{id}": {
       "get": {
-        "description": "",
+        "tags": [
+          "Postulaciones"
+        ],
+        "summary": "Obtener una postulación por su ID",
+        "description": "Obtiene los detalles de una postulación específica utilizando su ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID de la postulación que se quiere obtener",
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Postulación encontrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Postulacion"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Postulacion"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "El ID es inválido"
+          },
+          "401": {
+            "description": "No se proporcionó un token de autenticación válido o la cuenta no existe"
+          },
+          "403": {
+            "description": "Cuenta inactiva o el usuario no tiene el rol ADMINISTRADOR"
+          },
+          "404": {
+            "description": "No se encontró el stand"
+          },
+          "500": {
+            "description": "Error interno del servidor"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Postulaciones"
+        ],
+        "summary": "Crear una postulación",
+        "description": "Registra una nueva postulación.",
         "parameters": [
           {
             "name": "id",
@@ -986,13 +1126,41 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
+          "201": {
+            "description": "Postulación creada exitosamente"
+          },
+          "400": {
+            "description": "Los datos enviados no son válidos"
+          },
+          "401": {
+            "description": "No se proporcionó un token de autenticación válido o la cuenta no existe"
+          },
+          "403": {
+            "description": "Cuenta inactiva o el usuario no tiene el rol ADMINISTRADOR"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NuevaPostulacion"
+              }
+            }
           }
         }
       },
       "put": {
-        "description": "",
+        "tags": [
+          "Postulaciones"
+        ],
+        "summary": "Actualizar una postulación",
+        "description": "Actualiza la información de una postulación existente.",
         "parameters": [
           {
             "name": "id",
@@ -1000,32 +1168,122 @@
             "required": true,
             "schema": {
               "type": "string"
-            }
+            },
+            "description": "ID de la postulación que se quiere actualizar",
+            "example": 1
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Postulación actualizada exitosamente"
+          },
+          "400": {
+            "description": "Los datos enviados no son válidos"
+          },
+          "401": {
+            "description": "No se proporcionó un token de autenticación válido o la cuenta no existe"
+          },
+          "403": {
+            "description": "Cuenta inactiva o el usuario no tiene el rol ADMINISTRADOR"
+          },
+          "404": {
+            "description": "Postulación no encontrada"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ActualizarPostulacion"
+              }
+            }
           }
         }
       }
     },
     "/postulaciones/mi-postulacion": {
       "get": {
-        "description": "",
+        "tags": [
+          "Postulaciones"
+        ],
+        "summary": "Consultar mi postulación",
+        "description": "Permite al artesano autenticado consultar su postulación, incluyendo los datos de la edición y del artesano.",
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Postulación obtenida exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MiPostulacion"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/MiPostulacion"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Cuenta inexistente o no autenticada"
+          },
+          "403": {
+            "description": "Cuenta inactiva o el usuario no tiene el rol ARTESANO"
+          },
+          "404": {
+            "description": "El artesano no tiene una postulación registrada"
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     },
     "/postulaciones/postularme": {
       "post": {
-        "description": "",
+        "tags": [
+          "Postulaciones"
+        ],
+        "summary": "Postularme a una edición",
+        "description": "Permite a un artesano postularse a una edición.",
         "responses": {
           "201": {
-            "description": "Created"
+            "description": "Postulación creada exitosamente"
+          },
+          "400": {
+            "description": "Datos inválidos"
+          },
+          "401": {
+            "description": "Cuenta inexistente o no autenticada"
+          },
+          "403": {
+            "description": "Cuenta inactiva o el usuario no tiene el rol ARTESANO"
+          },
+          "404": {
+            "description": "Edición no encontrada"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CrearMiPostulacion"
+              }
+            }
           }
         }
       }
@@ -4492,6 +4750,788 @@
         },
         "xml": {
           "name": "ActualizarActivo"
+        }
+      },
+      "ConsultarPostulaciones": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "object"
+          },
+          "properties": {
+            "type": "object",
+            "properties": {
+              "artesanoId": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "integer"
+                  },
+                  "minimum": {
+                    "type": "number",
+                    "example": 0
+                  },
+                  "exclusiveMinimum": {
+                    "type": "boolean",
+                    "example": true
+                  },
+                  "maximum": {
+                    "type": "number",
+                    "example": 9007199254740991
+                  }
+                }
+              },
+              "edicionId": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "integer"
+                  },
+                  "minimum": {
+                    "type": "number",
+                    "example": 0
+                  },
+                  "exclusiveMinimum": {
+                    "type": "boolean",
+                    "example": true
+                  },
+                  "maximum": {
+                    "type": "number",
+                    "example": 9007199254740991
+                  }
+                }
+              },
+              "estado": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "enum": {
+                    "type": "array",
+                    "example": [
+                      "pendiente",
+                      "aceptada",
+                      "rechazada",
+                      "corregir"
+                    ],
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "ordenPor": {
+                "type": "object",
+                "properties": {
+                  "default": {
+                    "type": "string",
+                    "example": "artesanoId"
+                  },
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "enum": {
+                    "type": "array",
+                    "example": [
+                      "artesanoId",
+                      "edicionId",
+                      "estado"
+                    ],
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "direccion": {
+                "type": "object",
+                "properties": {
+                  "default": {
+                    "type": "string",
+                    "example": "asc"
+                  },
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "enum": {
+                    "type": "array",
+                    "example": [
+                      "asc",
+                      "desc"
+                    ],
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "pagina": {
+                "type": "object",
+                "properties": {
+                  "default": {
+                    "type": "number",
+                    "example": 1
+                  },
+                  "type": {
+                    "type": "string",
+                    "example": "integer"
+                  },
+                  "minimum": {
+                    "type": "number",
+                    "example": 0
+                  },
+                  "exclusiveMinimum": {
+                    "type": "boolean",
+                    "example": true
+                  },
+                  "maximum": {
+                    "type": "number",
+                    "example": 9007199254740991
+                  }
+                }
+              },
+              "limite": {
+                "type": "object",
+                "properties": {
+                  "default": {
+                    "type": "number",
+                    "example": 10
+                  },
+                  "type": {
+                    "type": "string",
+                    "example": "integer"
+                  },
+                  "minimum": {
+                    "type": "number",
+                    "example": 1
+                  },
+                  "maximum": {
+                    "type": "number",
+                    "example": 50
+                  }
+                }
+              }
+            }
+          }
+        },
+        "xml": {
+          "name": "ConsultarPostulaciones"
+        }
+      },
+      "Postulacion": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "object"
+          },
+          "properties": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "integer"
+                  },
+                  "example": {
+                    "type": "number",
+                    "example": 1
+                  }
+                }
+              },
+              "artesanoId": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "integer"
+                  },
+                  "example": {
+                    "type": "number",
+                    "example": 1
+                  }
+                }
+              },
+              "edicionId": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "integer"
+                  },
+                  "example": {
+                    "type": "number",
+                    "example": 1
+                  }
+                }
+              },
+              "estado_postulacion": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "example": {
+                    "type": "string",
+                    "example": "PENDIENTE"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "xml": {
+          "name": "Postulacion"
+        }
+      },
+      "NuevaPostulacion": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "object"
+          },
+          "properties": {
+            "type": "object",
+            "properties": {
+              "artesanoId": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "integer"
+                  },
+                  "minimum": {
+                    "type": "number",
+                    "example": 0
+                  },
+                  "exclusiveMinimum": {
+                    "type": "boolean",
+                    "example": true
+                  },
+                  "maximum": {
+                    "type": "number",
+                    "example": 9007199254740991
+                  }
+                }
+              },
+              "edicionId": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "integer"
+                  },
+                  "minimum": {
+                    "type": "number",
+                    "example": 0
+                  },
+                  "exclusiveMinimum": {
+                    "type": "boolean",
+                    "example": true
+                  },
+                  "maximum": {
+                    "type": "number",
+                    "example": 9007199254740991
+                  }
+                }
+              }
+            }
+          },
+          "required": {
+            "type": "array",
+            "example": [
+              "artesanoId",
+              "edicionId"
+            ],
+            "items": {
+              "type": "string"
+            }
+          },
+          "example": {
+            "type": "object",
+            "properties": {
+              "artesanoId": {
+                "type": "number",
+                "example": 1
+              },
+              "edicionId": {
+                "type": "number",
+                "example": 1
+              }
+            }
+          }
+        },
+        "xml": {
+          "name": "NuevaPostulacion"
+        }
+      },
+      "ActualizarPostulacion": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "object"
+          },
+          "properties": {
+            "type": "object",
+            "properties": {
+              "artesanoId": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "integer"
+                  },
+                  "minimum": {
+                    "type": "number",
+                    "example": 0
+                  },
+                  "exclusiveMinimum": {
+                    "type": "boolean",
+                    "example": true
+                  },
+                  "maximum": {
+                    "type": "number",
+                    "example": 9007199254740991
+                  }
+                }
+              },
+              "edicionId": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "integer"
+                  },
+                  "minimum": {
+                    "type": "number",
+                    "example": 0
+                  },
+                  "exclusiveMinimum": {
+                    "type": "boolean",
+                    "example": true
+                  },
+                  "maximum": {
+                    "type": "number",
+                    "example": 9007199254740991
+                  }
+                }
+              }
+            }
+          },
+          "required": {
+            "type": "array",
+            "example": [
+              "artesanoId",
+              "edicionId"
+            ],
+            "items": {
+              "type": "string"
+            }
+          },
+          "example": {
+            "type": "object",
+            "properties": {
+              "artesanoId": {
+                "type": "number",
+                "example": 1
+              },
+              "edicionId": {
+                "type": "number",
+                "example": 1
+              },
+              "estado": {
+                "type": "string",
+                "example": "ACEPTADA"
+              }
+            }
+          }
+        },
+        "xml": {
+          "name": "ActualizarPostulacion"
+        }
+      },
+      "MiPostulacion": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "object"
+          },
+          "properties": {
+            "type": "object",
+            "properties": {
+              "fecha_postulacion": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "format": {
+                    "type": "string",
+                    "example": "date-time"
+                  },
+                  "example": {
+                    "type": "string",
+                    "example": "2026-11-08T15:30:00.000Z"
+                  }
+                }
+              },
+              "estado_postulacion": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "example": {
+                    "type": "string",
+                    "example": "PENDIENTE"
+                  }
+                }
+              },
+              "edicion": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "object"
+                  },
+                  "properties": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "example": "integer"
+                          },
+                          "example": {
+                            "type": "number",
+                            "example": 1
+                          }
+                        }
+                      },
+                      "nombre_edicion": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "example": "string"
+                          },
+                          "example": {
+                            "type": "string",
+                            "example": "Fiesta Nacional del Poncho"
+                          }
+                        }
+                      },
+                      "anio_edicion": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "example": "integer"
+                          },
+                          "example": {
+                            "type": "number",
+                            "example": 2026
+                          }
+                        }
+                      },
+                      "fecha_inicio": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "example": "string"
+                          },
+                          "format": {
+                            "type": "string",
+                            "example": "date"
+                          },
+                          "example": {
+                            "type": "string",
+                            "example": "2026-07-17"
+                          }
+                        }
+                      },
+                      "fecha_fin": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "example": "string"
+                          },
+                          "format": {
+                            "type": "string",
+                            "example": "date"
+                          },
+                          "example": {
+                            "type": "string",
+                            "example": "2026-07-26"
+                          }
+                        }
+                      },
+                      "estado_edicion": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "example": "string"
+                          },
+                          "example": {
+                            "type": "string",
+                            "example": "PLANIFICADA"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "artesano": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "object"
+                  },
+                  "properties": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "example": "integer"
+                          },
+                          "example": {
+                            "type": "number",
+                            "example": 1
+                          }
+                        }
+                      },
+                      "nombre_artesano": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "example": "string"
+                          },
+                          "example": {
+                            "type": "string",
+                            "example": "María"
+                          }
+                        }
+                      },
+                      "apellido_artesano": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "example": "string"
+                          },
+                          "example": {
+                            "type": "string",
+                            "example": "Gómez"
+                          }
+                        }
+                      },
+                      "dni": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "example": "string"
+                          },
+                          "example": {
+                            "type": "string",
+                            "example": "30123456"
+                          }
+                        }
+                      },
+                      "fecha_Nacimiento": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "example": "string"
+                          },
+                          "format": {
+                            "type": "string",
+                            "example": "date"
+                          },
+                          "example": {
+                            "type": "string",
+                            "example": "1985-05-12"
+                          }
+                        }
+                      },
+                      "rubroId": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "example": "integer"
+                          },
+                          "example": {
+                            "type": "number",
+                            "example": 2
+                          }
+                        }
+                      },
+                      "localidadId": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "example": "integer"
+                          },
+                          "example": {
+                            "type": "number",
+                            "example": 3
+                          }
+                        }
+                      },
+                      "provinciaId": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "example": "integer"
+                          },
+                          "example": {
+                            "type": "number",
+                            "example": 1
+                          }
+                        }
+                      },
+                      "email_artesano": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "example": "string"
+                          },
+                          "format": {
+                            "type": "string",
+                            "example": "email"
+                          },
+                          "example": {
+                            "type": "string",
+                            "example": "maria@gmail.com"
+                          }
+                        }
+                      },
+                      "telefono_artesano": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "example": "string"
+                          },
+                          "example": {
+                            "type": "string",
+                            "example": "3834123456"
+                          }
+                        }
+                      },
+                      "usuarioId": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "example": "string"
+                          },
+                          "format": {
+                            "type": "string",
+                            "example": "uuid"
+                          },
+                          "example": {
+                            "type": "string",
+                            "example": "550e8400-e29b-41d4-a716-446655440000"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "xml": {
+          "name": "MiPostulacion"
+        }
+      },
+      "CrearMiPostulacion": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "object"
+          },
+          "properties": {
+            "type": "object",
+            "properties": {
+              "edicionId": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "integer"
+                  },
+                  "minimum": {
+                    "type": "number",
+                    "example": 0
+                  },
+                  "exclusiveMinimum": {
+                    "type": "boolean",
+                    "example": true
+                  },
+                  "maximum": {
+                    "type": "number",
+                    "example": 9007199254740991
+                  }
+                }
+              }
+            }
+          },
+          "required": {
+            "type": "array",
+            "example": [
+              "edicionId"
+            ],
+            "items": {
+              "type": "string"
+            }
+          },
+          "example": {
+            "type": "object",
+            "properties": {
+              "edicionId": {
+                "type": "number",
+                "example": 1
+              }
+            }
+          }
+        },
+        "xml": {
+          "name": "CrearMiPostulacion"
         }
       }
     },

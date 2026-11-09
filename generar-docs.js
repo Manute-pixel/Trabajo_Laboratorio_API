@@ -31,6 +31,15 @@ import {
   ActualizarStand,
 } from "./src/documentacion/esquemas_stands.js";
 
+import {
+  ConsultarPostulaciones,
+  Postulacion,
+  NuevaPostulacion,
+  ActualizarPostulacion,
+  MiPostulacion,
+  CrearMiPostulacion
+} from "./src/documentacion/esquemas_postulaciones.js";
+
 const generarDocs = swaggerAutogen({
   openapi: "3.0.0",
 });
@@ -89,6 +98,12 @@ const doc = {
       AsignarAdministrador,
       RetirarRolParametros,
       ActualizarActivo,
+      ConsultarPostulaciones,
+      Postulacion,
+      NuevaPostulacion,
+      ActualizarPostulacion,
+      MiPostulacion,
+      CrearMiPostulacion
     },
 
     securitySchemes: {
