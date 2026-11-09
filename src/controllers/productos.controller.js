@@ -63,7 +63,7 @@ export const eliminarProducto = async (req, res, next) => {
 export const obtenerMisProductos = async (req, res, next) => {
   try {
     const criterios = req.dto;
-    const usuarioId = req.ContextoUsuario.id;
+    const usuarioId = req.contextoUsuario.id;
     const productos = await productoService.listarMisProductos(
       usuarioId,
       criterios,
@@ -78,7 +78,7 @@ export const obtenerMisProductos = async (req, res, next) => {
 export const obtenerMiProducto = async (req, res, next) => {
   try {
     const id = req.id;
-    const usuarioId = req.ContextoUsuario.id;
+    const usuarioId = req.contextoUsuario.id;
     const producto = await productoService.obtenerMiProducto(id, usuarioId);
 
     res.status(200).json(producto);
@@ -90,10 +90,38 @@ export const obtenerMiProducto = async (req, res, next) => {
 export const crearMiProducto = async (req, res, next) => {
   try {
     const datos = req.consultaValidada;
-    const usuarioId = req.ContextoUsuario.id;
+    const usuarioId = req.contextoUsuario.id;
     const resultado = await productoService.crearMiProducto(usuarioId, datos);
 
     res.status(201).json(resultado);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const actualizarMiProducto = async (req, res, next) => {
+  try {
+    const usuarioId = req.contextoUsuario.id;
+    const productoId = req.id;
+    const datos = req.productoValidado;
+    const productoActualizado = await productoService.actualizarMiProducto(
+      productoId,
+      usuarioId,
+      datos
+    );
+    res.status(200).json(productoActualizado);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const eliminarMiProducto = async (req, res, next) => {
+  try {
+    const usuarioId = req.contextoUsuario.id;
+    const productoId = req.id;
+    await productoService.eliminarMiProducto(productoId, usuarioId);
+
+    res.status(204).send(`Producto con ID ${productoId} eliminado exitosamente`);
   } catch (error) {
     next(error);
   }
