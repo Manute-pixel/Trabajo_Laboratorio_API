@@ -103,3 +103,10 @@ export const standActualizacionSchema = z.object({
     .int()
     .positive({ message: "El artesanoId debe ser un entero positivo" }),
 });
+
+export const standAsignacionSchema = z.object({
+  artesanoId: z.coerce
+    .number()
+    .int()
+    .positive({ message: "El artesanoId debe ser un entero positivo" }),
+});
