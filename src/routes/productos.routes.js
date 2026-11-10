@@ -4,7 +4,10 @@ import { autenticarUsuario } from "../middlewares/autenticacion.middleware.js";
 import { cargarContextoUsuario } from "../middlewares/autorizacion.middleware/cargarContextoUsuario.js";
 import { autorizarRoles } from "../middlewares/autorizacion.middleware/autorizarRoles.js";
 import { validarConsultaProductos } from "../middlewares/validarConsultaProductos.js";
-import { validarProducto } from "../middlewares/validarProducto.js";
+import {
+  validarProducto,
+  validarMiproducto,
+} from "../middlewares/validarProducto.js";
 import { validarActualizacionProducto } from "../middlewares/validarActualizacionProducto.js";
 import { validarId } from "../middlewares/validarId.js";
 
@@ -18,6 +21,8 @@ import {
   obtenerMisProductos,
   obtenerMiProducto,
   crearMiProducto,
+  actualizarMiProducto,
+  eliminarMiProducto,
 } from "../controllers/productos.controller.js";
 
 const router = express.Router();
@@ -28,91 +33,7 @@ const controlesAdministrador = [
   autorizarRoles("ADMINISTRADOR"),
 ];
 
-
-//rutas publica para obtener productos
-router.get("/", 
-  /*
-    #swagger.tags = ["Productos"]
-    #swagger.summary = "Listar y buscar productos"
-    #swagger.description = "Permite consultar productos aplicando filtros, ordenamiento y paginación."
-    #swagger.security = []
-
-    #swagger.parameters['nombre'] = {
-      in: "query",
-      description: "Filtrar por nombre",
-      type: "string"
-    }
-
-    #swagger.parameters['descripcion'] = {
-      in: "query",
-      description: "Filtrar por descripción",
-      type: "string"
-    }
-
-    #swagger.parameters['precioMin'] = {
-      in: "query",
-      description: "Filtrar por precio mínimo",
-      type: "number"
-    }
-
-    #swagger.parameters['precioMax'] = {
-      in: "query",
-      description: "Filtrar por precio máximo",
-      type: "number"
-    }
-
-    #swagger.parameters['categoriaId'] = {
-      in: "query",
-      description: "Filtrar por categoría",
-      type: "integer"
-    }
-
-    #swagger.parameters['artesanoId'] = {
-      in: "query",
-      description: "Filtrar por artesano",
-      type: "integer"
-    }
-  
-    #swagger.parameters['ordenPor'] = {
-      in: "query",
-      description: "Campo por el que se ordenan los resultados",
-      type: "string",
-      enum: ["nombre", "descripcion", "precioMin", "precioMax", "categoriaId", "artesanoId"]
-    }
-
-    #swagger.parameters['direccion'] = {
-      in: "query",
-      description: "Sentido del ordenamiento",
-      type: "string",
-      enum: ["asc", "desc"]
-    }
-
-    #swagger.parameters['pagina'] = {
-      in: "query",
-      description: "Número de página",
-      type: "integer",
-      default: 1
-    }
-
-    #swagger.parameters['limite'] = {
-      in: "query",
-      description: "Cantidad de resultados por página, entre 1 y 50",
-      type: "integer",
-      default: 10
-    }
-
-    #swagger.responses[200] = {
-      description: "Consulta realizada correctamente"
-    }
-
-    #swagger.responses[400] = {
-      description: "Los filtros enviados no son válidos"
-    }
-  */
-  validarConsultaProductos, obtenerProductos);
-
-
-//rutas de administrador
+//rutas protegidas de administrador
 router.post("/", 
   /* #swagger.tags = ["Productos"]
        #swagger.summary = "Crear un producto"
@@ -230,7 +151,8 @@ router.delete("/:id",
     */
   ...controlesAdministrador, validarId, eliminarProducto);
 
-//rutas de artesano
+
+//rutas protegidas de artesano
 router.get(
   "/mis-productos",
    /*
@@ -247,22 +169,16 @@ router.get(
       type: "string"
     }
 
-    #swagger.parameters['descripcion'] = {
-      in: "query",
-      description: "Filtrar por descripción",
-      type: "string"
-    }
-
     #swagger.parameters['precioMin'] = {
       in: "query",
       description: "Filtrar por precio mínimo",
-      type: "number"
+      type: "integer"
     }
 
     #swagger.parameters['precioMax'] = {
       in: "query",
       description: "Filtrar por precio máximo",
-      type: "number"
+      type: "integer"
     }
 
     #swagger.parameters['categoriaId'] = {
@@ -270,19 +186,13 @@ router.get(
       description: "Filtrar por categoría",
       type: "integer"
     }
-
-    #swagger.parameters['artesanoId'] = {
-      in: "query",
-      description: "Filtrar por artesano",
-      type: "integer"
-    }
   
     #swagger.parameters['ordenPor'] = {
-      in: "query",
-      description: "Campo por el que se ordenan los resultados",
-      type: "string",
-      enum: ["nombre", "descripcion", "precioMin", "precioMax", "categoriaId", "artesanoId"]
-    }
+    in: "query",
+    description: "Campo por el que se ordenan los resultados",
+    type: "string",
+    enum: ["nombre", "precio", "categoriaId", "artesanoId"]
+}
 
     #swagger.parameters['direccion'] = {
       in: "query",
@@ -328,9 +238,8 @@ router.get(
   obtenerMisProductos,
 );
 
-
 router.get(
-  "/mi-productos/:id",
+  "/mis-productos/:id",
   /*
     #swagger.tags = ["Productos"]
     #swagger.summary = "Obtener uno de mis productos"
@@ -349,7 +258,7 @@ router.get(
 
     #swagger.responses[200] = {
       description: 'Producto encontrado',
-      schema: { $ref: '#/components/schemas/Producto' }
+      schema: { $ref: '#/components/schemas/MiProductoRespuesta' }
     }
 
     #swagger.responses[400] = {
@@ -423,12 +332,12 @@ router.post(
   autenticarUsuario,
   cargarContextoUsuario,
   autorizarRoles("ARTESANO"),
-  validarProducto,
+  validarMiproducto,
   crearMiProducto,
 );
 
 router.put(
-  "/mi-productos/:id",
+  "/actualizar-mi-producto/:id",
 /* #swagger.tags = ["Productos"]
        #swagger.summary = "Actualizar uno de mis productos"
        #swagger.description = "Permite al artesano autenticado actualizar un producto que le pertenece."
@@ -473,11 +382,12 @@ router.put(
   cargarContextoUsuario,
   autorizarRoles("ARTESANO", ),
   validarId,
-  actualizarProducto
+  validarMiproducto,
+  actualizarMiProducto,
 );
 
 router.delete(
-  "/mi-productos/:id",
+  "/eliminar-mi-producto/:id",
 /* #swagger.tags = ["Productos"]
        #swagger.summary = "Eliminar uno de mis productos"
        #swagger.description = "Permite al artesano autenticado eliminar un producto que le pertenece."
@@ -512,9 +422,85 @@ router.delete(
   cargarContextoUsuario,
   autorizarRoles("ARTESANO"),
   validarId,
-  eliminarProducto
+  eliminarMiProducto
 );
 
+
+//rutas publica para obtener productos
+router.get("/", 
+  /*
+    #swagger.tags = ["Productos"]
+    #swagger.summary = "Listar y buscar productos"
+    #swagger.description = "Permite consultar productos aplicando filtros, ordenamiento y paginación."
+    #swagger.security = []
+
+    #swagger.parameters['nombre'] = {
+      in: "query",
+      description: "Filtrar por nombre",
+      type: "string"
+    }
+
+    #swagger.parameters['precioMin'] = {
+      in: "query",
+      description: "Filtrar por precio mínimo",
+      type: "integer"
+    }
+
+    #swagger.parameters['precioMax'] = {
+      in: "query",
+      description: "Filtrar por precio máximo",
+      type: "integer"
+    }
+
+    #swagger.parameters['categoriaId'] = {
+      in: "query",
+      description: "Filtrar por categoría",
+      type: "integer"
+    }
+
+    #swagger.parameters['artesanoId'] = {
+      in: "query",
+      description: "Filtrar por artesano",
+      type: "integer"
+    }
+  
+    #swagger.parameters['ordenPor'] = {
+    in: "query",
+    description: "Campo por el que se ordenan los resultados",
+    type: "string",
+    enum: ["nombre", "precio", "categoriaId", "artesanoId"]
+}
+
+    #swagger.parameters['direccion'] = {
+      in: "query",
+      description: "Sentido del ordenamiento",
+      type: "string",
+      enum: ["asc", "desc"]
+    }
+
+    #swagger.parameters['pagina'] = {
+      in: "query",
+      description: "Número de página",
+      type: "integer",
+      default: 1
+    }
+
+    #swagger.parameters['limite'] = {
+      in: "query",
+      description: "Cantidad de resultados por página, entre 1 y 50",
+      type: "integer",
+      default: 10
+    }
+
+    #swagger.responses[200] = {
+      description: "Consulta realizada correctamente"
+    }
+
+    #swagger.responses[400] = {
+      description: "Los filtros enviados no son válidos"
+    }
+  */
+  validarConsultaProductos, obtenerProductos);
 
 //ruta publica para obtener un producto por su id
 router.get("/:id", 

@@ -30,15 +30,6 @@ export const crearPostulacion = async (req, res, next) => {
     const datos = req.postulacionValidada;
     const nuevaPostulacion = await postulacionesService.crearPostulacion(datos);
 
-    if (!nuevaPostulacion) {
-      return next(
-        crearError(
-          "ya existe una postulacion para este artesano en esta edicion",
-          400,
-        ),
-      );
-    }
-
     res.status(201).json({
       mensaje: "Postulacion creada exitosamente",
       postulacion: nuevaPostulacion,
@@ -48,17 +39,13 @@ export const crearPostulacion = async (req, res, next) => {
   }
 };
 
-export const actualizarPostulacion = async (req, res, next) => {
+export const actualizarPostulacionAdmin = async (req, res, next) => {
   try {
     const id = req.id;
-    const datos = req.actualizacionValidada;
+    const { estado } = req.actualizacionValidada;
 
     const postulacionActualizada =
-      await postulacionesService.actualizarPostulacion(id, datos);
-
-    if (!postulacionActualizada) {
-      return next(crearError(`Postulacion con id ${id} no encontrada`, 404));
-    }
+      await postulacionesService.actualizarPostulacion(id, estado);
 
     res.status(200).json({
       mensaje: "Postulacion actualizada exitosamente",
@@ -73,7 +60,7 @@ export const actualizarPostulacion = async (req, res, next) => {
 export const crearMiPostulacion = async (req, res, next) => {
   try {
     const usuarioId = req.contextoUsuario.id;
-    const { edicionId } = req.postulacionValidada;
+    const { edicionId } = req.MipostulacionValidada;
 
     const nuevaPostulacion = await postulacionesService.crearMiPostulacion(
       usuarioId,
@@ -96,6 +83,23 @@ export const obtenerMiPostulacion = async (req, res, next) => {
       await postulacionesService.obtenerMiPostulacion(usuarioId);
 
     res.status(200).json(postulacion);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const actualizarMiPostulacion = async (req, res, next) => {
+  try {
+    const usuarioId = req.contextoUsuario.id;
+    const datos = req.actualizacionValidada;
+
+    const postulacionActualizada =
+      await postulacionesService.actualizarMiPostulacion(usuarioId, datos);
+
+    res.status(200).json({
+      mensaje: "Postulacion actualizada exitosamente",
+      postulacion: postulacionActualizada,
+    });
   } catch (error) {
     next(error);
   }

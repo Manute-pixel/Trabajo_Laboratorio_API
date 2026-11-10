@@ -1,5 +1,6 @@
 import express from "express";
 import { logger } from "./middlewares/logger.js";
+import { registrarConsultas } from "./middlewares/consultas.middlewares/registrarConsultas.js";
 import { manejadorErrores } from "./middlewares/manejadorErrores.js";
 import { noEncontrado } from "./middlewares/noEncontrado.js";
 import artesanosRoutes from "./routes/artesanos.routes.js";
@@ -7,6 +8,7 @@ import postulacionesRoutes from "./routes/postulaciones.routes.js";
 import standsRoutes from "./routes/stands.routes.js";
 import productosRoutes from "./routes/productos.routes.js";
 import usuariosRoutes from "./routes/usuarios.routes.js";
+import reportesRoutes from "./routes/reportes.routes.js";
 import "./config/jwt.js";
 import { iniciarLimpiezaRevocaciones } from "./tareas/limpiezaRevocaciones.js";
 import swaggerUi from "swagger-ui-express";
@@ -17,11 +19,13 @@ const PORT = 3000;
 
 app.use(logger);
 app.use(express.json());
+app.use(registrarConsultas()); // Middleware para registrar consultas publicas
 app.use("/stands", standsRoutes);
 app.use("/productos", productosRoutes);
 app.use("/postulaciones", postulacionesRoutes);
 app.use("/artesanos", artesanosRoutes);
 app.use("/usuarios", usuariosRoutes);
+app.use("/reportes", reportesRoutes);
 
 //Ruta de bienvenida
 app.get("/", (req, res) => {

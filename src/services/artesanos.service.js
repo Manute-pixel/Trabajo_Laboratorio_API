@@ -194,37 +194,25 @@ export const actualizarArtesano = async (artesanoId, datos) => {
     provinciaId,
   } = datos;
 
-  await verificarProvincia(provinciaId);
-  await verificarLocalidad(localidadId);
-  await verificarRubro(rubroId);
+  if (provinciaId !== undefined) await verificarProvincia(provinciaId);
+  if (localidadId !== undefined) await verificarLocalidad(localidadId);
+  if (rubroId !== undefined) await verificarRubro(rubroId);
+
+  const datosActualizar = {};
+
+  if (nombre !== undefined) datosActualizar.nombre_artesano = nombre;
+  if (apellido !== undefined) datosActualizar.apellido_artesano = apellido;
+  if (dni !== undefined) datosActualizar.dni = dni;
+  if (email !== undefined) datosActualizar.email_artesano = email;
+  if (telefono !== undefined) datosActualizar.telefono_artesano = telefono;
+  if (fechaNac !== undefined) datosActualizar.fecha_Nacimiento = fechaNac;
+  if (rubroId !== undefined) datosActualizar.rubroId = rubroId;
+  if (localidadId !== undefined) datosActualizar.localidadId = localidadId;
+  if (provinciaId !== undefined) datosActualizar.provinciaId = provinciaId;
 
   return prisma.artesano.update({
     where: { id: artesanoId },
-    data: {
-      nombre_artesano: nombre,
-      apellido_artesano: apellido,
-      dni: dni,
-      email_artesano: email,
-      telefono_artesano: telefono,
-      fecha_Nacimiento: fechaNac,
-      rubroId: rubroId,
-      localidadId: localidadId,
-      provinciaId: provinciaId,
-    },
-  });
-};
-
-export const eliminarArtesano = async (artesanoId) => {
-  const existe = await prisma.artesano.findUnique({
-    where: { id: artesanoId },
-  });
-
-  if (!existe) {
-    throw crearError(`Artesano con id ${artesanoId} no encontrado`, 404);
-  }
-
-  return prisma.artesano.delete({
-    where: { id: artesanoId },
+    data: datosActualizar,
   });
 };
 

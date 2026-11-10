@@ -12,6 +12,7 @@ import {
   ConsultaProductos,
   Producto,
   ActualizarProducto,
+  MiProductoRespuesta
 } from "./src/documentacion/esquemas_productos.js";
 
 import {
@@ -29,7 +30,26 @@ import {
   ConsultaStands,
   Stand,
   ActualizarStand,
+  AsignarStand,
 } from "./src/documentacion/esquemas_stands.js";
+
+import {
+  ConsultarPostulaciones,
+  Postulacion,
+  NuevaPostulacion,
+  ActualizarPostulacionAdmin,
+  ActualizarMiPostulacion,
+  MiPostulacion,
+  CrearMiPostulacion
+} from "./src/documentacion/esquemas_postulaciones.js";
+
+import {
+  TotalArtesanos,
+  ArtesanosPorLocalidad,
+  ArtesanosPorRubro,
+  ProductosPorArtesano,
+  ReporteStands
+} from "./src/documentacion/esquemas_reportes.js";
 
 const generarDocs = swaggerAutogen({
   openapi: "3.0.0",
@@ -65,6 +85,14 @@ const doc = {
     {
       name: "Usuarios",
       description: "Endpoints para gestionar usuarios",
+    },
+    {
+      name: "Postulaciones",
+      description: "Endpoints para gestionar postulaciones",
+    },
+    {
+      name:"Reportes",
+      description: "Endpoints para gestionar reportes",
     }
   ],
 
@@ -78,9 +106,11 @@ const doc = {
       ConsultaProductos,
       Producto,
       ActualizarProducto,
+      MiProductoRespuesta,
       NuevoStand,
       ConsultaStands,
       Stand,
+      AsignarStand,
       ActualizarStand,
       NuevoUsuarioArtesano,
       NuevoAdministrador,
@@ -89,6 +119,18 @@ const doc = {
       AsignarAdministrador,
       RetirarRolParametros,
       ActualizarActivo,
+      ConsultarPostulaciones,
+      Postulacion,
+      NuevaPostulacion,
+      ActualizarPostulacionAdmin,
+      ActualizarMiPostulacion,
+      MiPostulacion,
+      CrearMiPostulacion,
+      TotalArtesanos,
+      ArtesanosPorLocalidad,
+      ArtesanosPorRubro,
+      ProductosPorArtesano,
+      ReporteStands
     },
 
     securitySchemes: {
