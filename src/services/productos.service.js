@@ -73,9 +73,22 @@ export const consultarProductos = async (criterios) => {
       orderBy: [{ [campoOrden[ordenPor]]: direccion }, { id: "asc" }],
       skip: desplazamiento,
       take: limite,
-      include: {
-        categoria: true,
-        artesano: true,
+      select: {
+        id: true,
+        nombre_producto: true,
+        descripcion: true,
+        precio_producto: true,
+        categoria: { select: { nombre_categoria: true } },
+        artesano: {
+          select: {
+            nombre_artesano: true,
+            apellido_artesano: true,
+            telefono_artesano: true,
+            rubro: { select: { nombre_rubro: true } },
+            localidad: { select: { nombre_localidad: true } },
+            provincia: { select: { nombre_provincia: true } },
+          },
+        },
       },
     }),
     prisma.producto.count({ where }),
@@ -95,6 +108,23 @@ export const consultarProductos = async (criterios) => {
 export const consultarProductoPorId = async (productoId) => {
   const producto = await prisma.producto.findUnique({
     where: { id: productoId },
+    select: {
+      id: true,
+      nombre_producto: true,
+      descripcion: true,
+      precio_producto: true,
+      categoria: { select: { nombre_categoria: true } },
+      artesano: {
+        select: {
+          nombre_artesano: true,
+          apellido_artesano: true,
+          telefono_artesano: true,
+          rubro: { select: { nombre_rubro: true } },
+          localidad: { select: { nombre_localidad: true } },
+          provincia: { select: { nombre_provincia: true } },
+        },
+      },
+    },
   });
 
   if (!producto) {
@@ -144,6 +174,10 @@ export const actualizarProducto = async (id, datos) => {
       categoriaId: categoriaId,
       artesanoId: artesanoId,
     },
+    include: {
+      categoria: true,
+      artesano: true,
+    },
   });
 
   return productoActualizado;
@@ -163,7 +197,7 @@ export const eliminarProducto = async (id) => {
   });
 };
 
-//nuevos servicios de rutas protegidas
+//servicios de productos para artesanos
 
 export const crearMiProducto = async (usuarioId, datos) => {
   const { nombre, descripcion, precio, categoriaId } = datos;
@@ -174,7 +208,7 @@ export const crearMiProducto = async (usuarioId, datos) => {
     });
     if (!artesano) throw crearError("El usuario no es un artesano", 403);
 
-    const categoria = await tx.categoria.findUnique({
+    const categoria = await tx.categoria_Producto.findUnique({
       where: { id: categoriaId },
     });
     if (!categoria) throw crearError("La categoría solicitada no existe", 404);
@@ -188,11 +222,20 @@ export const crearMiProducto = async (usuarioId, datos) => {
         categoriaId: categoriaId,
       },
       select: {
+        id: true,
         nombre_producto: true,
         descripcion: true,
         precio_producto: true,
-        categoria: true,
-        artesano: true,
+        categoria: { select: { id: true, nombre_categoria: true } },
+        artesano: {
+          select: {
+            id: true,
+            nombre_artesano: true,
+            apellido_artesano: true,
+            telefono_artesano: true,
+            dni: true,
+          },
+        },
       },
     });
   });
@@ -243,9 +286,21 @@ export const listarMisProductos = async (usuarioId, criterios) => {
       orderBy: [{ [campoOrden[ordenPor]]: direccion }, { id: "asc" }],
       skip: desplazamiento,
       take: limite,
-      include: {
-        categoria: true,
-        artesano: true,
+      select: {
+        id: true,
+        nombre_producto: true,
+        descripcion: true,
+        precio_producto: true,
+        categoria: { select: { id: true, nombre_categoria: true } },
+        artesano: {
+          select: {
+            id: true,
+            nombre_artesano: true,
+            apellido_artesano: true,
+            telefono_artesano: true,
+            dni: true,
+          },
+        },
       },
     }),
     prisma.producto.count({ where: { ...where, artesano: { usuarioId } } }),
@@ -266,11 +321,20 @@ export const obtenerMiProducto = async (id, usuarioId) => {
   const producto = await prisma.producto.findFirst({
     where: { id, artesano: { usuarioId } },
     select: {
+      id: true,
       nombre_producto: true,
       descripcion: true,
       precio_producto: true,
-      categoria: true,
-      artesano: true,
+      categoria: { select: { id: true, nombre_categoria: true } },
+      artesano: {
+        select: {
+          id: true,
+          nombre_artesano: true,
+          apellido_artesano: true,
+          telefono_artesano: true,
+          dni: true,
+        },
+      },
     },
   });
   if (!producto)
@@ -293,7 +357,10 @@ export const actualizarMiProducto = async (productoId, usuarioId, datos) => {
     );
   }
 
-  await validarReferenciasProducto({ categoriaId, artesanoId: existeProducto.artesanoId });
+  await validarReferenciasProducto({
+    categoriaId,
+    artesanoId: existeProducto.artesanoId,
+  });
 
   return prisma.producto.update({
     where: { id: productoId },
@@ -302,9 +369,25 @@ export const actualizarMiProducto = async (productoId, usuarioId, datos) => {
       descripcion: descripcion,
       precio_producto: precio,
       categoriaId: categoriaId,
-    }
+    },
+    select: {
+      id: true,
+      nombre_producto: true,
+      descripcion: true,
+      precio_producto: true,
+      categoria: { select: { id: true, nombre_categoria: true } },
+      artesano: {
+        select: {
+          id: true,
+          nombre_artesano: true,
+          apellido_artesano: true,
+          telefono_artesano: true,
+          dni: true,
+        },
+      },
+    },
   });
-}
+};
 
 export const eliminarMiProducto = async (productoId, usuarioId) => {
   const existeProducto = await prisma.producto.findFirst({
@@ -313,11 +396,11 @@ export const eliminarMiProducto = async (productoId, usuarioId) => {
   if (!existeProducto) {
     throw crearError(
       `Producto con ID ${productoId} no encontrado o no pertenece al artesano`,
-      404
+      404,
     );
   }
 
   return prisma.producto.delete({
-    where: { id: productoId }
+    where: { id: productoId },
   });
-}
+};
