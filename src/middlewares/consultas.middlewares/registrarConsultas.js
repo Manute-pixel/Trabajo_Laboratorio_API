@@ -5,11 +5,6 @@ const rutasPermitidas = ["/stands", "/productos", "/artesanos"];
 export const registrarConsultas = () => {
   return (req, res, next) => {
     try {
-      console.log({
-        baseUrl: req.baseUrl,
-        path: req.path,
-        originalUrl: req.originalUrl,
-      });
       if (req.method !== "GET") return next();
 
       const ruta = req.path;

@@ -9,7 +9,9 @@ export const validarPostulacion = (req, res, next) => {
 
   if (!resultado.success) {
     const detalles = detallarErroresZod(resultado.error);
-    return next(crearError("Datos de libro inválidos", 400, detalles));
+    return next(
+      crearError("Datos para crear postulación inválidos", 400, detalles),
+    );
   }
 
   req.postulacionValidada = resultado.data;
@@ -21,7 +23,9 @@ export const validarMipostulacion = (req, res, next) => {
 
   if (!resultado.success) {
     const detalles = detallarErroresZod(resultado.error);
-    return next(crearError("Datos de mi postulación inválidos", 400, detalles));
+    return next(
+      crearError("Datos para crear mi postulación inválidos", 400, detalles),
+    );
   }
 
   req.MipostulacionValidada = resultado.data;
