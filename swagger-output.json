@@ -31,6 +31,10 @@
     {
       "name": "Postulaciones",
       "description": "Endpoints para gestionar postulaciones"
+    },
+    {
+      "name": "Reportes",
+      "description": "Endpoints para gestionar reportes"
     }
   ],
   "paths": {
@@ -2212,50 +2216,175 @@
     },
     "/reportes/artesano": {
       "get": {
-        "description": "",
+        "tags": [
+          "Reportes"
+        ],
+        "summary": "Obtener total de artesanos",
+        "description": "Obtiene la cantidad total de artesanos registrados en el sistema.",
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Total de artesanos obtenido correctamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TotalArtesanos"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/TotalArtesanos"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No se proporcionó un token de autenticación válido o la cuenta no existe"
+          },
+          "403": {
+            "description": "Cuenta inactiva o el usuario no tiene el rol ADMINISTRADOR"
+          },
+          "500": {
+            "description": "Error interno del servidor"
           }
         }
       }
     },
     "/reportes/artesano-localidad": {
       "get": {
-        "description": "",
+        "tags": [
+          "Reportes"
+        ],
+        "summary": "Obtener artesanos por localidad",
+        "description": "Obtiene la cantidad de artesanos registrados en cada localidad.",
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Reporte de artesanos por localidad obtenido correctamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArtesanosPorLocalidad"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArtesanosPorLocalidad"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No se proporcionó un token de autenticación válido o la cuenta no existe"
+          },
+          "403": {
+            "description": "Cuenta inactiva o el usuario no tiene el rol ADMINISTRADOR"
+          },
+          "500": {
+            "description": "Error interno del servidor"
           }
         }
       }
     },
     "/reportes/artesano-rubro": {
       "get": {
-        "description": "",
+        "tags": [
+          "Reportes"
+        ],
+        "summary": "Obtener artesanos por rubro",
+        "description": "Obtiene la cantidad de artesanos registrados en cada rubro.",
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Reporte de artesanos por rubro obtenido correctamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArtesanosPorRubro"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArtesanosPorRubro"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No se proporcionó un token de autenticación válido o la cuenta no existe"
+          },
+          "403": {
+            "description": "Cuenta inactiva o el usuario no tiene el rol ADMINISTRADOR"
+          },
+          "500": {
+            "description": "Error interno del servidor"
           }
         }
       }
     },
     "/reportes/producto-artesano": {
       "get": {
-        "description": "",
+        "tags": [
+          "Reportes"
+        ],
+        "summary": "Obtener productos por artesano",
+        "description": "Obtiene la cantidad de productos registrados por cada artesano, junto con sus datos de contacto.",
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Reporte de productos por artesano obtenido correctamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductosPorArtesano"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductosPorArtesano"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No se proporcionó un token de autenticación válido o la cuenta no existe"
+          },
+          "403": {
+            "description": "Cuenta inactiva o el usuario no tiene el rol ADMINISTRADOR"
+          },
+          "500": {
+            "description": "Error interno del servidor"
           }
         }
       }
     },
     "/reportes/stands": {
       "get": {
-        "description": "",
+        "tags": [
+          "Reportes"
+        ],
+        "summary": "Obtener reporte de stands",
+        "description": "Obtiene la cantidad total de stands, la cantidad de stands ocupados y la cantidad de stands disponibles.",
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Reporte de stands obtenido correctamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReporteStands"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReporteStands"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No se proporcionó un token de autenticación válido o la cuenta no existe"
+          },
+          "403": {
+            "description": "Cuenta inactiva o el usuario no tiene el rol ADMINISTRADOR"
+          },
+          "500": {
+            "description": "Error interno del servidor"
           }
         }
       }
@@ -6709,6 +6838,291 @@
         },
         "xml": {
           "name": "CrearMiPostulacion"
+        }
+      },
+      "TotalArtesanos": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "object"
+          },
+          "properties": {
+            "type": "object",
+            "properties": {
+              "totalArtesanos": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "integer"
+                  },
+                  "example": {
+                    "type": "number",
+                    "example": 150
+                  }
+                }
+              }
+            }
+          }
+        },
+        "xml": {
+          "name": "TotalArtesanos"
+        }
+      },
+      "ArtesanosPorLocalidad": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "array"
+          },
+          "items": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "example": "object"
+              },
+              "properties": {
+                "type": "object",
+                "properties": {
+                  "localidad": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "example": "string"
+                      },
+                      "example": {
+                        "type": "string",
+                        "example": "San Fernando del Valle de Catamarca"
+                      }
+                    }
+                  },
+                  "totalArtesanos": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "example": "integer"
+                      },
+                      "example": {
+                        "type": "number",
+                        "example": 25
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "xml": {
+          "name": "ArtesanosPorLocalidad"
+        }
+      },
+      "ArtesanosPorRubro": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "array"
+          },
+          "items": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "example": "object"
+              },
+              "properties": {
+                "type": "object",
+                "properties": {
+                  "rubro": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "example": "string"
+                      },
+                      "example": {
+                        "type": "string",
+                        "example": "Textil"
+                      }
+                    }
+                  },
+                  "totalArtesanos": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "example": "integer"
+                      },
+                      "example": {
+                        "type": "number",
+                        "example": 40
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "xml": {
+          "name": "ArtesanosPorRubro"
+        }
+      },
+      "ProductosPorArtesano": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "array"
+          },
+          "items": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "example": "object"
+              },
+              "properties": {
+                "type": "object",
+                "properties": {
+                  "artesano": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "example": "string"
+                      },
+                      "example": {
+                        "type": "string",
+                        "example": "María Gómez"
+                      }
+                    }
+                  },
+                  "dni": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "example": "string"
+                      },
+                      "example": {
+                        "type": "string",
+                        "example": "30123456"
+                      }
+                    }
+                  },
+                  "telefono": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "example": "string"
+                      },
+                      "example": {
+                        "type": "string",
+                        "example": "3834123456"
+                      }
+                    }
+                  },
+                  "email": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "example": "string"
+                      },
+                      "format": {
+                        "type": "string",
+                        "example": "email"
+                      },
+                      "example": {
+                        "type": "string",
+                        "example": "maria@gmail.com"
+                      }
+                    }
+                  },
+                  "totalProductos": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "example": "integer"
+                      },
+                      "example": {
+                        "type": "number",
+                        "example": 8
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "xml": {
+          "name": "ProductosPorArtesano"
+        }
+      },
+      "ReporteStands": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "object"
+          },
+          "properties": {
+            "type": "object",
+            "properties": {
+              "totalStands": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "integer"
+                  },
+                  "example": {
+                    "type": "number",
+                    "example": 100
+                  }
+                }
+              },
+              "ocupados": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "integer"
+                  },
+                  "example": {
+                    "type": "number",
+                    "example": 70
+                  }
+                }
+              },
+              "disponibles": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "integer"
+                  },
+                  "example": {
+                    "type": "number",
+                    "example": 30
+                  }
+                }
+              }
+            }
+          }
+        },
+        "xml": {
+          "name": "ReporteStands"
         }
       }
     },

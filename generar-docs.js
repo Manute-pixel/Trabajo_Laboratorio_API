@@ -43,6 +43,14 @@ import {
   CrearMiPostulacion
 } from "./src/documentacion/esquemas_postulaciones.js";
 
+import {
+  TotalArtesanos,
+  ArtesanosPorLocalidad,
+  ArtesanosPorRubro,
+  ProductosPorArtesano,
+  ReporteStands
+} from "./src/documentacion/esquemas_reportes.js";
+
 const generarDocs = swaggerAutogen({
   openapi: "3.0.0",
 });
@@ -81,6 +89,10 @@ const doc = {
     {
       name: "Postulaciones",
       description: "Endpoints para gestionar postulaciones",
+    },
+    {
+      name:"Reportes",
+      description: "Endpoints para gestionar reportes",
     }
   ],
 
@@ -113,7 +125,12 @@ const doc = {
       ActualizarPostulacionAdmin,
       ActualizarMiPostulacion,
       MiPostulacion,
-      CrearMiPostulacion
+      CrearMiPostulacion,
+      TotalArtesanos,
+      ArtesanosPorLocalidad,
+      ArtesanosPorRubro,
+      ProductosPorArtesano,
+      ReporteStands
     },
 
     securitySchemes: {
