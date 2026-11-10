@@ -10,7 +10,8 @@ import {
     obtenerTotalArtesanos,
     obtenerArtesanosLocalidad,
     obtenerArtesanosRubro,
-    obtenerReporteStands
+    obtenerReporteStands,
+    obtenerProductoArtesano
 } from "../controllers/reportes.controller.js";
 const router = express.Router();
 
@@ -20,15 +21,11 @@ const controlesAdministrador = [
   autorizarRoles("ADMINISTRADOR"),
 ];
 
-
-
-
 // Rutas de reportes artesanos
 router.get('/artesano', ...controlesAdministrador, obtenerTotalArtesanos);
 router.get('/artesano-localidad', ...controlesAdministrador, obtenerArtesanosLocalidad);
 router.get('/artesano-rubro', ...controlesAdministrador, obtenerArtesanosRubro);
-
-// Rutas de reportes productos
+router.get('/producto-artesano', ...controlesAdministrador, obtenerProductoArtesano);
 
 // Rutas de reportes stands
 router.get('/stands', ...controlesAdministrador, obtenerReporteStands);
