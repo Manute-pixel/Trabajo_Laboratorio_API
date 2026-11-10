@@ -9,7 +9,8 @@ import { autenticarUsuario } from "../middlewares/autenticacion.middleware.js";
 import {
     obtenerTotalArtesanos,
     obtenerArtesanosLocalidad,
-    obtenerArtesanosRubro
+    obtenerArtesanosRubro,
+    obtenerReporteStands
 } from "../controllers/reportes.controller.js";
 const router = express.Router();
 
@@ -22,8 +23,13 @@ const controlesAdministrador = [
 
 
 
-
+// Rutas de reportes artesanos
 router.get('/artesano', ...controlesAdministrador, obtenerTotalArtesanos);
 router.get('/artesano-localidad', ...controlesAdministrador, obtenerArtesanosLocalidad);
 router.get('/artesano-rubro', ...controlesAdministrador, obtenerArtesanosRubro);
+
+// Rutas de reportes productos
+
+// Rutas de reportes stands
+router.get('/stands', ...controlesAdministrador, obtenerReporteStands);
 export default router;
