@@ -27,3 +27,12 @@ export const obtenerArtesanosRubro = async (req, res, next) => {
         next(error);
     }
 };
+
+export const obtenerReporteStands = async (req, res, next) => {
+    try {
+        const reporte = await reportesService.obtenerReporteStands();
+        return res.status(200).json(reporte);
+    } catch (error) {
+        next(error);
+    }
+};

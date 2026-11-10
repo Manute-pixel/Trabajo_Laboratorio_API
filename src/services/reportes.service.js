@@ -42,3 +42,27 @@ export const obtenerArtesanosRubro = async () => {
     totalArtesanos: rubro._count.artesanos
   }));
 };
+
+export const obtenerReporteStands = async () => {
+  const standsPorEstado = await prisma.stand.groupBy({
+    by: ['estado_stand'],
+    _count: {
+      id: true
+    }
+  });
+
+  const totalStands = await prisma.stand.count();
+
+  const estados = Object.fromEntries(
+    standsPorEstado.map(stand => [
+      stand.estado_stand,
+      stand._count.id
+    ])
+  );
+
+  return {
+    totalStands,
+    ocupados: estados.OCUPADO || 0,
+    disponibles: estados.DISPONIBLE || 0
+  };
+};
