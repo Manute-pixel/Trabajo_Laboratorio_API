@@ -12,6 +12,7 @@ import {
   ConsultaProductos,
   Producto,
   ActualizarProducto,
+  MiProductoRespuesta
 } from "./src/documentacion/esquemas_productos.js";
 
 import {
@@ -93,6 +94,7 @@ const doc = {
       ConsultaProductos,
       Producto,
       ActualizarProducto,
+      MiProductoRespuesta,
       NuevoStand,
       ConsultaStands,
       Stand,

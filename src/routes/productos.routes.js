@@ -169,22 +169,16 @@ router.get(
       type: "string"
     }
 
-    #swagger.parameters['descripcion'] = {
-      in: "query",
-      description: "Filtrar por descripción",
-      type: "string"
-    }
-
     #swagger.parameters['precioMin'] = {
       in: "query",
       description: "Filtrar por precio mínimo",
-      type: "number"
+      type: "integer"
     }
 
     #swagger.parameters['precioMax'] = {
       in: "query",
       description: "Filtrar por precio máximo",
-      type: "number"
+      type: "integer"
     }
 
     #swagger.parameters['categoriaId'] = {
@@ -192,19 +186,13 @@ router.get(
       description: "Filtrar por categoría",
       type: "integer"
     }
-
-    #swagger.parameters['artesanoId'] = {
-      in: "query",
-      description: "Filtrar por artesano",
-      type: "integer"
-    }
   
     #swagger.parameters['ordenPor'] = {
-      in: "query",
-      description: "Campo por el que se ordenan los resultados",
-      type: "string",
-      enum: ["nombre", "descripcion", "precioMin", "precioMax", "categoriaId", "artesanoId"]
-    }
+    in: "query",
+    description: "Campo por el que se ordenan los resultados",
+    type: "string",
+    enum: ["nombre", "precio", "categoriaId", "artesanoId"]
+}
 
     #swagger.parameters['direccion'] = {
       in: "query",
@@ -270,7 +258,7 @@ router.get(
 
     #swagger.responses[200] = {
       description: 'Producto encontrado',
-      schema: { $ref: '#/components/schemas/Producto' }
+      schema: { $ref: '#/components/schemas/MiProductoRespuesta' }
     }
 
     #swagger.responses[400] = {
@@ -452,22 +440,16 @@ router.get("/",
       type: "string"
     }
 
-    #swagger.parameters['descripcion'] = {
-      in: "query",
-      description: "Filtrar por descripción",
-      type: "string"
-    }
-
     #swagger.parameters['precioMin'] = {
       in: "query",
       description: "Filtrar por precio mínimo",
-      type: "number"
+      type: "integer"
     }
 
     #swagger.parameters['precioMax'] = {
       in: "query",
       description: "Filtrar por precio máximo",
-      type: "number"
+      type: "integer"
     }
 
     #swagger.parameters['categoriaId'] = {
@@ -483,11 +465,11 @@ router.get("/",
     }
   
     #swagger.parameters['ordenPor'] = {
-      in: "query",
-      description: "Campo por el que se ordenan los resultados",
-      type: "string",
-      enum: ["nombre", "descripcion", "precioMin", "precioMax", "categoriaId", "artesanoId"]
-    }
+    in: "query",
+    description: "Campo por el que se ordenan los resultados",
+    type: "string",
+    enum: ["nombre", "precio", "categoriaId", "artesanoId"]
+}
 
     #swagger.parameters['direccion'] = {
       in: "query",

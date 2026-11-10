@@ -57,17 +57,18 @@ router.get(
       type: "integer"
     }
   
-    #swagger.parameters['estado_postulacion'] = {
+    #swagger.parameters['estado'] = {
       in: "query",
-      description: "Filtrar por el estado de una postulación",
-      type: "string"
+      description: "Filtrar por el estado de la postulación",
+      type: "string",
+      enum: ["pendiente", "aceptado", "rechazado", "corregir"]
     }
   
     #swagger.parameters['ordenPor'] = {
       in: "query",
       description: "Campo por el que se ordenan los resultados",
       type: "string",
-      enum: ["artesanoId", "edicionId", "fecha_postulacion", "estado_postulacion"]
+      enum: ["artesanoId", "edicionId", "estado"]
     }
 
     #swagger.parameters['direccion'] = {
@@ -140,7 +141,7 @@ router.get(
     }
 
     #swagger.responses[404] = {
-      description: "No se encontró el stand"
+      description: "No se encontró la postulación"
     }
 
     #swagger.responses[401] = {
@@ -161,7 +162,7 @@ router.get(
 );
   
 router.post(
-    "/:id",
+    "/",
     /*
       #swagger.tags = ["Postulaciones"]
       #swagger.summary = "Crear una postulación"
@@ -195,6 +196,10 @@ router.post(
   
       #swagger.responses[403] = {
         description: "Cuenta inactiva o el usuario no tiene el rol ADMINISTRADOR"
+      }
+
+      #swagger.responses[404] = {
+       description: "No existe el artesano o la edición indicada"
       }
     */
   ...controlesAdministrador,
@@ -240,7 +245,7 @@ router.patch(
     }
 
     #swagger.responses[400] = {
-      description: "Los datos enviados no son válidos"
+      description: "Los datos enviados no son válidos o la postulación ya tiene ese estado"
     }
 
     #swagger.responses[401] = {
@@ -272,6 +277,10 @@ router.get(
   #swagger.responses[200] = {
     description: 'Postulación obtenida exitosamente',
     schema: { $ref: '#/definitions/MiPostulacion' }
+  }
+
+  #swagger.responses[400] = {
+    description: "El usuario no es un artesano o ya existe una postulación para esa edición"
   }
 
   #swagger.responses[401] = {
@@ -348,14 +357,6 @@ router.patch("/actualizar-mi-postulacion",
     #swagger.security = [{
        bearerAuth: []
     }]
-    
-    #swagger.parameters['id'] = {
-      in: 'path',
-      description: 'ID de la postulación que se quiere actualizar',
-      required: true,
-      type: 'integer',
-      example: 1
-    }
 
     #swagger.requestBody = {
       required: true,
@@ -372,8 +373,12 @@ router.patch("/actualizar-mi-postulacion",
       description: "Postulación actualizada exitosamente"
     }
 
+    #swagger.responses[400] = {
+      description: "La postulación ya pertenece a esa edición o los datos enviados no son válidos"
+    }
+
     #swagger.responses[404] = {
-      description: "Postulación no encontrada"
+      description: "Postulación o edición no encontrada"
     }
 
     #swagger.responses[400] = {
