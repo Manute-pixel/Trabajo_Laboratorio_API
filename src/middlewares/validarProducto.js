@@ -22,6 +22,6 @@ export const validarMiproducto = (req, res, next) => {
     return next(crearError("Datos inválidos", 400, detalle));
   }
 
-  req.consultaValidada = resultado.data;
+  req.miProductoValidado = resultado.data;
   return next();
 };
