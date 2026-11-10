@@ -2,13 +2,19 @@ import { consultarPostulacionSchema } from "../../validators/postulaciones.schem
 import { crearError, detallarErroresZod } from "../../utils/errores.js";
 
 export const validarConsultaPostulacion = (req, res, next) => {
-    const resultado = consultarPostulacionSchema.safeParse(req.query);
+  const resultado = consultarPostulacionSchema.safeParse(req.query);
 
-    if (!resultado.success) {
-        const detalles = detallarErroresZod(resultado.error);
-        return next(crearError('Datos de libro inválidos', 400, detalles));
-    }
+  if (!resultado.success) {
+    const detalles = detallarErroresZod(resultado.error);
+    return next(
+      crearError(
+        "Datos para consulta de postulaciones inválidos",
+        400,
+        detalles,
+      ),
+    );
+  }
 
-    req.consultaValidada = resultado.data;
-    return next();
+  req.consultaValidada = resultado.data;
+  return next();
 };
