@@ -43,6 +43,32 @@ export const obtenerArtesanosRubro = async () => {
   }));
 };
 
+export const obtenerProductoArtesano = async () => {
+  const productosPorArtesano = await prisma.artesano.findMany({
+    select: {
+      id: true,
+      nombre_artesano: true,
+      apellido_artesano: true,
+      dni: true,
+      telefono_artesano: true,
+      email_artesano: true,
+      _count: {
+        select: {
+          productos: true
+        }
+      }
+    }
+  });
+
+  return productosPorArtesano.map(artesano => ({
+    artesano: artesano.nombre_artesano + " " + artesano.apellido_artesano,
+    dni: artesano.dni,
+    telefono: artesano.telefono_artesano,
+    email: artesano.email_artesano,
+    totalProductos: artesano._count.productos
+  }));
+};
+
 export const obtenerReporteStands = async () => {
   const standsPorEstado = await prisma.stand.groupBy({
     by: ['estado_stand'],
