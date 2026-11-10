@@ -7,5 +7,6 @@ export const validarActualizacionArtesano = (req, res, next) => {
         const errores = detallarErroresZod(resultado.error);
         throw crearError("Datos de actualización inválidos", 400, errores);
     }
+    req.datosValidados = resultado.data
     next();
 };
