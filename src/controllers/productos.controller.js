@@ -42,7 +42,10 @@ export const actualizarProducto = async (req, res, next) => {
       datos,
     );
 
-    res.status(200).json(productoActualizado);
+    res.status(200).json({
+      message: "Producto actualizado exitosamente",
+      productoActualizado,
+    });
   } catch (error) {
     next(error);
   }
@@ -59,10 +62,10 @@ export const eliminarProducto = async (req, res, next) => {
   }
 };
 
-//agregar controles para los nuevos servicios de productos
+//controles para los nuevos servicios de productos
 export const obtenerMisProductos = async (req, res, next) => {
   try {
-    const criterios = req.dto;
+    const criterios = req.consultaValidada;
     const usuarioId = req.contextoUsuario.id;
     const productos = await productoService.listarMisProductos(
       usuarioId,
@@ -89,11 +92,15 @@ export const obtenerMiProducto = async (req, res, next) => {
 
 export const crearMiProducto = async (req, res, next) => {
   try {
-    const datos = req.consultaValidada;
+    console.log("req.miProductoValidado:", req.miProductoValidado);
+    const datos = req.miProductoValidado;
     const usuarioId = req.contextoUsuario.id;
     const resultado = await productoService.crearMiProducto(usuarioId, datos);
 
-    res.status(201).json(resultado);
+    res.status(201).json({
+      message: "Producto creado exitosamente",
+      producto: resultado,
+    });
   } catch (error) {
     next(error);
   }
@@ -103,13 +110,18 @@ export const actualizarMiProducto = async (req, res, next) => {
   try {
     const usuarioId = req.contextoUsuario.id;
     const productoId = req.id;
-    const datos = req.productoValidado;
+    const datos = req.miProductoValidado;
     const productoActualizado = await productoService.actualizarMiProducto(
       productoId,
       usuarioId,
-      datos
+      datos,
     );
-    res.status(200).json(productoActualizado);
+    res
+      .status(200)
+      .json({
+        message: "Producto actualizado exitosamente",
+        productoActualizado,
+      });
   } catch (error) {
     next(error);
   }
@@ -121,7 +133,9 @@ export const eliminarMiProducto = async (req, res, next) => {
     const productoId = req.id;
     await productoService.eliminarMiProducto(productoId, usuarioId);
 
-    res.status(204).send(`Producto con ID ${productoId} eliminado exitosamente`);
+    res
+      .status(204)
+      .send(`Producto con ID ${productoId} eliminado exitosamente`);
   } catch (error) {
     next(error);
   }

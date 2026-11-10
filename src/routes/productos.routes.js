@@ -4,7 +4,10 @@ import { autenticarUsuario } from "../middlewares/autenticacion.middleware.js";
 import { cargarContextoUsuario } from "../middlewares/autorizacion.middleware/cargarContextoUsuario.js";
 import { autorizarRoles } from "../middlewares/autorizacion.middleware/autorizarRoles.js";
 import { validarConsultaProductos } from "../middlewares/validarConsultaProductos.js";
-import { validarProducto } from "../middlewares/validarProducto.js";
+import {
+  validarProducto,
+  validarMiproducto,
+} from "../middlewares/validarProducto.js";
 import { validarActualizacionProducto } from "../middlewares/validarActualizacionProducto.js";
 import { validarId } from "../middlewares/validarId.js";
 
@@ -18,7 +21,8 @@ import {
   obtenerMisProductos,
   obtenerMiProducto,
   crearMiProducto,
-  actualizarMiProducto,eliminarMiProducto
+  actualizarMiProducto,
+  eliminarMiProducto,
 } from "../controllers/productos.controller.js";
 
 const router = express.Router();
@@ -247,7 +251,7 @@ router.get(
 );
 
 router.get(
-  "/mi-productos/:id",
+  "/mis-productos/:id",
   /*
     #swagger.tags = ["Productos"]
     #swagger.summary = "Obtener uno de mis productos"
@@ -340,12 +344,12 @@ router.post(
   autenticarUsuario,
   cargarContextoUsuario,
   autorizarRoles("ARTESANO"),
-  validarProducto,
+  validarMiproducto,
   crearMiProducto,
 );
 
 router.put(
-  "/mi-productos/:id",
+  "/actualizar-mi-producto/:id",
 /* #swagger.tags = ["Productos"]
        #swagger.summary = "Actualizar uno de mis productos"
        #swagger.description = "Permite al artesano autenticado actualizar un producto que le pertenece."
@@ -390,11 +394,12 @@ router.put(
   cargarContextoUsuario,
   autorizarRoles("ARTESANO", ),
   validarId,
+  validarMiproducto,
   actualizarMiProducto,
 );
 
 router.delete(
-  "/mi-productos/:id",
+  "/eliminar-mi-producto/:id",
 /* #swagger.tags = ["Productos"]
        #swagger.summary = "Eliminar uno de mis productos"
        #swagger.description = "Permite al artesano autenticado eliminar un producto que le pertenece."

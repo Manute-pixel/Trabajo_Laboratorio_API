@@ -8,6 +8,7 @@ import postulacionesRoutes from "./routes/postulaciones.routes.js";
 import standsRoutes from "./routes/stands.routes.js";
 import productosRoutes from "./routes/productos.routes.js";
 import usuariosRoutes from "./routes/usuarios.routes.js";
+import reportesRoutes from "./routes/reportes.routes.js";
 import "./config/jwt.js";
 import { iniciarLimpiezaRevocaciones } from "./tareas/limpiezaRevocaciones.js";
 import swaggerUi from "swagger-ui-express";
@@ -24,6 +25,7 @@ app.use("/productos", productosRoutes);
 app.use("/postulaciones", postulacionesRoutes);
 app.use("/artesanos", artesanosRoutes);
 app.use("/usuarios", usuariosRoutes);
+app.use("/reportes", reportesRoutes);
 
 //Ruta de bienvenida
 app.get("/", (req, res) => {
