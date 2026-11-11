@@ -10,7 +10,9 @@
     "jwt-secret": "node -p require('node:crypto').randomBytes(32).toString('hex')",
     "db:test:preparar": "node --env-file=.env.test node_modules/prisma/build/index.js migrate deploy",
     "test:unitarios": "node --test tests/inscripciones.test.js tests/inscripciones-schema.test.js",
-    "test:integracion": "node --env-file=.env.test --test tests/inscripciones-integracion.test.js"
+    "test:integracion": "node --env-file=.env.test --test tests/integracion/index.test.js",
+    "test:rutas": "node --env-file=.env.test --test tests/rutas/index.test.js",
+    "test": "pnpm run test:unitarios && pnpm run test:integracion && pnpm run test:rutas"
   },
   "repository": {
     "type": "git",
