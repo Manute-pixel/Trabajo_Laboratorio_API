@@ -112,54 +112,6 @@ router.get(
   validarConsultaPostulacion,
   obtenerPostulaciones,
 );
-
-router.get(
-  "/:id",
-  /*
-    #swagger.tags = ["Postulaciones"]
-    #swagger.summary = "Obtener una postulación por su ID"
-    #swagger.description = "Obtiene los detalles de una postulación específica utilizando su ID."
-    #swagger.security = [{
-       bearerAuth: []
-    }]
-
-    #swagger.parameters['id'] = {
-      in: 'path',
-      description: 'ID de la postulación que se quiere obtener',
-      required: true,
-      type: 'integer',
-      example: 1
-    }
-
-    #swagger.responses[200] = {
-      description: 'Postulación encontrada',
-      schema: { $ref: '#/components/schemas/Postulacion' }
-    }
-
-    #swagger.responses[400] = {
-      description: "El ID es inválido"
-    }
-
-    #swagger.responses[404] = {
-      description: "No se encontró la postulación"
-    }
-
-    #swagger.responses[401] = {
-      description: "No se proporcionó un token de autenticación válido o la cuenta no existe"
-    }
-
-    #swagger.responses[403] = {
-      description: "Cuenta inactiva o el usuario no tiene el rol ADMINISTRADOR"
-    }
-
-    #swagger.responses[500] = {
-      description: "Error interno del servidor"
-    }
-  */  
-  ...controlesAdministrador,
-  validarId,
-  obtenerPostulacionPorId,
-);
   
 router.post(
     "/",
@@ -205,61 +157,6 @@ router.post(
   ...controlesAdministrador,
   validarPostulacion,
   crearPostulacion,
-);
-
-router.patch(
-  "/:id",
-  /*
-    #swagger.tags = ["Postulaciones"]
-    #swagger.summary = "Actualizar una postulación"
-    #swagger.description = "Actualiza la información de una postulación existente."
-    #swagger.security = [{
-       bearerAuth: []
-    }]
-    
-    #swagger.parameters['id'] = {
-      in: 'path',
-      description: 'ID de la postulación que se quiere actualizar',
-      required: true,
-      type: 'integer',
-      example: 1
-    }
-
-    #swagger.requestBody = {
-      required: true,
-      content: {
-        "application/json": {
-          schema: {
-            $ref: "#/components/schemas/ActualizarPostulacionAdmin"
-          }
-        }
-      }
-    }
-
-    #swagger.responses[200] = {
-      description: "Postulación actualizada exitosamente"
-    }
-
-    #swagger.responses[404] = {
-      description: "Postulación no encontrada"
-    }
-
-    #swagger.responses[400] = {
-      description: "Los datos enviados no son válidos o la postulación ya tiene ese estado"
-    }
-
-    #swagger.responses[401] = {
-      description: "No se proporcionó un token de autenticación válido o la cuenta no existe"
-    }
-
-    #swagger.responses[403] = {
-      description: "Cuenta inactiva o el usuario no tiene el rol ADMINISTRADOR"
-    }
-  */
-  ...controlesAdministrador,
-  validarId,
-  validarActualizacionPostulacionAdmin,
-  actualizarPostulacionAdmin
 );
 
 
@@ -400,5 +297,110 @@ router.patch("/actualizar-mi-postulacion",
   actualizarMiPostulacion
 );
 
+
+//rutas protegidas de admin dinamicas
+
+router.get(
+  "/:id",
+  /*
+    #swagger.tags = ["Postulaciones"]
+    #swagger.summary = "Obtener una postulación por su ID"
+    #swagger.description = "Obtiene los detalles de una postulación específica utilizando su ID."
+    #swagger.security = [{
+       bearerAuth: []
+    }]
+
+    #swagger.parameters['id'] = {
+      in: 'path',
+      description: 'ID de la postulación que se quiere obtener',
+      required: true,
+      type: 'integer',
+      example: 1
+    }
+
+    #swagger.responses[200] = {
+      description: 'Postulación encontrada',
+      schema: { $ref: '#/components/schemas/Postulacion' }
+    }
+
+    #swagger.responses[400] = {
+      description: "El ID es inválido"
+    }
+
+    #swagger.responses[404] = {
+      description: "No se encontró la postulación"
+    }
+
+    #swagger.responses[401] = {
+      description: "No se proporcionó un token de autenticación válido o la cuenta no existe"
+    }
+
+    #swagger.responses[403] = {
+      description: "Cuenta inactiva o el usuario no tiene el rol ADMINISTRADOR"
+    }
+
+    #swagger.responses[500] = {
+      description: "Error interno del servidor"
+    }
+  */  
+  ...controlesAdministrador,
+  validarId,
+  obtenerPostulacionPorId,
+);
+
+router.patch(
+  "/:id",
+  /*
+    #swagger.tags = ["Postulaciones"]
+    #swagger.summary = "Actualizar una postulación"
+    #swagger.description = "Actualiza la información de una postulación existente."
+    #swagger.security = [{
+       bearerAuth: []
+    }]
+    
+    #swagger.parameters['id'] = {
+      in: 'path',
+      description: 'ID de la postulación que se quiere actualizar',
+      required: true,
+      type: 'integer',
+      example: 1
+    }
+
+    #swagger.requestBody = {
+      required: true,
+      content: {
+        "application/json": {
+          schema: {
+            $ref: "#/components/schemas/ActualizarPostulacionAdmin"
+          }
+        }
+      }
+    }
+
+    #swagger.responses[200] = {
+      description: "Postulación actualizada exitosamente"
+    }
+
+    #swagger.responses[404] = {
+      description: "Postulación no encontrada"
+    }
+
+    #swagger.responses[400] = {
+      description: "Los datos enviados no son válidos o la postulación ya tiene ese estado"
+    }
+
+    #swagger.responses[401] = {
+      description: "No se proporcionó un token de autenticación válido o la cuenta no existe"
+    }
+
+    #swagger.responses[403] = {
+      description: "Cuenta inactiva o el usuario no tiene el rol ADMINISTRADOR"
+    }
+  */
+  ...controlesAdministrador,
+  validarId,
+  validarActualizacionPostulacionAdmin,
+  actualizarPostulacionAdmin
+);
 
 export default router;

@@ -24,113 +24,6 @@ const controlesAdministrador = [
   autorizarRoles("ADMINISTRADOR"),
 ];
 
-//rutas protegidas para administradores
-router.patch("/:id", 
-  /*
-    #swagger.tags = ["Artesanos"]
-    #swagger.summary = "Actualizar un artesano"
-    #swagger.description = "Actualiza los datos de un artesano existente."
-    #swagger.security = [{
-      bearerAuth: []
-    }]
-
-    #swagger.parameters['id'] = {
-      in: 'path',
-      description: 'ID del artesano que se quiere actualizar',
-      required: true,
-      type: 'integer',
-      example: 1
-    }
-
-    #swagger.requestBody = {
-      required: true,
-      content: {
-        "application/json": {
-          schema: {
-            $ref: "#/components/schemas/ActualizarArtesano"
-          }
-        }
-      }
-    }
-
-    #swagger.responses[200] = {
-      description: "Artesano actualizado correctamente",
-      schema: {
-        type: "object",
-        properties: {
-          mensaje: { type: "string" },
-          artesano: {
-            $ref: "#/components/schemas/Artesano"
-          }
-        }
-      }
-    }
-
-    #swagger.responses[400] = {
-      description: "El ID o los datos enviados no son válidos"
-    }
-
-    #swagger.responses[401] = {
-      description: "No se proporcionó un token de autenticación válido o la cuenta no existe"
-    }
-
-    #swagger.responses[403] = {
-      description: "Cuenta inactiva o el usuario no tiene el rol ADMINISTRADOR"
-    }
-
-    #swagger.responses[404] = {
-      description: "No se encontró el artesano"
-    }
-
-    #swagger.responses[500] = {
-      description: "Error interno del servidor"
-    }
-  */
-  ...controlesAdministrador,validarId, validarActualizacionArtesano, actualizarArtesano);
-
-
-router.delete("/:id", 
-  /*
-    #swagger.tags = ["Artesanos"]
-    #swagger.summary = "Eliminar un artesano"
-    #swagger.description = "Elimina un artesano utilizando su ID."
-    #swagger.security = [{
-      bearerAuth: []
-    }]
-
-    #swagger.parameters['id'] = {
-      in: 'path',
-      description: 'ID del artesano que se quiere eliminar',
-      required: true,
-      type: 'integer',
-      example: 1
-    }
-
-    #swagger.responses[204] = {
-      description: "Artesano desactivado correctamente. La respuesta no contiene un cuerpo."
-    }
-
-    #swagger.responses[400] = {
-      description: "El ID es inválido"
-    }
-
-    #swagger.responses[401] = {
-      description: "No se proporcionó un token de autenticación válido o la cuenta no existe"
-    }
-
-    #swagger.responses[403] = {
-      description: "Cuenta inactiva o el usuario no tiene el rol ADMINISTRADOR"
-    }
-
-    #swagger.responses[404] = {
-      description: "No se encontró el artesano"
-    }
-
-    #swagger.responses[500] = {
-      description: "Error interno del servidor"
-    }
-  */
-  ...controlesAdministrador, validarId, borrarArtesano);
 
 //rutas protegidas:
 //ruta protegida para consultar el perfil del artesano
@@ -304,5 +197,113 @@ router.get("/:id",
     }
   */
  validarId, obtenerArtesanoPorId);
+
+ // rutas protegidas para administradores dinamicas
+ router.patch("/:id", 
+  /*
+    #swagger.tags = ["Artesanos"]
+    #swagger.summary = "Actualizar un artesano"
+    #swagger.description = "Actualiza los datos de un artesano existente."
+    #swagger.security = [{
+      bearerAuth: []
+    }]
+
+    #swagger.parameters['id'] = {
+      in: 'path',
+      description: 'ID del artesano que se quiere actualizar',
+      required: true,
+      type: 'integer',
+      example: 1
+    }
+
+    #swagger.requestBody = {
+      required: true,
+      content: {
+        "application/json": {
+          schema: {
+            $ref: "#/components/schemas/ActualizarArtesano"
+          }
+        }
+      }
+    }
+
+    #swagger.responses[200] = {
+      description: "Artesano actualizado correctamente",
+      schema: {
+        type: "object",
+        properties: {
+          mensaje: { type: "string" },
+          artesano: {
+            $ref: "#/components/schemas/Artesano"
+          }
+        }
+      }
+    }
+
+    #swagger.responses[400] = {
+      description: "El ID o los datos enviados no son válidos"
+    }
+
+    #swagger.responses[401] = {
+      description: "No se proporcionó un token de autenticación válido o la cuenta no existe"
+    }
+
+    #swagger.responses[403] = {
+      description: "Cuenta inactiva o el usuario no tiene el rol ADMINISTRADOR"
+    }
+
+    #swagger.responses[404] = {
+      description: "No se encontró el artesano"
+    }
+
+    #swagger.responses[500] = {
+      description: "Error interno del servidor"
+    }
+  */
+  ...controlesAdministrador,validarId, validarActualizacionArtesano, actualizarArtesano);
+
+  
+router.delete("/:id", 
+  /*
+    #swagger.tags = ["Artesanos"]
+    #swagger.summary = "Eliminar un artesano"
+    #swagger.description = "Elimina un artesano utilizando su ID."
+    #swagger.security = [{
+      bearerAuth: []
+    }]
+
+    #swagger.parameters['id'] = {
+      in: 'path',
+      description: 'ID del artesano que se quiere eliminar',
+      required: true,
+      type: 'integer',
+      example: 1
+    }
+
+    #swagger.responses[204] = {
+      description: "Artesano desactivado correctamente. La respuesta no contiene un cuerpo."
+    }
+
+    #swagger.responses[400] = {
+      description: "El ID es inválido"
+    }
+
+    #swagger.responses[401] = {
+      description: "No se proporcionó un token de autenticación válido o la cuenta no existe"
+    }
+
+    #swagger.responses[403] = {
+      description: "Cuenta inactiva o el usuario no tiene el rol ADMINISTRADOR"
+    }
+
+    #swagger.responses[404] = {
+      description: "No se encontró el artesano"
+    }
+
+    #swagger.responses[500] = {
+      description: "Error interno del servidor"
+    }
+  */
+  ...controlesAdministrador, validarId, borrarArtesano);
 
 export default router;

@@ -70,87 +70,6 @@ router.post("/",
     */
 ...controlesAdministrador, validarProducto, agregarProducto);
 
-router.put(
-  "/:id",
-/* #swagger.tags = ["Productos"]
-       #swagger.summary = "Actualizar un producto"
-       #swagger.description = "Permite a un administrador actualizar los datos de un producto existente."
-       #swagger.security = [{ bearerAuth: [] }]
-       #swagger.parameters['id'] = {
-           in: "path",
-           description: "ID del producto",
-           required: true,
-           type: "integer",
-           example: 1
-       }
-       #swagger.requestBody = {
-           required: true,
-           content: {
-               "application/json": {
-                   schema: {
-                       $ref: "#/components/schemas/ActualizarProducto"
-                   }
-               }
-           }
-       }
-       #swagger.responses[200] = {
-           description: "Producto actualizado exitosamente"
-       }
-       #swagger.responses[400] = {
-           description: "El ID o los datos enviados no son válidos"
-       }
-       #swagger.responses[401] = {
-           description: "No se proporcionó un token válido o la cuenta no existe"
-       }
-       #swagger.responses[403] = {
-           description: "Cuenta inactiva o el usuario no tiene el rol ADMINISTRADOR"
-       }
-       #swagger.responses[404] = {
-           description: "Producto no encontrado"
-       }
-       #swagger.responses[500] = {
-           description: "Error interno del servidor"
-       }
-    */
-  ...controlesAdministrador,
-  validarId,
-  validarActualizacionProducto,
-  actualizarProducto,
-);
-
-router.delete("/:id", 
-  /* #swagger.tags = ["Productos"]
-       #swagger.summary = "Eliminar un producto"
-       #swagger.description = "Permite a un administrador eliminar un producto por su ID."
-       #swagger.security = [{ bearerAuth: [] }]
-       #swagger.parameters['id'] = {
-           in: "path",
-           description: "ID del producto",
-           required: true,
-           type: "integer",
-           example: 1
-       }
-       #swagger.responses[200] = {
-           description: "Producto eliminado correctamente"
-       }
-       #swagger.responses[400] = {
-           description: "El ID del producto es inválido"
-       }
-       #swagger.responses[401] = {
-           description: "No se proporcionó un token válido o la cuenta no existe"
-       }
-       #swagger.responses[403] = {
-           description: "Cuenta inactiva o el usuario no tiene el rol ADMINISTRADOR"
-       }
-       #swagger.responses[404] = {
-           description: "Producto no encontrado"
-       }
-       #swagger.responses[500] = {
-           description: "Error interno del servidor"
-       }
-    */
-  ...controlesAdministrador, validarId, eliminarProducto);
-
 
 //rutas protegidas de artesano
 router.get(
@@ -238,6 +157,54 @@ router.get(
   obtenerMisProductos,
 );
 
+router.post(
+  "/crear-mi-producto",
+  /*
+    #swagger.tags = ["Productos"]
+    #swagger.summary = "Crear un producto"
+    #swagger.description = "Registra un nuevo producto."
+    #swagger.security = [{
+       bearerAuth: []
+    }]
+
+    #swagger.requestBody = {
+      required: true,
+      content: {
+        "application/json": {
+          schema: {
+            $ref: "#/components/schemas/MiProducto"
+          }
+        }
+      }
+    }
+
+    #swagger.responses[201] = {
+      description: "Producto creado exitosamente"
+    }
+    
+    #swagger.responses[401] = {
+      description: "Cuenta inexistente o no autenticada"
+    }
+
+    #swagger.responses[403] = {
+      description: "Cuenta inactiva o el usuario no tiene el rol ARTESANO"
+    }
+
+    #swagger.responses[404] = {
+      description: "La categoría solicitada no existe"
+    }
+
+    #swagger.responses[400] = {
+      description: "Datos inválidos"
+    }
+  */
+  autenticarUsuario,
+  cargarContextoUsuario,
+  autorizarRoles("ARTESANO"),
+  validarMiproducto,
+  crearMiProducto,
+);
+
 router.get(
   "/mis-productos/:id",
   /*
@@ -286,54 +253,6 @@ router.get(
   autorizarRoles("ARTESANO"),
   validarId,
   obtenerMiProducto,
-);
-
-router.post(
-  "/crear-mi-producto",
-  /*
-    #swagger.tags = ["Productos"]
-    #swagger.summary = "Crear un producto"
-    #swagger.description = "Registra un nuevo producto."
-    #swagger.security = [{
-       bearerAuth: []
-    }]
-
-    #swagger.requestBody = {
-      required: true,
-      content: {
-        "application/json": {
-          schema: {
-            $ref: "#/components/schemas/MiProducto"
-          }
-        }
-      }
-    }
-
-    #swagger.responses[201] = {
-      description: "Producto creado exitosamente"
-    }
-    
-    #swagger.responses[401] = {
-      description: "Cuenta inexistente o no autenticada"
-    }
-
-    #swagger.responses[403] = {
-      description: "Cuenta inactiva o el usuario no tiene el rol ARTESANO"
-    }
-
-    #swagger.responses[404] = {
-      description: "La categoría solicitada no existe"
-    }
-
-    #swagger.responses[400] = {
-      description: "Datos inválidos"
-    }
-  */
-  autenticarUsuario,
-  cargarContextoUsuario,
-  autorizarRoles("ARTESANO"),
-  validarMiproducto,
-  crearMiProducto,
 );
 
 router.put(
@@ -536,5 +455,87 @@ router.get("/:id",
     }
   */
   validarId, obtenerProductoPorId);
+
+  //rutas protegidas de administrador dinamicas
+  router.put(
+  "/:id",
+/* #swagger.tags = ["Productos"]
+       #swagger.summary = "Actualizar un producto"
+       #swagger.description = "Permite a un administrador actualizar los datos de un producto existente."
+       #swagger.security = [{ bearerAuth: [] }]
+       #swagger.parameters['id'] = {
+           in: "path",
+           description: "ID del producto",
+           required: true,
+           type: "integer",
+           example: 1
+       }
+       #swagger.requestBody = {
+           required: true,
+           content: {
+               "application/json": {
+                   schema: {
+                       $ref: "#/components/schemas/ActualizarProducto"
+                   }
+               }
+           }
+       }
+       #swagger.responses[200] = {
+           description: "Producto actualizado exitosamente"
+       }
+       #swagger.responses[400] = {
+           description: "El ID o los datos enviados no son válidos"
+       }
+       #swagger.responses[401] = {
+           description: "No se proporcionó un token válido o la cuenta no existe"
+       }
+       #swagger.responses[403] = {
+           description: "Cuenta inactiva o el usuario no tiene el rol ADMINISTRADOR"
+       }
+       #swagger.responses[404] = {
+           description: "Producto no encontrado"
+       }
+       #swagger.responses[500] = {
+           description: "Error interno del servidor"
+       }
+    */
+  ...controlesAdministrador,
+  validarId,
+  validarActualizacionProducto,
+  actualizarProducto,
+);
+
+router.delete("/:id", 
+  /* #swagger.tags = ["Productos"]
+       #swagger.summary = "Eliminar un producto"
+       #swagger.description = "Permite a un administrador eliminar un producto por su ID."
+       #swagger.security = [{ bearerAuth: [] }]
+       #swagger.parameters['id'] = {
+           in: "path",
+           description: "ID del producto",
+           required: true,
+           type: "integer",
+           example: 1
+       }
+       #swagger.responses[200] = {
+           description: "Producto eliminado correctamente"
+       }
+       #swagger.responses[400] = {
+           description: "El ID del producto es inválido"
+       }
+       #swagger.responses[401] = {
+           description: "No se proporcionó un token válido o la cuenta no existe"
+       }
+       #swagger.responses[403] = {
+           description: "Cuenta inactiva o el usuario no tiene el rol ADMINISTRADOR"
+       }
+       #swagger.responses[404] = {
+           description: "Producto no encontrado"
+       }
+       #swagger.responses[500] = {
+           description: "Error interno del servidor"
+       }
+    */
+  ...controlesAdministrador, validarId, eliminarProducto);
 
 export default router;
