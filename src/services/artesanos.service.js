@@ -295,3 +295,28 @@ export const obtenerMiArtesano = async (usuarioId) => {
 
   return artesano;
 };
+
+export const eliminarArtesano = async (artesanoId) => {
+  const existe = await prisma.artesano.findUnique({
+    where: { id: artesanoId },
+    select: {
+      usuarioId: true,
+      usuario: { select: { activo: true, roles: true } },
+    },
+  });
+  if (!existe)
+    throw crearError(`Artesano con id ${artesanoId} no encontrado`, 404);
+
+  if (!existe.usuario.activo)
+    throw crearError("el usuario artesano ya se encuentra desactivado", 400);
+
+  if (existe.usuario.roles.length > 1)
+    throw crearError(
+      "No se puede desactivar el usuario porque posee otros roles asociados",
+      400,
+    );
+  return prisma.usuario.update({
+    where: { id: existe.usuarioId },
+    data: { activo: false },
+  });
+};
