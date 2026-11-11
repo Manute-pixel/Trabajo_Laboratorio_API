@@ -11,7 +11,7 @@
     "db:test:preparar": "node --env-file=.env.test node_modules/prisma/build/index.js migrate deploy",
     "test:unitarios": "node --experimental-strip-types --env-file=.env.test --test tests/unitarios/index.js",
     "test:integracion": "node --experimental-strip-types --env-file=.env.test --test tests/integracion/index.test.js",
-    "test:rutas": "node --experimental-strip-types --env-file=.env.test --test tests/rutas/index.test.js",
+    "test:rutas": "node --experimental-test-isolation=none --experimental-strip-types --env-file=.env.test --test tests/rutas/index.test.js",
     "test": "pnpm run test:unitarios && pnpm run test:integracion && pnpm run test:rutas",
     "docs": "node generar-docs.js"
   },
