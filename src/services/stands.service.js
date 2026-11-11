@@ -363,12 +363,30 @@ export const asociarStand = async (standId, artesanoId) => {
   }
 
   const artesanoExistente = await prisma.artesano.findUnique({
-    where: { id: artesanoId },
-  });
+  where: { id: artesanoId },
+  include: {
+    stands: {
+      where: {
+        sector: {
+          pabellon: {
+            edicionId: standExistente.sector.pabellon.edicionId,
+          },
+        },
+      },
+    },
+  },
+});
 
-  if (!artesanoExistente) {
-    throw crearError(`Artesano con id ${artesanoId} no encontrado`, 404);
-  }
+if (!artesanoExistente) {
+  throw crearError(`Artesano con id ${artesanoId} no encontrado`, 404);
+}
+
+if (artesanoExistente.stands.length > 0) {
+  throw crearError(
+    `El artesano con id ${artesanoId} ya tiene un stand asignado en esta edición`,
+    400,
+  );
+}
 
   const postulacion = await prisma.postulacion.findFirst({
     where: {
