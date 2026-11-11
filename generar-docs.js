@@ -2,8 +2,10 @@ import swaggerAutogen from "swagger-autogen";
 
 import {
   NuevoArtesano,
+  ActualizarArtesano,
   ConsultaArtesanos,
   Artesano,
+  MiArtesano
 } from "./src/documentacion/esquemas_artesanos.js";
 
 import {
@@ -31,6 +33,8 @@ import {
   Stand,
   ActualizarStand,
   AsignarStand,
+  StandAsignado,
+  StandConArtesanoCompleto
 } from "./src/documentacion/esquemas_stands.js";
 
 import {
@@ -99,8 +103,10 @@ const doc = {
   components: {
     schemas: {
       NuevoArtesano,
+      ActualizarArtesano,
       ConsultaArtesanos,
       Artesano,
+      MiArtesano,
       MiProducto,
       NuevoProducto,
       ConsultaProductos,
@@ -112,6 +118,8 @@ const doc = {
       Stand,
       AsignarStand,
       ActualizarStand,
+      StandAsignado,
+      StandConArtesanoCompleto,
       NuevoUsuarioArtesano,
       NuevoAdministrador,
       InicioSesion,

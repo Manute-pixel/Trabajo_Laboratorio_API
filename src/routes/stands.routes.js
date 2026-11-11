@@ -52,7 +52,10 @@ router.post("/",
     }
 
     #swagger.responses[201] = {
-      description: "Stand creado exitosamente"
+      description: "Stand creado exitosamente",
+      schema: {
+       $ref: "#/components/schemas/StandConArtesanoCompleto",
+      },
     }
 
     #swagger.responses[400] = {
@@ -99,7 +102,10 @@ router.put(
     }
 
     #swagger.responses[200] = {
-      description: "Stand actualizado exitosamente"
+      description: "Stand actualizado exitosamente",
+      schema: {
+       $ref: "#/components/schemas/StandConArtesanoCompleto",
+      },
     }
 
     #swagger.responses[404] = {
@@ -197,7 +203,10 @@ router.patch(
     }
 
     #swagger.responses[200] = {
-      description: "Stand asignado exitosamente"
+      description: "Stand asignado exitosamente",
+      schema: {
+       $ref: "#/components/schemas/StandAsignado",
+      },
     }
 
     #swagger.responses[404] = {
@@ -241,7 +250,10 @@ router.patch(
     }
 
     #swagger.responses[200] = {
-      description: "Stand desvinculado exitosamente"
+      description: "Stand actualizado exitosamente",
+      schema: {
+       $ref: "#/components/schemas/StandConArtesanoCompleto",
+      },
     }
 
     #swagger.responses[400] = {
@@ -282,8 +294,9 @@ router.get("/",
 
     #swagger.parameters['estado'] = {
       in: "query",
-      description: "Filtrar por estado",
-      type: "string"
+      description: "Filtrar por estado del stand",
+      type: "string",
+      enum: ["disponible", "ocupado"]
     }
 
     #swagger.parameters['sector'] = {

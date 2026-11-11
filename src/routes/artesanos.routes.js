@@ -47,7 +47,7 @@ router.patch("/:id",
       content: {
         "application/json": {
           schema: {
-            $ref: "#/components/schemas/NuevoArtesano"
+            $ref: "#/components/schemas/ActualizarArtesano"
           }
         }
       }
@@ -107,7 +107,7 @@ router.delete("/:id",
     }
 
     #swagger.responses[204] = {
-      description: "Artesano eliminado correctamente. La respuesta no contiene un cuerpo."
+      description: "Artesano desactivado correctamente. La respuesta no contiene un cuerpo."
     }
 
     #swagger.responses[400] = {
@@ -146,7 +146,10 @@ router.get(
     }]
 
     #swagger.responses[200] = {
-      description: "Datos del artesano obtenidos correctamente"
+      description: "Datos del artesano obtenidos correctamente",
+      schema: {
+       $ref: "#/components/schemas/MiArtesano"
+      }
     }
 
     #swagger.responses[401] = {
@@ -202,6 +205,14 @@ router.get("/",
       in: "query",
       description: "Filtrar por email",
       type: "string"
+    }
+    
+    #swagger.parameters['fechaNac'] = {
+      in: "query",
+      description: "Filtrar por fecha de nacimiento",
+      type: "string",
+      format: "date",
+      example: "1990-05-20"
     }
 
     #swagger.parameters['rubroId'] = {
