@@ -97,7 +97,7 @@ test("Actualiza un artesano y rechaza ids inexistentes", async () => {
   );
 });
 
-test("Elimina un artesano existente", async () => {
+test("Desactiva el usuario asociado a un artesano", async () => {
   const usuario = await contexto.crearAdministrador("artesano-a-eliminar");
   const artesano = await prisma.artesano.create({
     data: {
@@ -115,10 +115,11 @@ test("Elimina un artesano existente", async () => {
   });
 
   const eliminado = await artesanos.eliminarArtesano(artesano.id);
-  assert.equal(eliminado.id, artesano.id);
+  assert.equal(eliminado.id, usuario.id);
+  assert.equal(eliminado.activo, false);
   await assert.rejects(
     artesanos.eliminarArtesano(artesano.id),
-    (error) => error.status === 404,
+    (error) => error.status === 400,
   );
 });
 
