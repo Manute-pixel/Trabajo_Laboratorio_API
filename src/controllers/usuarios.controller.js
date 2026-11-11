@@ -28,7 +28,7 @@ export const iniciarSesionUsuario = async (req, res, next) => {
   }
 };
 
-export const crearAdministrador = async (req, res) => {
+export const crearAdministrador = async (req, res, next) => {
   try {
     const usuario = await usuarioService.registrarAdministrador(req.dto);
     return res.status(201).json(usuario);
