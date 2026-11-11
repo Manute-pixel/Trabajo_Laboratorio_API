@@ -145,7 +145,7 @@ model Edicion_Poncho {
 model  Postulacion {
   id Int @id @default(autoincrement())
   fecha_postulacion DateTime @default(now())
-  estado_postulacion String @default("Pendiente") @db.VarChar(100)
+  estado_postulacion String @default("PENDIENTE") @db.VarChar(100)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
