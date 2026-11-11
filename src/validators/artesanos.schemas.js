@@ -36,3 +36,11 @@ export const consultarArtesanoSchema = z.object({
     pagina: z.coerce.number().int().positive().default(1),
     limite: z.coerce.number().int().min(1).max(50).default(10)
 });
+
+export const actualizarArtesanoSchema = artesanoSchema
+  .partial()
+  .strict()
+  .refine(
+    (datos) => Object.keys(datos).length > 0,
+    { message: "Debe enviar al menos un dato para actualizar" }
+  );
