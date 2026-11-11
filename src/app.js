@@ -14,7 +14,7 @@ import { iniciarLimpiezaRevocaciones } from "./tareas/limpiezaRevocaciones.js";
 import swaggerUi from "swagger-ui-express";
 import { readFileSync } from "node:fs";
 
-const app = express();
+export const app = express();
 const PORT = 3000;
 
 app.use(logger);
@@ -56,7 +56,8 @@ app.use(noEncontrado);
 // Manejo de errores
 app.use(manejadorErrores);
 
-app.listen(PORT, () => {
-  console.log(`Servidor iniciado en el puerto ${PORT}`);
-  iniciarLimpiezaRevocaciones();
-});
+if (process.env.NODE_ENV !== "test")
+  app.listen(PORT, () => {
+    console.log(`Servidor iniciado en puerto ${PORT}`);
+    iniciarLimpiezaRevocaciones();
+  });
