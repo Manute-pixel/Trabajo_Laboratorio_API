@@ -12,7 +12,7 @@ import reportesRoutes from "./routes/reportes.routes.js";
 import "./config/jwt.js";
 import { iniciarLimpiezaRevocaciones } from "./tareas/limpiezaRevocaciones.js";
 
-const app = express();
+export const app = express();
 const PORT = 3000;
 
 app.use(logger);
@@ -45,7 +45,8 @@ app.use(noEncontrado);
 // Manejo de errores
 app.use(manejadorErrores);
 
-app.listen(PORT, () => {
-  console.log(`Servidor iniciado en el puerto ${PORT}`);
-  iniciarLimpiezaRevocaciones();
-});
+if (process.env.NODE_ENV !== "test")
+  app.listen(PORT, () => {
+    console.log(`Servidor iniciado en puerto ${PORT}`);
+    iniciarLimpiezaRevocaciones();
+  });
