@@ -119,7 +119,7 @@ export const consultarArtesanoPorId = async (artesanoId) => {
   });
 
   if (!artesano) {
-    throw crearError(`Artesano con id ${id} no encontrado`, 404);
+    throw crearError(`Artesano con id ${artesanoId} no encontrado`, 404);
   }
 
   return artesano;
@@ -194,37 +194,25 @@ export const actualizarArtesano = async (artesanoId, datos) => {
     provinciaId,
   } = datos;
 
-  await verificarProvincia(provinciaId);
-  await verificarLocalidad(localidadId);
-  await verificarRubro(rubroId);
+  if (provinciaId !== undefined) await verificarProvincia(provinciaId);
+  if (localidadId !== undefined) await verificarLocalidad(localidadId);
+  if (rubroId !== undefined) await verificarRubro(rubroId);
+
+  const datosActualizar = {};
+
+  if (nombre !== undefined) datosActualizar.nombre_artesano = nombre;
+  if (apellido !== undefined) datosActualizar.apellido_artesano = apellido;
+  if (dni !== undefined) datosActualizar.dni = dni;
+  if (email !== undefined) datosActualizar.email_artesano = email;
+  if (telefono !== undefined) datosActualizar.telefono_artesano = telefono;
+  if (fechaNac !== undefined) datosActualizar.fecha_Nacimiento = fechaNac;
+  if (rubroId !== undefined) datosActualizar.rubroId = rubroId;
+  if (localidadId !== undefined) datosActualizar.localidadId = localidadId;
+  if (provinciaId !== undefined) datosActualizar.provinciaId = provinciaId;
 
   return prisma.artesano.update({
     where: { id: artesanoId },
-    data: {
-      nombre_artesano: nombre,
-      apellido_artesano: apellido,
-      dni: dni,
-      email_artesano: email,
-      telefono_artesano: telefono,
-      fecha_Nacimiento: fechaNac,
-      rubroId: rubroId,
-      localidadId: localidadId,
-      provinciaId: provinciaId,
-    },
-  });
-};
-
-export const eliminarArtesano = async (artesanoId) => {
-  const existe = await prisma.artesano.findUnique({
-    where: { id: artesanoId },
-  });
-
-  if (!existe) {
-    throw crearError(`Artesano con id ${artesanoId} no encontrado`, 404);
-  }
-
-  return prisma.artesano.delete({
-    where: { id: artesanoId },
+    data: datosActualizar,
   });
 };
 
@@ -298,12 +286,63 @@ export const obtenerMiArtesano = async (usuarioId) => {
       rubro: true,
       provincia: true,
       localidad: true,
-      usuario: true,
+      usuario: {
+        select: {
+          id: true,
+          nombre_usuario: true,
+          apellido_usuario: true,
+          email_usuario: true,
+          roles: {
+            select: {
+              rol: {
+                select: {
+                  nombre_rol: true,
+                },
+              },
+            },
+          },
+          activo: true,
+          createdAt: true,
+        },
+      },
     },
   });
 
   if (!artesano)
     throw crearError("usuario artesano invalido o desactivado", 404);
 
-  return artesano;
+  return {
+    ...artesano,
+    usuario: {
+      ...artesano.usuario,
+      roles: artesano.usuario.roles.map(
+        ({ rol }) => rol.nombre_rol
+      ),
+    },
+  };
+};
+
+export const eliminarArtesano = async (artesanoId) => {
+  const existe = await prisma.artesano.findUnique({
+    where: { id: artesanoId },
+    select: {
+      usuarioId: true,
+      usuario: { select: { activo: true, roles: true } },
+    },
+  });
+  if (!existe)
+    throw crearError(`Artesano con id ${artesanoId} no encontrado`, 404);
+
+  if (!existe.usuario.activo)
+    throw crearError("el usuario artesano ya se encuentra desactivado", 400);
+
+  if (existe.usuario.roles.length > 1)
+    throw crearError(
+      "No se puede desactivar el usuario porque posee otros roles asociados",
+      400,
+    );
+  return prisma.usuario.update({
+    where: { id: existe.usuarioId },
+    data: { activo: false },
+  });
 };

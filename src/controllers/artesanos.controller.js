@@ -39,7 +39,7 @@ export const crearArtesano = async (req, res, next) => {
 export const actualizarArtesano = async (req, res, next) => {
   try {
     const id = req.id;
-    const datos = req.body;
+    const datos = req.datosValidados;
 
     const artesanoActualizado = await artesanosService.actualizarArtesano(
       id,

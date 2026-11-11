@@ -11,8 +11,10 @@ import usuariosRoutes from "./routes/usuarios.routes.js";
 import reportesRoutes from "./routes/reportes.routes.js";
 import "./config/jwt.js";
 import { iniciarLimpiezaRevocaciones } from "./tareas/limpiezaRevocaciones.js";
+import swaggerUi from "swagger-ui-express";
+import { readFileSync } from "node:fs";
 
-const app = express();
+export const app = express();
 const PORT = 3000;
 
 app.use(logger);
@@ -39,13 +41,23 @@ app.get("/info", (req, res) => {
   });
 });
 
+const swaggerDocument = JSON.parse(
+  readFileSync(
+    new URL("../swagger-output.json", import.meta.url),
+    "utf8",
+  ),
+);
+
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
 //Manejo de rutas no encontradas
 app.use(noEncontrado);
 
 // Manejo de errores
 app.use(manejadorErrores);
 
-app.listen(PORT, () => {
-  console.log(`Servidor iniciado en el puerto ${PORT}`);
-  iniciarLimpiezaRevocaciones();
-});
+if (process.env.NODE_ENV !== "test")
+  app.listen(PORT, () => {
+    console.log(`Servidor iniciado en puerto ${PORT}`);
+    iniciarLimpiezaRevocaciones();
+  });

@@ -146,6 +146,8 @@ export const consultarStands = async (criterios) => {
           select: {
             id: true,
             nombre_artesano: true,
+            apellido_artesano: true,
+            telefono_artesano: true,
           },
         },
         sector: {
@@ -184,15 +186,43 @@ export const consultarStands = async (criterios) => {
 export const consultarStandPorId = async (id) => {
   return prisma.stand.findUnique({
     where: { id: id },
-    include: {
-      sector: true,
-      artesano: true,
+    select: {
+      id: true,
+      numero_stand: true,
+      estado_stand: true,
+      createdAt: true,
+      artesano: {
+        select: {
+          id: true,
+          nombre_artesano: true,
+          apellido_artesano: true,
+          telefono_artesano: true,
+        },
+      },
+      sector: {
+        select: {
+          id: true,
+          nombre_sector: true,
+          pabellon: {
+            select: {
+              id: true,
+              nombre_pabellon: true,
+              edicion: {
+                select: {
+                  id: true,
+                  nombre_edicion: true,
+                },
+              },
+            },
+          },
+        },
+      },
     },
   });
 };
 
 export const crearStand = async (standData) => {
-  const { numero, estado, sectorId } = standData;
+  const { numero, sectorId } = standData;
   await verificarSector(sectorId);
   const yaExisteStand = await prisma.stand.findUnique({
     where: {
@@ -209,8 +239,32 @@ export const crearStand = async (standData) => {
     );
   }
   return prisma.stand.create({
-    data: { numero_stand: numero, estado_stand: estado, sectorId },
-    include: { sector: true },
+    data: { numero_stand: numero, estado_stand: "DISPONIBLE", sectorId },
+    select: {
+      id: true,
+      numero_stand: true,
+      estado_stand: true,
+      createdAt: true,
+      artesano: true,
+      sector: {
+        select: {
+          id: true,
+          nombre_sector: true,
+          pabellon: {
+            select: {
+              id: true,
+              nombre_pabellon: true,
+              edicion: {
+                select: {
+                  id: true,
+                  nombre_edicion: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
   });
 };
 
@@ -219,9 +273,8 @@ export const actualizarStand = async (id, standData) => {
   if (!standExistente) {
     return null;
   }
-  const { numero, estado, sectorId, artesanoId } = standData;
+  const { numero, sectorId } = standData;
   await verificarSector(sectorId);
-  await verificarArtesano(artesanoId);
   const yaExisteStand = await prisma.stand.findUnique({
     where: {
       numero_stand_sectorId: {
@@ -240,11 +293,34 @@ export const actualizarStand = async (id, standData) => {
     where: { id },
     data: {
       numero_stand: numero,
-      estado_stand: estado,
+      estado_stand: "DISPONIBLE",
       sectorId,
-      artesanoId: artesanoId ?? null,
     },
-    include: { sector: true, artesano: true },
+    select: {
+      id: true,
+      numero_stand: true,
+      estado_stand: true,
+      createdAt: true,
+      artesano: true,
+      sector: {
+        select: {
+          id: true,
+          nombre_sector: true,
+          pabellon: {
+            select: {
+              id: true,
+              nombre_pabellon: true,
+              edicion: {
+                select: {
+                  id: true,
+                  nombre_edicion: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
   });
 };
 
@@ -259,6 +335,20 @@ export const eliminarStand = async (id) => {
 export const asociarStand = async (standId, artesanoId) => {
   const standExistente = await prisma.stand.findUnique({
     where: { id: standId },
+    select: {
+      id: true,
+      estado_stand: true,
+      artesanoId: true,
+      sector: {
+        select: {
+          pabellon: {
+            select: {
+              edicionId: true,
+            },
+          },
+        },
+      },
+    },
   });
 
   if (!standExistente) {
@@ -278,6 +368,21 @@ export const asociarStand = async (standId, artesanoId) => {
 
   if (!artesanoExistente) {
     throw crearError(`Artesano con id ${artesanoId} no encontrado`, 404);
+  }
+
+  const postulacion = await prisma.postulacion.findFirst({
+    where: {
+      artesanoId,
+      edicionId: standExistente.sector.pabellon.edicionId,
+      estado_postulacion: "ACEPTADO",
+    },
+  });
+
+  if (!postulacion) {
+    throw crearError(
+      `El artesano con id ${artesanoId} no tiene una postulación aceptada en esta edición`,
+      400,
+    );
   }
 
   const yaTieneStand = await prisma.stand.findFirst({
@@ -300,7 +405,41 @@ export const asociarStand = async (standId, artesanoId) => {
       artesano: { connect: { id: artesanoId } },
       estado_stand: "OCUPADO",
     },
-    include: { sector: true, artesano: true },
+    select: {
+      id: true,
+      numero_stand: true,
+      estado_stand: true,
+      createdAt: true,
+      artesano: {
+        select: {
+          id: true,
+          nombre_artesano: true,
+          apellido_artesano: true,
+          telefono_artesano: true,
+          email_artesano: true,
+          dni: true,
+          createdAt: true,
+        },
+      },
+      sector: {
+        select: {
+          id: true,
+          nombre_sector: true,
+          pabellon: {
+            select: {
+              id: true,
+              nombre_pabellon: true,
+              edicion: {
+                select: {
+                  id: true,
+                  nombre_edicion: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
   });
 };
 
@@ -326,6 +465,30 @@ export const desvincularStand = async (standId) => {
       artesano: { disconnect: true },
       estado_stand: "DISPONIBLE",
     },
-    include: { sector: true, artesano: true },
+    select: {
+      id: true,
+      numero_stand: true,
+      estado_stand: true,
+      createdAt: true,
+      artesano: true,
+      sector: {
+        select: {
+          id: true,
+          nombre_sector: true,
+          pabellon: {
+            select: {
+              id: true,
+              nombre_pabellon: true,
+              edicion: {
+                select: {
+                  id: true,
+                  nombre_edicion: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
   });
 };
