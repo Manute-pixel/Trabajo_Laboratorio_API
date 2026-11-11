@@ -97,12 +97,10 @@ test("Actualiza y elimina stands, manejando registros inexistentes y duplicados"
 
   const actualizado = await stands.actualizarStand(primero.id, {
     numero: numeroUno,
-    estado: "OCUPADO",
     sectorId: contexto.sector.id,
-    artesanoId: contexto.artesano.id,
   });
-  assert.equal(actualizado.estado_stand, "OCUPADO");
-  assert.equal(actualizado.artesanoId, contexto.artesano.id);
+  assert.equal(actualizado.estado_stand, "DISPONIBLE");
+  assert.equal(actualizado.artesano, null);
 
   await assert.rejects(
     stands.actualizarStand(segundo.id, {
@@ -137,6 +135,13 @@ test("Actualiza y elimina stands, manejando registros inexistentes y duplicados"
 });
 
 test("Asocia y desvincula stands, rechazando estados inválidos", async () => {
+  await prisma.postulacion.create({
+    data: {
+      artesanoId: contexto.artesano.id,
+      edicionId: contexto.edicion.id,
+      estado_postulacion: "ACEPTADO",
+    },
+  });
   const stand = await stands.crearStand({
     numero: numero(),
     estado: "DISPONIBLE",
@@ -144,7 +149,7 @@ test("Asocia y desvincula stands, rechazando estados inválidos", async () => {
   });
 
   const asociado = await stands.asociarStand(stand.id, contexto.artesano.id);
-  assert.equal(asociado.artesanoId, contexto.artesano.id);
+  assert.equal(asociado.artesano.id, contexto.artesano.id);
   assert.equal(asociado.estado_stand, "OCUPADO");
 
   await assert.rejects(
@@ -157,7 +162,7 @@ test("Asocia y desvincula stands, rechazando estados inválidos", async () => {
   );
 
   const desvinculado = await stands.desvincularStand(stand.id);
-  assert.equal(desvinculado.artesanoId, null);
+  assert.equal(desvinculado.artesano, null);
   assert.equal(desvinculado.estado_stand, "DISPONIBLE");
 
   await assert.rejects(
