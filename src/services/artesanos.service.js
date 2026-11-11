@@ -286,14 +286,40 @@ export const obtenerMiArtesano = async (usuarioId) => {
       rubro: true,
       provincia: true,
       localidad: true,
-      usuario: true,
+      usuario: {
+        select: {
+          id: true,
+          nombre_usuario: true,
+          apellido_usuario: true,
+          email_usuario: true,
+          roles: {
+            select: {
+              rol: {
+                select: {
+                  nombre_rol: true,
+                },
+              },
+            },
+          },
+          activo: true,
+          createdAt: true,
+        },
+      },
     },
   });
 
   if (!artesano)
     throw crearError("usuario artesano invalido o desactivado", 404);
 
-  return artesano;
+  return {
+    ...artesano,
+    usuario: {
+      ...artesano.usuario,
+      roles: artesano.usuario.roles.map(
+        ({ rol }) => rol.nombre_rol
+      ),
+    },
+  };
 };
 
 export const eliminarArtesano = async (artesanoId) => {
