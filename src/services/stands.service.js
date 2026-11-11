@@ -273,9 +273,8 @@ export const actualizarStand = async (id, standData) => {
   if (!standExistente) {
     return null;
   }
-  const { numero, estado, sectorId, artesanoId } = standData;
+  const { numero, sectorId } = standData;
   await verificarSector(sectorId);
-  await verificarArtesano(artesanoId);
   const yaExisteStand = await prisma.stand.findUnique({
     where: {
       numero_stand_sectorId: {
@@ -294,9 +293,8 @@ export const actualizarStand = async (id, standData) => {
     where: { id },
     data: {
       numero_stand: numero,
-      estado_stand: estado,
+      estado_stand: "DISPONIBLE",
       sectorId,
-      artesanoId: artesanoId ?? null,
     },
     select: {
       id: true,
@@ -337,6 +335,20 @@ export const eliminarStand = async (id) => {
 export const asociarStand = async (standId, artesanoId) => {
   const standExistente = await prisma.stand.findUnique({
     where: { id: standId },
+    select: {
+      id: true,
+      estado_stand: true,
+      artesanoId: true,
+      sector: {
+        select: {
+          pabellon: {
+            select: {
+              edicionId: true,
+            },
+          },
+        },
+      },
+    },
   });
 
   if (!standExistente) {
@@ -356,6 +368,21 @@ export const asociarStand = async (standId, artesanoId) => {
 
   if (!artesanoExistente) {
     throw crearError(`Artesano con id ${artesanoId} no encontrado`, 404);
+  }
+
+  const postulacion = await prisma.postulacion.findFirst({
+    where: {
+      artesanoId,
+      edicionId: standExistente.sector.pabellon.edicionId,
+      estado_postulacion: "ACEPTADO",
+    },
+  });
+
+  if (!postulacion) {
+    throw crearError(
+      `El artesano con id ${artesanoId} no tiene una postulación aceptada en esta edición`,
+      400,
+    );
   }
 
   const yaTieneStand = await prisma.stand.findFirst({
